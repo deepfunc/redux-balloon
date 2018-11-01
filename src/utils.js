@@ -1,4 +1,4 @@
-import { split, always, last, init, reduce } from 'ramda';
+import { split, always, path } from 'ramda';
 import { NAMESPACE_SEP } from './constants';
 
 export const pathOfNS = split(NAMESPACE_SEP);
@@ -20,29 +20,22 @@ export function isPlainObject(obj) {
   return Object.getPrototypeOf(obj) === proto;
 }
 
-export function isArray(o) {
-  return Array.isArray(o);
-}
+export const isArray = Array.isArray.bind(Array);
 
 export function isFunction(o) {
   return typeof o === 'function';
 }
 
-export function lazyInvoker(lazyTarget, methodPath) {
-  const path = pathOfNS(methodPath);
-  const methodName = last(path);
+export function lazyInvoker(lazyTarget, methodNamespace) {
   let target;
+  let method;
 
   return function (...args) {
     if (target === undefined) {
-      let currTarget = isFunction(lazyTarget) ? lazyTarget() : lazyTarget;
-      if (path.length > 1) {
-        currTarget = reduce((curr, value) => curr[value], currTarget, init(path));
-      }
-      target = currTarget;
+      target = isFunction(lazyTarget) ? lazyTarget() : lazyTarget;
+      method = path(pathOfNS(methodNamespace), target);
     }
 
-    const method = target[methodName];
     return method.apply(target, args);
   };
 }
@@ -66,4 +59,12 @@ export function warning(message) {
     throw new Error(message);
   } catch (e) {
   } // eslint-disable-line no-empty
+}
+
+export function isProdENV() {
+  return process.env.NODE_ENV === 'production';
+}
+
+export function getTypeOfCancelSaga(namespace) {
+  return `${namespace}/@@CANCEL_SAGA`;
 }

@@ -1,12 +1,12 @@
 import invariant from 'invariant';
-import { assocPath, map, mapObjIndexed, merge } from 'ramda';
+import { assocPath, dissocPath, map, mapObjIndexed, merge } from 'ramda';
 import { createAction } from 'redux-actions';
 import { pathOfNS, isPlainObject, isArray } from './utils';
 
-function updateActionModules(model, modules) {
+function addActionModule(model, existingModules) {
   const {namespace, actions} = model;
   if (typeof actions === 'undefined') {
-    return modules;
+    return existingModules;
   }
 
   invariant(
@@ -14,7 +14,11 @@ function updateActionModules(model, modules) {
     `[model.actions] should be plain object, but got ${typeof actions}`
   );
 
-  return assocPath(pathOfNS(namespace), [actions], modules);
+  return assocPath(pathOfNS(namespace), [actions], existingModules);
+}
+
+function delActionModule(namespace, existModules) {
+  return dissocPath(pathOfNS(namespace), existModules);
 }
 
 function createActions(modules) {
@@ -41,6 +45,7 @@ function createActions(modules) {
 }
 
 export {
-  updateActionModules,
+  addActionModule,
+  delActionModule,
   createActions
 };

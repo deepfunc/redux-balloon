@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import { merge, forEachObjIndexed } from 'ramda';
+import { assoc, dissoc, forEachObjIndexed } from 'ramda';
 import createSagaMiddleware, * as ReduxSaga from 'redux-saga';
 import * as sagaEffects from 'redux-saga/effects';
 import {
@@ -7,12 +7,12 @@ import {
   takeLatestHelper,
   throttleHelper
 } from 'redux-saga/lib/internal/sagaHelpers';
-import { isPlainObject, isFunction, isArray } from './utils';
+import { isPlainObject, isFunction, isArray, getTypeOfCancelSaga } from './utils';
 
-function updateSagaModules(model, modules = {}) {
+function addSagaModule(model, existingModules) {
   const {namespace, sagas} = model;
   if (typeof sagas === 'undefined') {
-    return modules;
+    return existingModules;
   }
 
   invariant(
@@ -20,7 +20,11 @@ function updateSagaModules(model, modules = {}) {
     `[model.sagas] should be plain object or function, but got ${typeof sagas}`
   );
 
-  return merge(modules, {[namespace]: [sagas]});
+  return assoc(namespace, [sagas], existingModules);
+}
+
+function delSagaModule(namespace, existModules) {
+  return dissoc(namespace, existModules);
 }
 
 function runSagaModules(modules, sagaMiddleware, extras) {
@@ -39,7 +43,7 @@ function createSaga(sagas, namespace, extras) {
     const watcher = createWatcher(sagas, extras);
     const task = yield fork(watcher);
 
-    yield take(`${namespace}/@@CANCEL_SAGA`);
+    yield take(getTypeOfCancelSaga(namespace));
     yield cancel(task);
   };
 }
@@ -91,7 +95,8 @@ function handleActionForHelper(saga, extras) {
 }
 
 export {
-  updateSagaModules,
+  addSagaModule,
+  delSagaModule,
   createSagaMiddleware,
   runSagaModules
 };

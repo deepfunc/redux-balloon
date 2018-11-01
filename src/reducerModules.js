@@ -1,13 +1,13 @@
 import invariant from 'invariant';
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import { assocPath, map } from 'ramda';
+import { assocPath, dissocPath, map } from 'ramda';
 import { pathOfNS, isPlainObject, isArray } from './utils';
 
-function updateReducerModules(model, modules) {
+function addReducerModule(model, existingModules) {
   const {namespace, state = null, reducers} = model;
   if (typeof reducers === 'undefined') {
-    return modules;
+    return existingModules;
   }
 
   invariant(
@@ -15,7 +15,11 @@ function updateReducerModules(model, modules) {
     `[model.reducers] should be plain object, but got ${typeof reducers}`
   );
 
-  return assocPath(pathOfNS(namespace), [reducers, state], modules);
+  return assocPath(pathOfNS(namespace), [reducers, state], existingModules);
+}
+
+function delReducerModule(namespace, existModules) {
+  return dissocPath(pathOfNS(namespace), existModules);
 }
 
 function createReducers(modules) {
@@ -30,6 +34,7 @@ function createReducers(modules) {
 }
 
 export {
-  updateReducerModules,
+  addReducerModule,
+  delReducerModule,
   createReducers
 };

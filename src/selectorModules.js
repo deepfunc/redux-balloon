@@ -1,12 +1,12 @@
 import invariant from 'invariant';
-import { assocPath, map, merge, curry } from 'ramda';
+import { assocPath, map, merge, curry, dissocPath } from 'ramda';
 import * as Reselect from 'reselect';
 import { pathOfNS, isFunction, isArray, lazyInvoker } from './utils';
 
-function updateSelectorModules(model, modules) {
+function addSelectorModule(model, existingModules) {
   const {namespace, selectors} = model;
   if (typeof selectors === 'undefined') {
-    return modules;
+    return existingModules;
   }
 
   invariant(
@@ -14,7 +14,11 @@ function updateSelectorModules(model, modules) {
     `[model.selectors] should be function, but got ${typeof selectors}`
   );
 
-  return assocPath(pathOfNS(namespace), [selectors], modules);
+  return assocPath(pathOfNS(namespace), [selectors], existingModules);
+}
+
+function delSelectorModule(namespace, existModules) {
+  return dissocPath(pathOfNS(namespace), existModules);
 }
 
 function createSelectors(modules) {
@@ -45,6 +49,7 @@ function createSelectors(modules) {
 }
 
 export {
-  updateSelectorModules,
+  addSelectorModule,
+  delSelectorModule,
   createSelectors
 };
