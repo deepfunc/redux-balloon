@@ -1,4 +1,4 @@
-import { split, always, path } from 'ramda';
+import { split, always, path, init } from 'ramda';
 import { NAMESPACE_SEP } from './constants';
 
 export const pathOfNS = split(NAMESPACE_SEP);
@@ -28,15 +28,18 @@ export function isFunction(o) {
 
 export function lazyInvoker(lazyTarget, methodNamespace) {
   let target;
+  let thisArg;
   let method;
 
   return function (...args) {
     if (target === undefined) {
       target = isFunction(lazyTarget) ? lazyTarget() : lazyTarget;
+      const pathArr = pathOfNS(methodNamespace);
+      thisArg = path(init(pathArr), target);
       method = path(pathOfNS(methodNamespace), target);
     }
 
-    return method.apply(target, args);
+    return method.apply(thisArg, args);
   };
 }
 

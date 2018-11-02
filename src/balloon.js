@@ -86,6 +86,7 @@ export default function () {
     updateInjectedArgs();
     app.store.replaceReducer(reducers);
     app.store.dispatch({type: getTypeOfCancelSaga(namespace)});
+    app.models = filter(model => model.namespace !== namespace)(app.models);
   }
 
   function run(opts) {
