@@ -13,7 +13,7 @@ export default function checkModel(model, existingModels) {
     `[model.namespace] should be string, but got ${typeof namespace}`
   );
   invariant(
-    any(model => model.namespace === namespace)(existingModels),
+    !any(model => model.namespace === namespace)(existingModels),
     '[model.namespace] should be unique!'
   );
 }

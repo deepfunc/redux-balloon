@@ -7,7 +7,13 @@ import {
   takeLatestHelper,
   throttleHelper
 } from 'redux-saga/lib/internal/sagaHelpers';
-import { isPlainObject, isFunction, isArray, getTypeOfCancelSaga } from './utils';
+import {
+  isPlainObject,
+  isFunction,
+  isArray,
+  getTypeOfCancelSaga,
+  noop
+} from './utils';
 
 function addSagaModule(model, existingModules) {
   const {namespace, sagas} = model;
@@ -27,20 +33,24 @@ function delSagaModule(namespace, existModules) {
   return dissoc(namespace, existModules);
 }
 
-function runSagaModules(modules, sagaMiddleware, extras) {
+function runSagaModules(modules, sagaMiddleware, runOpts, extras) {
+  const {onSagaError = noop} = runOpts;
   const _extras = {...extras, ReduxSaga};
   forEachObjIndexed((module, namespace) => {
     const sagas = module[0];
-    const saga = createSaga(sagas, namespace, _extras);
-    sagaMiddleware.run(saga);
+    const saga = createSaga(sagas, namespace, runOpts, _extras);
+    sagaMiddleware
+      .run(saga)
+      .done
+      .catch(e => onSagaError(e, {namespace}));
   }, modules);
 }
 
-function createSaga(sagas, namespace, extras) {
+function createSaga(sagas, namespace, runOpts, extras) {
   const {fork, take, cancel} = sagaEffects;
 
   return function* () {
-    const watcher = createWatcher(sagas, extras);
+    const watcher = createWatcher(sagas, namespace, runOpts, extras);
     const task = yield fork(watcher);
 
     yield take(getTypeOfCancelSaga(namespace));
@@ -48,7 +58,7 @@ function createSaga(sagas, namespace, extras) {
   };
 }
 
-function createWatcher(sagas, extras) {
+function createWatcher(sagas, namespace, runOpts, extras) {
   if (isFunction(sagas)) {
     return sagas(sagaEffects, extras);
   } else {
@@ -69,7 +79,7 @@ function createWatcher(sagas, extras) {
             ms = opts.ms;
           }
         }
-        const handler = handleActionForHelper(saga, extras);
+        const handler = handleActionForHelper(saga, {namespace, key}, runOpts, extras);
 
         switch (type) {
           case 'takeLatest':
@@ -86,11 +96,16 @@ function createWatcher(sagas, extras) {
   }
 }
 
-function handleActionForHelper(saga, extras) {
+function handleActionForHelper(saga, {namespace, key}, runOpts, extras) {
   const {call} = sagaEffects;
+  const {onSagaError = noop} = runOpts;
 
   return function* (action) {
-    yield call(saga, action, sagaEffects, extras);
+    try {
+      yield call(saga, action, sagaEffects, extras);
+    } catch (e) {
+      onSagaError(e, {namespace, key});
+    }
   };
 }
 

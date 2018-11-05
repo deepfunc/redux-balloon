@@ -23,6 +23,7 @@ export default function () {
   let selectors;
   let sagaModules;
   let sagaMiddleware;
+  let runOpts;
 
   const app = {
     status: Status.IDLE,
@@ -57,6 +58,7 @@ export default function () {
       runSagaModules(
         {[model.namespace]: sagaModules[model.namespace]},
         sagaMiddleware,
+        runOpts,
         {
           actions: app.actions,
           selectors: app.selectors
@@ -91,13 +93,14 @@ export default function () {
 
   function run(opts) {
     if (app.status === Status.IDLE) {
+      runOpts = opts;
       updateInjectedArgs();
       sagaMiddleware = createSagaMiddleware();
-      let {middlewares = []} = opts;
+      let {middlewares = []} = runOpts;
       middlewares.push(sagaMiddleware);
 
       app.store = createStore({
-        ...opts,
+        ...runOpts,
         reducers,
         middlewares
       });
@@ -105,6 +108,7 @@ export default function () {
       runSagaModules(
         sagaModules,
         sagaMiddleware,
+        runOpts,
         {
           actions: app.actions,
           selectors: app.selectors
