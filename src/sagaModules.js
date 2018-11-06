@@ -33,12 +33,12 @@ function delSagaModule(namespace, existModules) {
   return dissoc(namespace, existModules);
 }
 
-function runSagaModules(modules, sagaMiddleware, runOpts, extras) {
-  const {onSagaError = noop} = runOpts;
+function runSagaModules(modules, sagaMiddleware, opts, extras) {
+  const {onSagaError = noop} = opts;
   const _extras = {...extras, ReduxSaga};
   forEachObjIndexed((module, namespace) => {
     const sagas = module[0];
-    const saga = createSaga(sagas, namespace, runOpts, _extras);
+    const saga = createSaga(sagas, namespace, opts, _extras);
     sagaMiddleware
       .run(saga)
       .done
@@ -46,11 +46,11 @@ function runSagaModules(modules, sagaMiddleware, runOpts, extras) {
   }, modules);
 }
 
-function createSaga(sagas, namespace, runOpts, extras) {
+function createSaga(sagas, namespace, opts, extras) {
   const {fork, take, cancel} = sagaEffects;
 
   return function* () {
-    const watcher = createWatcher(sagas, namespace, runOpts, extras);
+    const watcher = createWatcher(sagas, namespace, opts, extras);
     const task = yield fork(watcher);
 
     yield take(getTypeOfCancelSaga(namespace));
@@ -58,7 +58,7 @@ function createSaga(sagas, namespace, runOpts, extras) {
   };
 }
 
-function createWatcher(sagas, namespace, runOpts, extras) {
+function createWatcher(sagas, namespace, opts, extras) {
   let sagasObj;
   let needInject = true;
 
@@ -93,7 +93,7 @@ function createWatcher(sagas, namespace, runOpts, extras) {
       const handler = handleActionForHelper(
         saga,
         {namespace, key, needInject},
-        runOpts,
+        opts,
         extras
       );
 
@@ -111,9 +111,9 @@ function createWatcher(sagas, namespace, runOpts, extras) {
   };
 }
 
-function handleActionForHelper(saga, {namespace, key, needInject}, runOpts, extras) {
+function handleActionForHelper(saga, {namespace, key, needInject}, opts, extras) {
   const {call} = sagaEffects;
-  const {onSagaError = noop} = runOpts;
+  const {onSagaError = noop} = opts;
   const injections = needInject ? [sagaEffects, extras] : [];
 
   return function* (action) {

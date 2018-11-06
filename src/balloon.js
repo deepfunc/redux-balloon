@@ -70,7 +70,7 @@ export default function () {
   }
 
   function updateInjectedArgs() {
-    reducers = createReducers(reducerModules);
+    reducers = createReducers(reducerModules, runOpts);
     actions = createActions(actionModules);
     selectors = createSelectors(selectorModules);
   }
