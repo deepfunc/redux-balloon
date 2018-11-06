@@ -59,50 +59,66 @@ function createSaga(sagas, namespace, runOpts, extras) {
 }
 
 function createWatcher(sagas, namespace, runOpts, extras) {
+  let sagasObj;
+  let needInject = true;
+
   if (isFunction(sagas)) {
-    return sagas(sagaEffects, extras);
+    sagasObj = sagas(sagaEffects, extras);
+    if (isFunction(sagasObj)) {
+      return sagasObj;
+    } else {
+      needInject = false;
+    }
   } else {
-    return function* () {
-      const keys = Object.keys(sagas);
+    sagasObj = sagas;
+  }
 
-      for (const key of keys) {
-        let type = 'takeEvery';
-        let ms;
-        let saga = sagas[key];
+  return function* () {
+    const keys = Object.keys(sagasObj);
 
-        if (isArray(saga)) {
-          saga = sagas[key][0];
-          const opts = sagas[key][1];
-          type = opts.type;
+    for (const key of keys) {
+      let type = 'takeEvery';
+      let ms;
+      let saga = sagasObj[key];
 
-          if (type === 'throttle') {
-            ms = opts.ms;
-          }
-        }
-        const handler = handleActionForHelper(saga, {namespace, key}, runOpts, extras);
+      if (isArray(saga)) {
+        saga = sagasObj[key][0];
+        const opts = sagasObj[key][1];
+        type = opts.type;
 
-        switch (type) {
-          case 'takeLatest':
-            yield takeLatestHelper(key, handler);
-            break;
-          case 'throttle':
-            yield throttleHelper(ms, key, handler);
-            break;
-          default:
-            yield takeEveryHelper(key, handler);
+        if (type === 'throttle') {
+          ms = opts.ms;
         }
       }
-    };
-  }
+      const handler = handleActionForHelper(
+        saga,
+        {namespace, key, needInject},
+        runOpts,
+        extras
+      );
+
+      switch (type) {
+        case 'takeLatest':
+          yield takeLatestHelper(key, handler);
+          break;
+        case 'throttle':
+          yield throttleHelper(ms, key, handler);
+          break;
+        default:
+          yield takeEveryHelper(key, handler);
+      }
+    }
+  };
 }
 
-function handleActionForHelper(saga, {namespace, key}, runOpts, extras) {
+function handleActionForHelper(saga, {namespace, key, needInject}, runOpts, extras) {
   const {call} = sagaEffects;
   const {onSagaError = noop} = runOpts;
+  const injections = needInject ? [sagaEffects, extras] : [];
 
   return function* (action) {
     try {
-      yield call(saga, action, sagaEffects, extras);
+      yield call(saga, action, ...injections);
     } catch (e) {
       onSagaError(e, {namespace, key});
     }

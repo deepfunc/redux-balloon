@@ -1,5 +1,5 @@
 - [ ] add reducers enhancer in model
-- [ ] define sagas of model in three ways
+- [x] define sagas of model in three ways
 - [x] add hooks api, onSagaError
 - [x] add LICENSE
 - [x] add and setup unit test framework(Jest)
