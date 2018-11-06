@@ -1,4 +1,7 @@
-- [ ] add README.md
+# Future Planned Functions
+
+- [ ] add unit tests
+- [x] add README.md
 - [x] add hooks api, onEnhanceReducer(can using it for redux-persist)
 - [x] define sagas of model in three ways
 - [x] add hooks api, onSagaError
