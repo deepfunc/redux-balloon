@@ -9,7 +9,6 @@ Lightweight front-end business framework based on [redux](https://github.com/red
 ---
 
 
-
 ## Features
 
 - **Based on redux community best practices** (redux-saga, redux-actions, reselect, etc.)
@@ -17,8 +16,6 @@ Lightweight front-end business framework based on [redux](https://github.com/red
 - **Optimize file fragmentation**: based on models to design your business
 - **Define sagas of model flexibility**
 - **Support multiple UI frameworks**: e.g., `React` and `Wechat Mini Program(Wepy)`   
-
-
 
 ## Browsers support
 
@@ -63,8 +60,6 @@ Making...
 ├── CHANGELOG.md          - change log
 └── TODO.md               - planned functions
 ```
-
-
 
 ## License
 
