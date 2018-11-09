@@ -1,11 +1,12 @@
 {
   "name": "redux-balloon",
-  "version": "0.0.1-alpha",
+  "version": "1.0.0-beta.1",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "npm test -- --watch",
+    "test:cov": "npm test -- --coverage"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0",
     "invariant": "^2.2.4",
     "ramda": "^0.25.0",
     "redux": "^4.0.1",
@@ -35,7 +36,6 @@
     "@babel/plugin-syntax-import-meta": "^7.0.0",
     "@babel/plugin-transform-runtime": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "@types/jest": "^23.3.9",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "eslint": "^5.8.0",

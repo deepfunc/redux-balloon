@@ -3,7 +3,7 @@ module.exports = {
   transform: {
     '^.+\\.jsx?$': 'babel-jest'
   },
-  testRegex: '/__tests__/.*\\.(test|spec)\\.jsx?$',
+  testRegex: '/__tests__/.*\\.(test|spec)\\.js$',
   testPathIgnorePatterns: [
     'node_modules',
     'setup/.*-setup.js',
@@ -20,9 +20,6 @@ module.exports = {
       '<rootDir>/__tests__/mocks/file-mock.js',
     '\\.(css|less)$': 'identity-obj-proxy'
   },
-  modulePaths: [
-    '<rootDir>/'
-  ],
   setupFiles: [],
   globals: {}
 };

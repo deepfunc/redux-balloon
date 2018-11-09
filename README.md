@@ -46,15 +46,16 @@ Making...
 Making...
 
 ## Change Log
-[CHANGELOG.md](./CHANGELOG.md)
+[CHANGELOG.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/CHANGELOG.md)
 
 ## Future Planned Functions
-[TODO.md](./TODO.md)
+[TODO.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/TODO.md)
 
 ## Directory
 
 ```
 ├── __tests__             - unit tests
+├── examples              - how to use it
 ├── docs                  - documents
 ├── src                   - source codes
 ├── CHANGELOG.md          - change log
@@ -67,5 +68,5 @@ Making...
 
 ## Contribution Guide
 
-[CONTRIBUTING.md](./CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/CONTRIBUTING.md)
 
