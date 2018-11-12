@@ -29,8 +29,8 @@ function addSagaModule(model, existingModules) {
   return assoc(namespace, [sagas], existingModules);
 }
 
-function delSagaModule(namespace, existModules) {
-  return dissoc(namespace, existModules);
+function delSagaModule(namespace, existingModules) {
+  return dissoc(namespace, existingModules);
 }
 
 function runSagaModules(modules, sagaMiddleware, opts, extras) {

@@ -10,15 +10,15 @@ function addActionModule(model, existingModules) {
   }
 
   invariant(
-    typeof isPlainObject(actions),
+    isPlainObject(actions),
     `[model.actions] should be plain object, but got ${typeof actions}`
   );
 
   return assocPath(pathOfNS(namespace), [actions], existingModules);
 }
 
-function delActionModule(namespace, existModules) {
-  return dissocPath(pathOfNS(namespace), existModules);
+function delActionModule(namespace, existingModules) {
+  return dissocPath(pathOfNS(namespace), existingModules);
 }
 
 function createActions(modules) {
