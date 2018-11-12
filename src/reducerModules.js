@@ -23,7 +23,7 @@ function delReducerModule(namespace, existingModules) {
   return dissocPath(pathOfNS(namespace), existingModules);
 }
 
-function createReducers(modules, opts) {
+function createReducers(modules, opts = {}) {
   const {onEnhanceReducer = identity} = opts;
   const create = (modules, namespace) => {
     if (isArray(modules)) {
