@@ -19,11 +19,11 @@ function addReducerModule(model, existingModules) {
   return assocPath(pathOfNS(namespace), [reducers, state], existingModules);
 }
 
-function delReducerModule(namespace, existModules) {
-  return dissocPath(pathOfNS(namespace), existModules);
+function delReducerModule(namespace, existingModules) {
+  return dissocPath(pathOfNS(namespace), existingModules);
 }
 
-function createReducers(modules, opts) {
+function createReducers(modules, opts = {}) {
   const {onEnhanceReducer = identity} = opts;
   const create = (modules, namespace) => {
     if (isArray(modules)) {

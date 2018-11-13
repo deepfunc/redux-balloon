@@ -10,15 +10,15 @@ function addSelectorModule(model, existingModules) {
   }
 
   invariant(
-    typeof isFunction(selectors),
+    isFunction(selectors),
     `[model.selectors] should be function, but got ${typeof selectors}`
   );
 
   return assocPath(pathOfNS(namespace), [selectors], existingModules);
 }
 
-function delSelectorModule(namespace, existModules) {
-  return dissocPath(pathOfNS(namespace), existModules);
+function delSelectorModule(namespace, existingModules) {
+  return dissocPath(pathOfNS(namespace), existingModules);
 }
 
 function createSelectors(modules) {
