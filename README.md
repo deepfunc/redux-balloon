@@ -1,4 +1,4 @@
-English | [简体中文](./README.zh-CN.md)
+English | [简体中文](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/README.zh-CN.md)
 
 
 
@@ -13,7 +13,7 @@ Lightweight front-end business framework based on [redux](https://github.com/red
 
 - **Based on redux community best practices** (redux-saga, redux-actions, reselect, etc.)
 - **Model concepts**: organize model with `reducers`, `actions`, `selectors` and `sagas`
-- **Optimize file fragmentation**: based on models to design your business
+- **Optimize file fragmentation**: one business, one model file
 - **Define sagas of model flexibility**
 - **Support multiple UI frameworks**: e.g., `React` and `Wechat Mini Program(Wepy)`   
 
@@ -38,6 +38,109 @@ $ npm install --save redux-balloon
 
 
 ### Usage Example
+
+Suppose we have a UI to fetch user data and display them (use `react` and `react-redux`).
+
+#### `UserList.js`
+
+```javascript
+// ...
+import biz from '../biz';
+
+class UserList extends React.Component {
+  componentDidMount() {
+  	this.initData();
+  }
+
+  initData() {
+    const {fetchUsers} = this.props;
+    fetchUsers();
+  }
+  
+  render() {
+    const {users} = this.props;
+    // display users data ...
+  }
+}
+  
+const mapStateToProps = (state) => ({
+    users: biz.getUsers(state)
+});
+
+const mapDispatchToProps = {
+    fetchUsers: biz.fetchUsers
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserList);
+```
+
+
+
+What is `biz` ? It is our business code by using `redux-balloon`.
+
+#### `biz.js`
+
+```javascript
+import balloon from 'redux-balloon';
+import * as types from './types';
+import * as api from './api';
+
+const users = {
+  namespace: 'users',
+  state: [],
+  reducers: {
+    [types.USERS_PUT]: (state, {payload}) => payload
+  },
+  actions: {
+    fetchUsers: [types.USERS_GET]
+  },
+  selectors: () => ({
+    getUsers: (state) => state.users
+  }),
+  sagas: {
+    * [types.USERS_FETCH](action, {call, put}) {
+      // saga effects are treated as parameter injection.
+      const users = yield call(api.fetchUsers);
+      yield put({type: types.USERS_PUT, payload: users});
+    }
+  }
+};
+
+const biz = balloon();
+biz.model(users);
+
+biz.run();
+
+export default biz;
+```
+
+
+
+To run our app, we'll connect it. 
+
+#### `app.js`
+
+```javascript
+// ...
+import biz from './biz';
+import UserList from './components/UserList';
+
+const App = () => {
+  return (
+    <Provider store={biz.store}>
+      <UserList/>
+    </Provider>
+  );
+};
+
+ReactDOM.render(<App/>, document.getElementById('app'));
+```
+
+
+
+You don't need to import redux, redux-saga (and redux-actions, reselect) in your js files; and you don't need initialize redux or redux-saga. By using `redux-balloon`, you can write business codes in easy way and run them in some different UI frameworks. :smile:
+
+## Complete Examples
 
 Making...
 

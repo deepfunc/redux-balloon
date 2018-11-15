@@ -91,7 +91,7 @@ export default function () {
     app.models = filter(model => model.namespace !== namespace)(app.models);
   }
 
-  function run(opts) {
+  function run(opts = {}) {
     if (app.status === Status.IDLE) {
       runOpts = opts;
       updateInjectedArgs();
