@@ -98,7 +98,7 @@ const users = {
   }),
   sagas: {
     * [types.USERS_FETCH](action, {call, put}) {
-      // saga effects 通过参数注入进来。
+      // 通过参数注入 saga effects。
       const users = yield call(api.fetchUsers);
       yield put({type: types.USERS_PUT, payload: users});
     }
