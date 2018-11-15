@@ -75,7 +75,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(UserList);
 
 
 
-`biz` 是什么？这就是用 `redux-balloon` 来实现的业务代码文件。
+`biz` 是什么？这就是用 `redux-balloon` 来实现的业务代码。
 
 #### `biz.js`
 
