@@ -42,7 +42,7 @@ $ npm install --save redux-balloon
 
 #### `UserList.js`
 
-```react
+```javascript
 // ...
 import biz from '../biz';
 
@@ -119,7 +119,7 @@ export default biz;
 
 #### `app.js`
 
-```react
+```javascript
 // ...
 import biz from './biz';
 import UserList from './components/UserList';

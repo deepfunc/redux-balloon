@@ -43,7 +43,7 @@ Suppose we have a UI to fetch user data and display them (use `react` and `react
 
 #### `UserList.js`
 
-```react
+```javascript
 // ...
 import biz from '../biz';
 
@@ -120,7 +120,7 @@ To run our app, we'll connect it.
 
 #### `app.js`
 
-```react
+```javascript
 // ...
 import biz from './biz';
 import UserList from './components/UserList';
