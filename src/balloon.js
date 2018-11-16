@@ -21,7 +21,7 @@ export default function () {
   let actions;
   let selectorModules = {};
   let selectors;
-  let sagaModules;
+  let sagaModules = {};
   let sagaMiddleware;
   let runOpts;
 
@@ -55,15 +55,19 @@ export default function () {
     if (app.status === Status.RUNNING) {
       updateInjectedArgs();
       app.store.replaceReducer(reducers);
-      runSagaModules(
-        {[model.namespace]: sagaModules[model.namespace]},
-        sagaMiddleware,
-        runOpts,
-        {
-          actions: app.actions,
-          selectors: app.selectors
-        }
-      );
+      const {namespace} = model;
+      const newSaga = sagaModules[namespace];
+      if (newSaga) {
+        runSagaModules(
+          {[namespace]: newSaga},
+          sagaMiddleware.run,
+          runOpts,
+          {
+            actions: app.actions,
+            selectors: app.selectors
+          }
+        );
+      }
     }
 
     return app;
@@ -77,7 +81,7 @@ export default function () {
 
   function unmodel(namespace) {
     invariant(
-      !any(model => model.namespace === namespace)(app.models),
+      any(model => model.namespace === namespace)(app.models),
       `[app.models] don't has this namespace: ${namespace}`
     );
 
@@ -85,9 +89,13 @@ export default function () {
     actionModules = delActionModule(namespace, actionModules);
     selectorModules = delSelectorModule(namespace, selectorModules);
     sagaModules = delSagaModule(namespace, sagaModules);
-    updateInjectedArgs();
-    app.store.replaceReducer(reducers);
-    app.store.dispatch({type: getTypeOfCancelSaga(namespace)});
+
+    if (app.status === Status.RUNNING) {
+      updateInjectedArgs();
+      app.store.replaceReducer(reducers);
+      app.store.dispatch({type: getTypeOfCancelSaga(namespace)});
+    }
+
     app.models = filter(model => model.namespace !== namespace)(app.models);
   }
 
@@ -107,7 +115,7 @@ export default function () {
 
       runSagaModules(
         sagaModules,
-        sagaMiddleware,
+        sagaMiddleware.run,
         runOpts,
         {
           actions: app.actions,
