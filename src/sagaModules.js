@@ -33,16 +33,13 @@ function delSagaModule(namespace, existingModules) {
   return dissoc(namespace, existingModules);
 }
 
-function runSagaModules(modules, sagaMiddleware, opts, extras) {
+function runSagaModules(modules, runSaga, opts, extras) {
   const {onSagaError = noop} = opts;
   const _extras = {...extras, ReduxSaga};
   forEachObjIndexed((module, namespace) => {
     const sagas = module[0];
     const saga = createSaga(sagas, namespace, opts, _extras);
-    sagaMiddleware
-      .run(saga)
-      .done
-      .catch(e => onSagaError(e, {namespace}));
+    runSaga(saga).done.catch(e => onSagaError(e, {namespace}));
   }, modules);
 }
 
