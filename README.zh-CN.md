@@ -80,7 +80,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(UserList);
 #### `biz.js`
 
 ```javascript
-import balloon from 'redux-balloon';
+import { balloon } from 'redux-balloon';
 import * as types from './types';
 import * as api from './api';
 

@@ -1,4 +1,4 @@
-import balloon from '../src/index';
+import { balloon } from '../src/index';
 
 describe('model', () => {
   test('should run model', () => {

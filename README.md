@@ -2,11 +2,12 @@ English | [简体中文](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/ma
 
 
 
-# redux-balloon
+# Redux Balloon
 
 Lightweight front-end business framework based on [redux](https://github.com/reduxjs/redux), [redux-saga](https://github.com/redux-saga/redux-saga), [redux-actions](https://github.com/redux-utilities/redux-actions), [reselect](https://github.com/reduxjs/reselect).(Inspired by redux ducks style and DvaJS)
 
 ---
+
 
 
 ## Features
@@ -16,6 +17,8 @@ Lightweight front-end business framework based on [redux](https://github.com/red
 - **Optimize file fragmentation**: one business, one model file
 - **Define sagas of model flexibility**
 - **Support multiple UI frameworks**: e.g., `React` and `Wechat Mini Program(Wepy)`   
+
+
 
 ## Browsers support
 
@@ -81,7 +84,7 @@ What is `biz` ? It is our business code by using `redux-balloon`.
 #### `biz.js`
 
 ```javascript
-import balloon from 'redux-balloon';
+import { balloon } from 'redux-balloon';
 import * as types from './types';
 import * as api from './api';
 
@@ -140,19 +143,31 @@ ReactDOM.render(<App/>, document.getElementById('app'));
 
 You don't need to import redux, redux-saga (and redux-actions, reselect) in your js files; and you don't need initialize redux or redux-saga. By using `redux-balloon`, you can write business codes in easy way and run them in some different UI frameworks. :smile:
 
+
+
+## Documentation
+
+[API.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/docs/en/API.md)
+
+
+
 ## Complete Examples
 
 Making...
 
-## Documentation
 
-Making...
 
 ## Change Log
+
 [CHANGELOG.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/CHANGELOG.md)
 
+
+
 ## Future Planned Functions
+
 [TODO.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/TODO.md)
+
+
 
 ## Directory
 
@@ -165,9 +180,13 @@ Making...
 └── TODO.md               - planned functions
 ```
 
+
+
 ## License
 
 [MIT](https://tldrlegal.com/license/mit-license)
+
+
 
 ## Contribution Guide
 
