@@ -4,7 +4,7 @@
 
 ## biz = balloon()
 
-Create your business, return balloon instance:
+创建应用，返回 balloon 实例:
 
 ```javascript
 import { balloon } from 'redux-balloon';
@@ -16,7 +16,7 @@ const biz = balloon();
 
 ## biz.model(model)
 
-Register business model. Model is a very important concept in balloon, a model includes some properties:
+注册业务 model。Model 是 balloon 中最重要的概念， 一个 model 将会包含以下属性：
 
 ```javascript
 biz.model({
@@ -33,7 +33,7 @@ biz.model({
 
 ### namespace
 
-Model's namespace, property path of global state in redux. Support multilevel namespace by using `.`
+Model 的名称空间，也是在 redux 全局 state 上的属性路径。支持用 `.` 创建多层名称空间。
 
 ```javascript
 const model = {
@@ -46,7 +46,7 @@ const model = {
 
 ### [state]
 
-Initial value of model's state.
+Model 的 state 初始值。
 
 ```javascript
 const model = {
@@ -60,9 +60,9 @@ const model = {
 
 ### reducers
 
-Define reducers as key/value object. key is type of some action.
+定义 reducers 为 key/value 对象，key 是某个 action 的 type 属性。
 
-> Finally, balloon will combines all model's reducers to make a global state of redux.
+> 最终 balloon 会根据各个名称空间下 Model 的 reducers 将状态汇总为整个 redux 全局 state。
 
 ```javascript
 const model = {
@@ -79,9 +79,9 @@ const model = {
 
 ### [actions]
 
-Define actions as key/value object, `value` is an array. value[0] is type of an action, value[1] is `payloadCreator`, value[2] is `metaCreator`, value[1] or value[2] is optional.
+定义 actions 为 key/value 对象， `value` 是一个数组. value[0] 是某个 action 的 type，value[1] 是 `payloadCreator` 函数, value[2] 是 `metaCreator` 函数, value[1] 或 value[2] 是可选的。
 
-> Actions in balloon are made by redux-actions. You can check this [documention](https://redux-actions.js.org/api/createaction#createactiontype-payloadcreator-metacreator) to see how to use payloadCreator and metaCreator.
+> Balloon 使用 redux-actions 来创建 actions。你可以看看 [文档](https://redux-actions.js.org/api/createaction#createactiontype-payloadcreator-metacreator) 中是如何使用payloadCreator 和 metaCreator的。
 
 ```javascript
 const model = {
@@ -97,7 +97,7 @@ const model = {
 };
 ```
 
-After biz.run(), you can access model actions:
+执行 biz.run() 过后，你就可以访问 Model 的 actions 了:
 
 ```javascript
 // ...
@@ -105,7 +105,7 @@ biz.run();
 
 biz.store.dispatch(biz.actions.login('username', 'xxxxxx'));
 
-// or you can access it through propery path of namespace
+// 或者你也可以通过名称空间的属性路径来访问
 // biz.store.dispatch(
 //   biz.actions.globals.loginInfo.login('username', 'xxxxxx'));
 
@@ -115,7 +115,7 @@ biz.store.dispatch(biz.actions.login('username', 'xxxxxx'));
 
 ### [selectors]
 
-Define selectors as a function. It should return an key/value object, key is single selector's name, value is a function.
+定义 selectors 为一个函数。 函数值返回一个 key/value 对象， key 是单个 selector 的名字, value 是函数。
 
 ```javascript
 const model = {
@@ -134,7 +134,7 @@ const model = {
 };
 ```
 
-After biz.run(), you can access model's selectors through biz.selectors:
+执行 biz.run() 后，你可以通过 biz.selectors 访问模型定义的 selectors：
 
 ```javascript
 // ...
@@ -143,13 +143,13 @@ biz.run();
 const state = biz.store.getState();
 const loginInfo = biz.selectors.getLoginInfo(state));
 
-// or you can access it it through namespace
+// 或者你也可以通过名称空间访问
 // const loginInfo = biz.selectors.globals.loginInfo.getLoginInfo(state));
 ```
 
 
 
-You can use [reselect](https://github.com/reduxjs/reselect) to memorize result as cache, all reselect's functions are treated as parameter injection.
+你可以通过 [reselect](https://github.com/reduxjs/reselect) 缓存计算的结果，reselect 的所有功能将通过参数注入使用。
 
 ```javascript
 import moment from 'moment';
@@ -172,9 +172,9 @@ const model = {
 
 
 
-You can also access other model's selectors in current model through `getSelector`.
+你也可以通过 `getSelector` 访问其他 model 定义的 selectors。
 
-> `getSelector(key)` is a lazy load function.
+> `getSelector(key)`是一个懒加载函数。
 
 ```javascript
 const model = {
@@ -196,14 +196,14 @@ const model = {
 
 ### [sagas]
 
-You can use [redux-saga](https://github.com/redux-saga/redux-saga) through `sagas` property. Usually, we use sagas to process asynchronous requests, or design business workflows. There are several ways to define sagas in balloon.
+你可以通过定义 `sagas` 属性来使用 [redux-saga](https://github.com/redux-saga/redux-saga) 的相关功能。通常我们使用 sagas 来处理异步任务和设计自己的业务工作流。Balloon 提供了几种定义 sagas 的方式。
 
 
 
-The first way, define sagas as key/value object, `key` is type of an action, `value` is an generator function or an array. If you use sagas to process asynchronous requests, this way will be convenient.
+第一种方式，定义 sagas 为 key/value 对象，`key` 是某个 action 的 type，`value` 是生成器函数或一个数组。如果你使用 sagas 来处理异步任务，这种定义方式比较简便。
 
-- When value is an function, will use `takeEvery` helper function
-- When value is an array, first element is an generator function, the other is type of this helper function, type will be one of the following:
+- 当定义 value 为生成器函数时，默认使用 `takeEvery` helper
+- 当定义 value 为数组时，第一个元素是生成器函数，另一个是使用 helper 的 type 设置，type 可以使用以下这些值：
   - `takeEvery`
   - `takeLatest`
   - `throttle`
@@ -214,19 +214,18 @@ import * as api from './api';
 const model = {
   // ...
   sagas: {
-    // this is takeEvery
+    // 这是 takeEvery
     'SOME_GET': function* (action, {call, put}) {
-      // saga effects are treated as parameter injection
+      // saga effects 将通过参数注入
       const ret = yield call(api.fetchSome);
       yield put({type: 'SOME_PUT', payload: ret});
     },
     
-    // this is takeLatest
+    // 这是 takeLatest
     'OTHER_GET': [
       function* (action, {call, put, select}, {ReduxSaga, actions, selectors}) {
-        // through the third parameter
-        // you can use model's actions and selectors
-        // and other redux-saga functions also
+        // 通过第三个参数，你可以使用 model 定义的 actions 和 selectors
+        // 或者也可以使用 redux-saga 其他的功能函数
         const {delay} = ReduxSaga;
         yield delay(1000);
         
@@ -242,7 +241,7 @@ const model = {
 
 
 
-The second way, define saga as a normal function, and return an key/value object. This way is similar like above, but it injects parameters in fixed place.
+第二种方式, 定义 saga 为一个普通的函数，并返回一个 key/value 对象。这种方式与前面一种类似，但是参数注入的地方是固定的，如下所示：
 
 ```javascript
 import * as api from './api';
@@ -275,7 +274,7 @@ const model = {
 
 
 
-The third way, define sagas as a normal function, and return an generator function. Through this way, you can design your business workflow manually.
+最后，第三种方式，定义 sagas 为普通函数，然后返回一个生成器函数。通过这种方式，你可以手动定义业务工作流。
 
 ```javascript
 import * as api from './api';
@@ -305,7 +304,7 @@ const model = {
 
 ## biz.run([opts])
 
-After register all models, start balloon instance.
+注册所有 model 后，启动 balloon 实例。
 
 ```javascript
 biz.run({
@@ -326,7 +325,7 @@ store.dispatch(actions.getSome());
 
 ### [initialState]
 
-Initial state of global state, this will cover all model's initial state.
+全局 state 的初始状态，这会覆盖 models 里面的对应设置。
 
 ```javascript
 const initialState = {
@@ -348,7 +347,7 @@ biz.run({
 
 ### [devtools]
 
-You can use Redux DevTools in Chrome like below:
+你可以参照下面代码示例使用 Redux DevTools in Chrome：
 
 ```javascript
 // ...
@@ -370,7 +369,7 @@ biz.run({
 
 ### [middlewares]
 
-If you want to use some redux middlewares:
+如果你要使用一些 redux 中间件的话可以像下面这样去设置：
 
 ```javascript
 biz.run({
@@ -383,7 +382,7 @@ biz.run({
 
 ### [onSagaError]
 
-When some sagas throw an error, you can handle it:
+当某些 sagas 抛出异常时，可以在这里进行全局捕获：
 
 ```javascript
 biz.run({
@@ -397,13 +396,13 @@ biz.run({
 
 
 
-> Although after run(), you can still dynamic register new model through biz.model(). 
+> 执行 run() 后，你任然可以通过 biz.model() 注册新的 model。 
 
 
 
 ## unmodel(namespace)
 
-Unload model through namespace which is registered. It wil clear model's reducers, actions, selectors and cancel sagas.
+通过名称空间卸载已注册的 model。这会清除 model 的 reducers、actions、selectors 和终止 sagas。
 
 ```javascript
 biz.unmodel('views.somePage');

@@ -67,11 +67,11 @@ class UserList extends React.Component {
 }
   
 const mapStateToProps = (state) => ({
-    users: biz.getUsers(state)
+    users: biz.selectors.getUsers(state)
 });
 
 const mapDispatchToProps = {
-    fetchUsers: biz.fetchUsers
+    fetchUsers: biz.actions.fetchUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);
@@ -119,7 +119,7 @@ export default biz;
 
 
 
-To run our app, we'll connect it. 
+To run our app, we'll connect it.
 
 #### `app.js`
 
@@ -163,12 +163,6 @@ Making...
 
 
 
-## Future Planned Functions
-
-[TODO.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/TODO.md)
-
-
-
 ## Directory
 
 ```
@@ -176,8 +170,7 @@ Making...
 ├── examples              - how to use it
 ├── docs                  - documents
 ├── src                   - source codes
-├── CHANGELOG.md          - change log
-└── TODO.md               - planned functions
+└── CHANGELOG.md          - change log
 ```
 
 
