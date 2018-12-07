@@ -2,7 +2,7 @@
 
 
 
-# redux-balloon
+# Redux Balloon
 
 基于 [redux](https://github.com/reduxjs/redux), [redux-saga](https://github.com/redux-saga/redux-saga), [redux-actions](https://github.com/redux-utilities/redux-actions), [reselect](https://github.com/reduxjs/reselect) 的轻量级前端框架。(灵感来自于 redux ducks style 和 DvaJS)
 
@@ -63,11 +63,11 @@ class UserList extends React.Component {
 }
   
 const mapStateToProps = (state) => ({
-    users: biz.getUsers(state)
+    users: biz.selectors.getUsers(state)
 });
 
 const mapDispatchToProps = {
-    fetchUsers: biz.fetchUsers
+    fetchUsers: biz.actions.fetchUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);
@@ -80,7 +80,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(UserList);
 #### `biz.js`
 
 ```javascript
-import balloon from 'redux-balloon';
+import { balloon } from 'redux-balloon';
 import * as types from './types';
 import * as api from './api';
 
@@ -115,7 +115,7 @@ export default biz;
 
 
 
-为了让应用跑起来，我们需要配置入口。 
+为了让应用跑起来，我们需要配置入口。ta
 
 #### `app.js`
 
@@ -139,36 +139,41 @@ ReactDOM.render(<App/>, document.getElementById('app'));
 
 你不需要 import redux, redux-saga（或者 redux-actions, reselect）到你的 js 文件中；你也不需要手动配置启动 redux 和连接 redux-saga。所以，如果你使用 redux 技术栈， 通过使用 `redux-balloon` 你可以用一种便捷的方式来编写业务层代码，并应用在多种 UI 层框架中。:smile:
 
-## 完整示例
-
-Making...
-
 ## 文档
 
-Making...
+[API.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/docs/zh-cn/API.md)
+
+
+
+## 完整示例
+
+制作中...
+
+
 
 ## 更新日志
 
 [CHANGELOG.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/CHANGELOG.md)
 
-## 计划列表
 
-[TODO.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/TODO.md)
 
 ## 目录介绍
 
 ```
-├── __tests__             - unit tests
-├── examples              - how to use it
-├── docs                  - documents
-├── src                   - source codes
-├── CHANGELOG.md          - change log
-└── TODO.md               - planned functions
+├── __tests__             - 单元测试
+├── examples              - 使用示例
+├── docs                  - 文档
+├── src                   - 源码
+└── CHANGELOG.md          - 更新日志
 ```
+
+
 
 ## 许可证
 
 [MIT](https://tldrlegal.com/license/mit-license)
+
+
 
 ## 贡献者指南
 
