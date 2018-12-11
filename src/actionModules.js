@@ -1,10 +1,10 @@
 import invariant from 'invariant';
-import { assocPath, dissocPath, map, mapObjIndexed, merge } from 'ramda';
+import { assocPath, dissocPath, map, mapObjIndexed, mergeRight } from 'ramda';
 import { createAction } from 'redux-actions';
 import { pathOfNS, isPlainObject, isArray } from './utils';
 
 function addActionModule(model, existingModules) {
-  const {namespace, actions} = model;
+  const { namespace, actions } = model;
   if (typeof actions === 'undefined') {
     return existingModules;
   }
@@ -41,7 +41,7 @@ function createActions(modules) {
   };
 
   const actions = create(modules);
-  return merge(actions, actionMap);
+  return mergeRight(actions, actionMap);
 }
 
 export {

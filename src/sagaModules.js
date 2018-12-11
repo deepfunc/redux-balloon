@@ -16,7 +16,7 @@ import {
 } from './utils';
 
 function addSagaModule(model, existingModules) {
-  const {namespace, sagas} = model;
+  const { namespace, sagas } = model;
   if (typeof sagas === 'undefined') {
     return existingModules;
   }
@@ -34,17 +34,17 @@ function delSagaModule(namespace, existingModules) {
 }
 
 function runSagaModules(modules, runSaga, opts, extras) {
-  const {onSagaError = noop} = opts;
-  const _extras = {...extras, ReduxSaga};
+  const { onSagaError = noop } = opts;
+  const _extras = { ...extras, ReduxSaga };
   forEachObjIndexed((module, namespace) => {
     const sagas = module[0];
     const saga = createSaga(sagas, namespace, opts, _extras);
-    runSaga(saga).done.catch(e => onSagaError(e, {namespace}));
+    runSaga(saga).done.catch(e => onSagaError(e, { namespace }));
   }, modules);
 }
 
 function createSaga(sagas, namespace, opts, extras) {
-  const {fork, take, cancel} = sagaEffects;
+  const { fork, take, cancel } = sagaEffects;
 
   return function* () {
     const watcher = createWatcher(sagas, namespace, opts, extras);
@@ -89,7 +89,7 @@ function createWatcher(sagas, namespace, opts, extras) {
       }
       const handler = handleActionForHelper(
         saga,
-        {namespace, key, needInject},
+        { namespace, key, needInject },
         opts,
         extras
       );
@@ -108,16 +108,16 @@ function createWatcher(sagas, namespace, opts, extras) {
   };
 }
 
-function handleActionForHelper(saga, {namespace, key, needInject}, opts, extras) {
-  const {call} = sagaEffects;
-  const {onSagaError = noop} = opts;
+function handleActionForHelper(saga, { namespace, key, needInject }, opts, extras) {
+  const { call } = sagaEffects;
+  const { onSagaError = noop } = opts;
   const injections = needInject ? [sagaEffects, extras] : [];
 
   return function* (action) {
     try {
       yield call(saga, action, ...injections);
     } catch (e) {
-      onSagaError(e, {namespace, key});
+      onSagaError(e, { namespace, key });
     }
   };
 }

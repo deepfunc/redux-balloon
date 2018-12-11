@@ -55,11 +55,11 @@ export default function () {
     if (app.status === Status.RUNNING) {
       updateInjectedArgs();
       app.store.replaceReducer(reducers);
-      const {namespace} = model;
+      const { namespace } = model;
       const newSaga = sagaModules[namespace];
       if (newSaga) {
         runSagaModules(
-          {[namespace]: newSaga},
+          { [namespace]: newSaga },
           sagaMiddleware.run,
           runOpts,
           {
@@ -93,7 +93,7 @@ export default function () {
     if (app.status === Status.RUNNING) {
       updateInjectedArgs();
       app.store.replaceReducer(reducers);
-      app.store.dispatch({type: getTypeOfCancelSaga(namespace)});
+      app.store.dispatch({ type: getTypeOfCancelSaga(namespace) });
     }
 
     app.models = filter(model => model.namespace !== namespace)(app.models);
@@ -104,7 +104,7 @@ export default function () {
       runOpts = opts;
       updateInjectedArgs();
       sagaMiddleware = createSagaMiddleware();
-      let {middlewares = []} = runOpts;
+      let { middlewares = [] } = runOpts;
       middlewares.push(sagaMiddleware);
 
       app.store = createStore({

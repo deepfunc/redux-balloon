@@ -1,0 +1,74 @@
+.root {
+  background: #f0f2f5;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+
+  .siderContainer {
+    flex: none;
+    width: 256px;
+    min-height: 100vh;
+    background: #001529;
+    box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
+    z-index: 10;
+    transition: all .2s;
+
+    .logo {
+      background: #002140;
+      height: 64px;
+      line-height: 64px;
+      overflow: hidden;
+      text-align: center;
+
+      span {
+        color: #fff;
+        font-size: 24px;
+        vertical-align: top;
+      }
+    }
+  }
+
+  .collapsed {
+    width: 80px;
+
+    .logo {
+      padding: 0;
+      text-align: center;
+
+      span {
+        display: inline-block;
+        width: 0;
+        margin: 0;
+        opacity: 0;
+      }
+    }
+  }
+
+  .mainContainer {
+    display: flex;
+    flex-flow: column;
+    flex: auto;
+    overflow: hidden;
+
+    .header {
+      padding-left: 24px;
+      font-size: 20px;
+      background: #fff;
+      height: 64px;
+      line-height: 64px;
+      box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    }
+
+    .contentContainer {
+      flex-grow: 1;
+      margin: 0 24px;
+      background: #fff;
+      padding: 24px;
+    }
+
+    .footer {
+      margin: 24px 0;
+      text-align: center;
+    }
+  }
+}

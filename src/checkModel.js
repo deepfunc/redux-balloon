@@ -2,7 +2,7 @@ import invariant from 'invariant';
 import { any } from 'ramda';
 
 export default function checkModel(model, existingModels) {
-  const {namespace} = model;
+  const { namespace } = model;
 
   invariant(
     namespace,

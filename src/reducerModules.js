@@ -6,7 +6,7 @@ import { NAMESPACE_SEP, REDUCER_ROOT_NAMESPACE } from './constants';
 import { pathOfNS, isPlainObject, isArray } from './utils';
 
 function addReducerModule(model, existingModules) {
-  const {namespace, state = null, reducers} = model;
+  const { namespace, state = null, reducers } = model;
   if (typeof reducers === 'undefined') {
     return existingModules;
   }
@@ -24,7 +24,7 @@ function delReducerModule(namespace, existingModules) {
 }
 
 function createReducers(modules, opts = {}) {
-  const {onEnhanceReducer = identity} = opts;
+  const { onEnhanceReducer = identity } = opts;
   const create = (modules, namespace) => {
     if (isArray(modules)) {
       const [handlers, state] = modules;

@@ -1,10 +1,10 @@
 import invariant from 'invariant';
-import { assocPath, map, merge, curry, dissocPath } from 'ramda';
+import { assocPath, map, mergeRight, curry, dissocPath } from 'ramda';
 import * as Reselect from 'reselect';
 import { pathOfNS, isFunction, isArray, lazyInvoker } from './utils';
 
 function addSelectorModule(model, existingModules) {
-  const {namespace, selectors} = model;
+  const { namespace, selectors } = model;
   if (typeof selectors === 'undefined') {
     return existingModules;
   }
@@ -31,7 +31,7 @@ function createSelectors(modules) {
       getSelector,
       ...Reselect
     });
-    selectorMap = merge(selectorMap, map);
+    selectorMap = mergeRight(selectorMap, map);
     return map;
   };
 
@@ -44,7 +44,7 @@ function createSelectors(modules) {
     return map((module) => create(module), modules);
   };
 
-  selectors = merge(create(modules), selectorMap);
+  selectors = mergeRight(create(modules), selectorMap);
   return selectors;
 }
 
