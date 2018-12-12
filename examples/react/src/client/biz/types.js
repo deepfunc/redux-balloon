@@ -1,3 +1,9 @@
+export const USER_TABLE_PARAMS_UPDATE = 'USER_TABLE_PARAMS_UPDATE';
+export const USER_TABLE_GET = 'USER_TABLE_GET';
+export const USER_TABLE_GET_SUCCESS = 'USER_TABLE_GET_SUCCESS';
+export const USER_TABLE_GET_FAIL = 'USER_TABLE_GET_FAIL';
+export const USER_TABLE_RELOAD = 'USER_TABLE_RELOAD';
+
 export const SOME_DO = 'SOME_DO';
 export const OTHER_GET = 'OTHER_GET';
 export const BOXES_PUT = 'BOXES_PUT';

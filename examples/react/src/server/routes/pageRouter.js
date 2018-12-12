@@ -2,7 +2,12 @@ const Router = require('koa-router');
 
 const pageRouter = new Router();
 
-pageRouter.get('/', async ctx => {
+const pagePath = [
+  '/',
+  '/userManagement'
+];
+
+pageRouter.get(pagePath, async ctx => {
   await ctx.render('app');
 });
 

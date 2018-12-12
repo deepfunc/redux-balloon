@@ -1,10 +1,11 @@
 import React from 'react';
-import classNames from 'classnames';
-import { BackTop, Icon } from 'antd';
+import { Switch, Route } from 'react-router-dom';
+import { BackTop } from 'antd';
 import MainSider from '@/containers/nav/MainSider';
+import UserManagement from '@/components/userManagement';
 import styles from './styles/index.less';
 
-export default class Index extends React.Component {
+class Index extends React.Component {
   constructor(props) {
     super(props);
 
@@ -14,9 +15,9 @@ export default class Index extends React.Component {
   createMainMenuData() {
     return [
       {
-        key: '/userTable',
-        name: 'Users Table',
-        icon: 'table'
+        key: '/userManagement',
+        name: 'User Management',
+        icon: 'team'
       }
     ];
   }
@@ -35,10 +36,25 @@ export default class Index extends React.Component {
         </div>
         <div className={styles.mainContainer}>
           <div className={styles.header}>
-            React Example
+            React Examples
+          </div>
+          <div className={styles.contentContainer}>
+            <Switch>
+              <Route exact path="/" component={Home}/>
+              <Route path="/userManagement" component={UserManagement}/>
+            </Switch>
           </div>
         </div>
       </div>
     );
   }
 }
+
+const Home = () => (
+  <p>
+    This is react examples of Redux Balloon, click left menu to see results.
+    Document is <a>Here</a>.
+  </p>
+);
+
+export default Index;

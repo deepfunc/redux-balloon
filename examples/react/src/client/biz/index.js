@@ -1,9 +1,8 @@
 import balloon from 'redux-balloon';
+import userManagement from './models/userManagement';
 
 const biz = balloon();
-
-const modelContext = require.context('./models', true, /\.js$/);
-modelContext.keys().forEach((key) => biz.model(modelContext(key).default));
+biz.model(userManagement);
 
 let devtools = undefined;
 if (process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION__) {
