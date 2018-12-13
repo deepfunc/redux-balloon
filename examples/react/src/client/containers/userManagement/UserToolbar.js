@@ -1,19 +1,19 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux-balloon';
 import biz from '@/biz';
-import UserTable from '@/components/userManagement/UserTable';
+import UserToolbar from '@/components/userManagement/UserToolbar';
 
 const mapStateToProps = (state) => ({
-  table: biz.selectors.getUserTableView(state)
+  toolbar: biz.selectors.getUserToolbar(state)
 });
 
 const mapDispatchToProps = {
   reloadTable: biz.actions.reloadUserTable,
-  updateTableParams: biz.actions.updateUserTableParams
+  updateSearchKeywords: biz.actions.updateUserSearchKeywords
 };
 
 const enhance = compose(
   connect(mapStateToProps, mapDispatchToProps)
 );
 
-export default enhance(UserTable);
+export default enhance(UserToolbar);

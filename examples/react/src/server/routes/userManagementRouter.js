@@ -35,7 +35,7 @@ function getRandomInt(min, max) {
 initUserTable();
 
 userManagementRouter.post('/getTableData', async ctx => {
-  const { paging: { current, pageSize }, keywords } = ctx.request.body;
+  const { paging: { current, pageSize }, searchKeywords } = ctx.request.body;
   const begin = (current - 1) * pageSize;
   const items = userTable.slice(begin, begin + pageSize);
   await new Promise((resolve) => {

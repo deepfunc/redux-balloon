@@ -4,7 +4,6 @@ import { Table, message } from 'antd';
 class UserTable extends React.Component {
   constructor(props) {
     super(props);
-
     this.cols = this.createCols();
   }
 
@@ -27,8 +26,7 @@ class UserTable extends React.Component {
         dataSource={data}
         pagination={pagination}
         loading={loading}
-        // onChange={this.handleTableChange}
-        // onRow={this.handleOnRow}
+        onChange={this.handleTableChange}
       />
     );
   }
@@ -66,6 +64,15 @@ class UserTable extends React.Component {
     const { error: prevError } = prevProps.table;
     error !== prevError && message.error(error.message);
   }
+
+  handleTableChange = (pagination, filters, sorter) => {
+    const { updateTableParams } = this.props;
+
+    const payload = {
+      pagination: { current: pagination.current, pageSize: pagination.pageSize }
+    };
+    updateTableParams(payload);
+  };
 }
 
 export default UserTable;

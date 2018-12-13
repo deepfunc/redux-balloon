@@ -4,7 +4,7 @@ import * as defaultSettings from '@/utils/defaultSettingsUtil';
 import * as api from '../services/userManagement';
 
 const initialState = Immutable({
-  toolbar: { keywords: '' },
+  toolbar: { searchKeywords: '' },
   table: {
     loading: false,
     pagination: {
@@ -48,11 +48,15 @@ export default {
     },
 
     [types.USER_TABLE_GET_FAIL]: (state, { payload }) =>
-      state.merge({ table: { loading: false, error: payload } }, { deep: true })
+      state.merge({ table: { loading: false, error: payload } }, { deep: true }),
+
+    [types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE]: (state, { payload }) =>
+      state.setIn(['toolbar', 'searchKeywords'], payload)
   },
   actions: {
     reloadUserTable: [types.USER_TABLE_RELOAD],
-    updateUserTableParams: [types.USER_TABLE_PARAMS_UPDATE]
+    updateUserTableParams: [types.USER_TABLE_PARAMS_UPDATE],
+    updateUserSearchKeywords: [types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE]
   },
   selectors: ({ createSelector }) => {
     const getUserToolbar = (state) => state.views.userManagement.toolbar;
@@ -96,7 +100,7 @@ export default {
           const ret = yield call(
             api.getUserTableData,
             { current: table.pagination.current, pageSize: table.pagination.pageSize },
-            toolbar.keywords
+            toolbar.searchKeywords
           );
           yield put({ type: types.USER_TABLE_GET_SUCCESS, payload: ret });
         } catch (err) {
