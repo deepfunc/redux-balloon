@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Table, message } from 'antd';
 
 class UserTable extends React.Component {
   constructor(props) {
@@ -13,15 +13,20 @@ class UserTable extends React.Component {
     reloadTable();
   }
 
+  componentDidUpdate(prevProps) {
+    this.checkError(this.props, prevProps);
+  }
+
   render() {
+    const { table: { loading, data, pagination } } = this.props;
     return (
       <Table
         bordered
         rowKey="id"
         columns={this.cols}
-        // dataSource={listData}
-        // pagination={pagination}
-        // loading={listLoading}
+        dataSource={data}
+        pagination={pagination}
+        loading={loading}
         // onChange={this.handleTableChange}
         // onRow={this.handleOnRow}
       />
@@ -54,6 +59,12 @@ class UserTable extends React.Component {
         key: 'address'
       }
     ];
+  }
+
+  checkError(props, prevProps) {
+    const { error } = props.table;
+    const { error: prevError } = prevProps.table;
+    error !== prevError && message.error(error.message);
   }
 }
 

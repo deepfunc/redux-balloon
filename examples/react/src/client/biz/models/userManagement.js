@@ -1,14 +1,15 @@
 import Immutable from 'seamless-immutable';
 import * as types from '../types';
 import * as defaultSettings from '@/utils/defaultSettingsUtil';
+import * as api from '../services/userManagement';
 
 const initialState = Immutable({
-  toolbar: { keywords: null },
+  toolbar: { keywords: '' },
   table: {
     loading: false,
     pagination: {
       current: 1,
-      pageSize: 15,
+      pageSize: 10,
       total: 0
     },
     data: [],
@@ -24,10 +25,7 @@ export default {
     [types.USER_TABLE_PARAMS_UPDATE]: (state, { payload }) => {
       return state.merge({
           table: {
-            pagination: {
-              current: payload.pagination.current,
-              pageSize: payload.pagination.pageSize
-            }
+            pagination: { ...payload.pagination }
           }
         },
         { deep: true }
@@ -57,6 +55,7 @@ export default {
     updateUserTableParams: [types.USER_TABLE_PARAMS_UPDATE]
   },
   selectors: ({ createSelector }) => {
+    const getUserToolbar = (state) => state.views.userManagement.toolbar;
     const getUserTable = (state) => state.views.userManagement.table;
 
     const getUserTableView = createSelector(
@@ -69,12 +68,43 @@ export default {
       }
     );
 
-    return { getUserTable, getUserTableView };
+    return {
+      getUserTable,
+      getUserToolbar,
+      getUserTableView
+    };
   },
   sagas: ({ select, put, call }, { actions, selectors }) => ({
     * [types.USER_TABLE_RELOAD]() {
       const table = yield select(selectors.getUserTable);
-      console.log(table);
-    }
+      if (!table.loading) {
+        yield put(actions.updateUserTableParams({
+          pagination: { current: 1 }
+        }));
+      }
+    },
+
+    * [types.USER_TABLE_PARAMS_UPDATE]() {
+      yield put({ type: types.USER_TABLE_GET });
+    },
+
+    [types.USER_TABLE_GET]: [
+      function* () {
+        try {
+          const table = yield select(selectors.getUserTable);
+          const toolbar = yield select(selectors.getUserToolbar);
+          const ret = yield call(
+            api.getUserTableData,
+            { current: table.pagination.current, pageSize: table.pagination.pageSize },
+            toolbar.keywords
+          );
+          yield put({ type: types.USER_TABLE_GET_SUCCESS, payload: ret });
+        } catch (err) {
+          yield put({ type: types.USER_TABLE_GET_FAIL, payload: err });
+          console.error(err);
+        }
+      },
+      { type: 'takeLatest' }
+    ]
   })
 };

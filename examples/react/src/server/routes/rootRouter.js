@@ -1,8 +1,12 @@
 const Router = require('koa-router');
-const bizRouter = require('./bizRouter');
+const userManagementRouter = require('./userManagementRouter');
 
 const rootRouter = new Router();
 
-rootRouter.use('/api/biz', bizRouter.routes(), bizRouter.allowedMethods());
+rootRouter.use(
+  '/api/userManagement',
+  userManagementRouter.routes(),
+  userManagementRouter.allowedMethods()
+);
 
 module.exports = rootRouter;
