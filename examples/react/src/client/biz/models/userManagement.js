@@ -109,6 +109,10 @@ export default {
         }
       },
       { type: 'takeLatest' }
-    ]
+    ],
+
+    * [types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE]() {
+      yield put(actions.reloadUserTable());
+    }
   })
 };

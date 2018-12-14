@@ -1,6 +1,8 @@
 import React from 'react';
 import { Row, Col, Button, Input } from 'antd';
+import { debounce } from 'throttle-debounce';
 import styles from './styles/user-toolbar.less';
+import * as R from 'ramda';
 
 const ButtonGroup = Button.Group;
 const Search = Input.Search;
@@ -8,10 +10,15 @@ const Search = Input.Search;
 class UserToolbar extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { searchKeywords: props.toolbar.searchKeywords };
+    this.updateSearchKeywords = debounce(500, (value) => {
+      const { updateSearchKeywords } = this.props;
+      updateSearchKeywords(value);
+    });
   }
 
   render() {
-    const { toolbar: { searchKeywords } } = this.props;
+    const { searchKeywords } = this.state;
 
     return (
       <div className={styles.root}>
@@ -41,7 +48,6 @@ class UserToolbar extends React.Component {
               placeholder="search"
               value={searchKeywords}
               onChange={this.handleChangeKeywords}
-              onSearch={this.handleUpdateKeywords}
             />
           </Col>
         </Row>
@@ -66,26 +72,17 @@ class UserToolbar extends React.Component {
   };
 
   handleReload = () => {
-    const { onReload } = this.props;
-
-    if (onReload) {
-      onReload();
-    }
+    const { reloadTable } = this.props;
+    reloadTable();
   };
 
   handleChangeKeywords = e => {
-    const { updateSearchKeywords } = this.props;
-    updateSearchKeywords(e.target.value);
-  };
-
-  handleUpdateKeywords = value => {
-    const { onUpdateKeywords } = this.props;
-
-    if (onUpdateKeywords) {
-      onUpdateKeywords(value);
-      this.handleReload();
-    }
+    const { value } = e.target;
+    this.setState({ searchKeywords: value });
+    this.updateSearchKeywords(value);
   };
 }
 
 export default UserToolbar;
+
+console.log(R.toString('A b c').indexOf('A '));
