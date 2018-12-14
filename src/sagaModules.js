@@ -3,11 +3,6 @@ import { assoc, dissoc, forEachObjIndexed } from 'ramda';
 import createSagaMiddleware, * as ReduxSaga from 'redux-saga';
 import * as sagaEffects from 'redux-saga/effects';
 import {
-  takeEveryHelper,
-  takeLatestHelper,
-  throttleHelper
-} from 'redux-saga/lib/internal/sagaHelpers';
-import {
   isPlainObject,
   isFunction,
   isArray,
@@ -71,6 +66,7 @@ function createWatcher(sagas, namespace, opts, extras) {
   }
 
   return function* () {
+    const { takeEvery, takeLatest, throttle } = sagaEffects;
     const keys = Object.keys(sagasObj);
 
     for (const key of keys) {
@@ -96,13 +92,13 @@ function createWatcher(sagas, namespace, opts, extras) {
 
       switch (type) {
         case 'takeLatest':
-          yield takeLatestHelper(key, handler);
+          yield takeLatest(key, handler);
           break;
         case 'throttle':
-          yield throttleHelper(ms, key, handler);
+          yield throttle(ms, key, handler);
           break;
         default:
-          yield takeEveryHelper(key, handler);
+          yield takeEvery(key, handler);
       }
     }
   };
