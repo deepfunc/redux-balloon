@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { compose } from 'redux-balloon';
+import { compose } from 'redux';
 import biz from '@/biz';
 import UserTable from '@/components/userManagement/UserTable';
 

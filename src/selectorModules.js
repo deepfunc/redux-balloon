@@ -1,7 +1,13 @@
 import invariant from 'invariant';
-import { assocPath, map, mergeRight, curry, dissocPath } from 'ramda';
 import * as Reselect from 'reselect';
-import { pathOfNS, isFunction, isArray, lazyInvoker } from './utils';
+import {
+  assocPath,
+  dissocPath,
+  pathOfNS,
+  mapObjIndexed,
+  isFunction,
+  isArray
+} from './utils';
 
 function addSelectorModule(model, existingModules) {
   const { namespace, selectors } = model;
@@ -21,17 +27,16 @@ function delSelectorModule(namespace, existingModules) {
   return dissocPath(pathOfNS(namespace), existingModules);
 }
 
-function createSelectors(modules) {
+function createSelectors(modules, getSelector) {
   let selectors;
   let selectorMap = {};
-  const getSelector = curry(lazyInvoker)(() => selectors);
 
   const createSelectorMap = (defFunc) => {
     const map = defFunc({
       getSelector,
       ...Reselect
     });
-    selectorMap = mergeRight(selectorMap, map);
+    selectorMap = { ...selectorMap, ...map };
     return map;
   };
 
@@ -41,10 +46,10 @@ function createSelectors(modules) {
       return createSelectorMap(selectorDefFunc);
     }
 
-    return map((module) => create(module), modules);
+    return mapObjIndexed((module) => create(module), modules);
   };
 
-  selectors = mergeRight(create(modules), selectorMap);
+  selectors = { ...create(modules), ...selectorMap };
   return selectors;
 }
 

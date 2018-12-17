@@ -1,14 +1,18 @@
 import invariant from 'invariant';
-import { assoc, dissoc, forEachObjIndexed } from 'ramda';
-import createSagaMiddleware, * as ReduxSaga from 'redux-saga';
-import * as sagaEffects from 'redux-saga/effects';
+import { createSagaMiddleware, ReduxSaga } from './sagaImports';
+import SagaError from './SagaError';
 import {
+  assoc,
+  dissoc,
+  forEachObjIndexed,
   isPlainObject,
   isFunction,
   isArray,
   getTypeOfCancelSaga,
   noop
 } from './utils';
+
+const sagaEffects = ReduxSaga.effects;
 
 function addSagaModule(model, existingModules) {
   const { namespace, sagas } = model;
@@ -34,7 +38,12 @@ function runSagaModules(modules, runSaga, opts, extras) {
   forEachObjIndexed((module, namespace) => {
     const sagas = module[0];
     const saga = createSaga(sagas, namespace, opts, _extras);
-    runSaga(saga).done.catch(e => onSagaError(e, { namespace }));
+    runSaga(saga).done.catch(err => {
+      if ((err instanceof SagaError) === false) {
+        err = new SagaError(err, { namespace });
+      }
+      onSagaError(err);
+    });
   }, modules);
 }
 
@@ -106,14 +115,13 @@ function createWatcher(sagas, namespace, opts, extras) {
 
 function handleActionForHelper(saga, { namespace, key, needInject }, opts, extras) {
   const { call } = sagaEffects;
-  const { onSagaError = noop } = opts;
   const injections = needInject ? [sagaEffects, extras] : [];
 
   return function* (action) {
     try {
       yield call(saga, action, ...injections);
-    } catch (e) {
-      onSagaError(e, { namespace, key });
+    } catch (err) {
+      throw new SagaError(err, { namespace, key });
     }
   };
 }

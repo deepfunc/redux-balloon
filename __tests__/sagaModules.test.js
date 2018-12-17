@@ -53,7 +53,7 @@ describe('sagaModules', () => {
     });
   });
 
-  test('should delete selectors module', () => {
+  test('should delete sagas module', () => {
     const model = {
       namespace: 'hello',
       sagas: () => {

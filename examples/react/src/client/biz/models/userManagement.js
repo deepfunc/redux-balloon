@@ -78,11 +78,11 @@ export default {
       getUserTableView
     };
   },
-  sagas: ({ select, put, call }, { actions, selectors }) => ({
+  sagas: ({ select, put, call }, { getAction, getSelector }) => ({
     * [types.USER_TABLE_RELOAD]() {
-      const table = yield select(selectors.getUserTable);
+      const table = yield select(getSelector('getUserTable'));
       if (!table.loading) {
-        yield put(actions.updateUserTableParams({
+        yield put(getAction('updateUserTableParams')({
           pagination: { current: 1 }
         }));
       }
@@ -95,8 +95,8 @@ export default {
     [types.USER_TABLE_GET]: [
       function* () {
         try {
-          const table = yield select(selectors.getUserTable);
-          const toolbar = yield select(selectors.getUserToolbar);
+          const table = yield select(getSelector('getUserTable'));
+          const toolbar = yield select(getSelector('getUserToolbar'));
           const ret = yield call(
             api.getUserTableData,
             { current: table.pagination.current, pageSize: table.pagination.pageSize },
@@ -112,7 +112,7 @@ export default {
     ],
 
     * [types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE]() {
-      yield put(actions.reloadUserTable());
+      yield put(getAction('reloadUserTable')());
     }
   })
 };

@@ -1,4 +1,3 @@
-import { any, filter } from 'ramda';
 import invariant from 'invariant';
 import checkModel from './checkModel';
 import { addReducerModule, delReducerModule, createReducers } from './reducerModules';
@@ -11,7 +10,14 @@ import {
   runSagaModules
 } from './sagaModules';
 import createStore from './createStore';
-import { warning, isProdENV, getTypeOfCancelSaga } from './utils';
+import {
+  any,
+  filter,
+  lazyInvoker,
+  warning,
+  isProdENV,
+  getTypeOfCancelSaga
+} from './utils';
 import { Status } from './constants';
 
 export default function () {
@@ -73,15 +79,23 @@ export default function () {
     return app;
   }
 
+  function getAction(key) {
+    return lazyInvoker(() => actions, key);
+  }
+
+  function getSelector(key) {
+    return lazyInvoker(() => selectors, key);
+  }
+
   function updateInjectedArgs() {
     reducers = createReducers(reducerModules, runOpts);
     actions = createActions(actionModules);
-    selectors = createSelectors(selectorModules);
+    selectors = createSelectors(selectorModules, getSelector);
   }
 
   function unmodel(namespace) {
     invariant(
-      any(model => model.namespace === namespace)(app.models),
+      any(model => model.namespace === namespace, app.models),
       `[app.models] don't has this namespace: ${namespace}`
     );
 
@@ -96,7 +110,7 @@ export default function () {
       app.store.dispatch({ type: getTypeOfCancelSaga(namespace) });
     }
 
-    app.models = filter(model => model.namespace !== namespace)(app.models);
+    app.models = filter(model => model.namespace !== namespace, app.models);
   }
 
   function run(opts = {}) {
@@ -117,10 +131,7 @@ export default function () {
         sagaModules,
         sagaMiddleware.run,
         runOpts,
-        {
-          actions: app.actions,
-          selectors: app.selectors
-        }
+        { getAction, getSelector }
       );
 
       app.status = Status.RUNNING;

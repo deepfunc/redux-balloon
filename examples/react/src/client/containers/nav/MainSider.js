@@ -1,4 +1,4 @@
-import { compose } from 'redux-balloon';
+import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
 import MainSider from '@/components/nav/MainSider';
 

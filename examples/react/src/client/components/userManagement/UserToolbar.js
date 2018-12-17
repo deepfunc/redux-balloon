@@ -2,7 +2,6 @@ import React from 'react';
 import { Row, Col, Button, Input } from 'antd';
 import { debounce } from 'throttle-debounce';
 import styles from './styles/user-toolbar.less';
-import * as R from 'ramda';
 
 const ButtonGroup = Button.Group;
 const Search = Input.Search;
@@ -84,5 +83,3 @@ class UserToolbar extends React.Component {
 }
 
 export default UserToolbar;
-
-console.log(R.toString('A b c').indexOf('A '));
