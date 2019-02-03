@@ -11,6 +11,7 @@ import {
 } from './sagaModules';
 import createStore from './createStore';
 import {
+  identity,
   any,
   filter,
   lazyInvoker,
@@ -31,7 +32,7 @@ export default function () {
   let sagaMiddleware;
   let runOpts;
 
-  const app = {
+  const biz = {
     status: Status.IDLE,
     models: [],
     model,
@@ -40,27 +41,29 @@ export default function () {
     get actions() {
       return actions;
     },
+    getAction,
     get selectors() {
       return selectors;
-    }
+    },
+    getSelector
   };
 
-  return app;
+  return biz;
 
   function model(model) {
     if (!isProdENV()) {
-      checkModel(model, app.models);
+      checkModel(model, biz.models);
     }
 
     reducerModules = addReducerModule(model, reducerModules);
     actionModules = addActionModule(model, actionModules);
     selectorModules = addSelectorModule(model, selectorModules);
     sagaModules = addSagaModule(model, sagaModules);
-    app.models.push(model);
+    biz.models.push(model);
 
-    if (app.status === Status.RUNNING) {
+    if (biz.status === Status.RUNNING) {
       updateInjectedArgs();
-      app.store.replaceReducer(reducers);
+      biz.store.replaceReducer(reducers);
       const { namespace } = model;
       const newSaga = sagaModules[namespace];
       if (newSaga) {
@@ -69,14 +72,14 @@ export default function () {
           sagaMiddleware.run,
           runOpts,
           {
-            actions: app.actions,
-            selectors: app.selectors
+            actions: biz.actions,
+            selectors: biz.selectors
           }
         );
       }
     }
 
-    return app;
+    return biz;
   }
 
   function getAction(key) {
@@ -95,7 +98,7 @@ export default function () {
 
   function unmodel(namespace) {
     invariant(
-      any(model => model.namespace === namespace, app.models),
+      any(model => model.namespace === namespace, biz.models),
       `[app.models] don't has this namespace: ${namespace}`
     );
 
@@ -104,28 +107,30 @@ export default function () {
     selectorModules = delSelectorModule(namespace, selectorModules);
     sagaModules = delSagaModule(namespace, sagaModules);
 
-    if (app.status === Status.RUNNING) {
+    if (biz.status === Status.RUNNING) {
       updateInjectedArgs();
-      app.store.replaceReducer(reducers);
-      app.store.dispatch({ type: getTypeOfCancelSaga(namespace) });
+      biz.store.replaceReducer(reducers);
+      biz.store.dispatch({ type: getTypeOfCancelSaga(namespace) });
     }
 
-    app.models = filter(model => model.namespace !== namespace, app.models);
+    biz.models = filter(model => model.namespace !== namespace, biz.models);
   }
 
   function run(opts = {}) {
-    if (app.status === Status.IDLE) {
+    if (biz.status === Status.IDLE) {
       runOpts = opts;
       updateInjectedArgs();
       sagaMiddleware = createSagaMiddleware();
-      let { middlewares = [] } = runOpts;
+      let { middlewares = [], onEnhanceStore = identity } = runOpts;
       middlewares.push(sagaMiddleware);
 
-      app.store = createStore({
+      const store = createStore({
         ...runOpts,
         reducers,
         middlewares
       });
+      biz.store = onEnhanceStore(store);
+      Object.assign(biz, biz.store);
 
       runSagaModules(
         sagaModules,
@@ -134,9 +139,9 @@ export default function () {
         { getAction, getSelector }
       );
 
-      app.status = Status.RUNNING;
+      biz.status = Status.RUNNING;
     } else {
-      warning(`only run() in [app.status === 'IDLE'], but there is ${app.status}`);
+      warning(`only run() in [app.status === 'IDLE'], but there is ${biz.status}`);
     }
   }
 }

@@ -1,4 +1,4 @@
-import * as ReduxSaga from 'redux-saga';
+import * as ReduxSaga from 'redux-saga/dist/redux-saga';
 
 const createSagaMiddleware = ReduxSaga.default;
 

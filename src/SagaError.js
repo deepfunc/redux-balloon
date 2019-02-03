@@ -3,6 +3,7 @@ function SagaError(err, detail) {
   this.message = err.message;
   this.detail = detail;
   this.stack = err.stack;
+  this.sourceErr = err;
 }
 
 SagaError.prototype = Object.create(Error.prototype);

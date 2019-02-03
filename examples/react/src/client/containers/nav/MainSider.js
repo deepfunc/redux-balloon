@@ -1,9 +1,9 @@
-import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import MainSider from '@/components/nav/MainSider';
 
 const enhance = compose(
-    withRouter
+  withRouter
 );
 
 export default enhance(MainSider);
