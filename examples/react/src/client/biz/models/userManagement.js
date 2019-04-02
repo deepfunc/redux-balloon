@@ -1,7 +1,15 @@
 import Immutable from 'seamless-immutable';
+import * as R from 'ramda';
 import * as types from '../types';
 import * as defaultSettings from '@/utils/defaultSettingsUtil';
 import * as api from '../services/userManagement';
+
+const initialEditorData = {
+  userName: { value: '' },
+  age: { value: 18 },
+  sex: { value: 'male' },
+  address: { value: '' }
+};
 
 const initialState = Immutable({
   toolbar: { searchKeywords: '' },
@@ -15,12 +23,19 @@ const initialState = Immutable({
     data: [],
     error: null
   },
-  editor: {}
+  editor: {
+    showing: false,
+    submitting: false,
+    data: initialEditorData,
+    error: null
+  }
 });
 
 export default {
   namespace: 'views.userManagement',
+
   state: initialState,
+
   reducers: {
     [types.USER_TABLE_PARAMS_UPDATE]: (state, { payload }) => {
       return state.merge({
@@ -51,16 +66,63 @@ export default {
       state.merge({ table: { loading: false, error: payload } }, { deep: true }),
 
     [types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE]: (state, { payload }) =>
-      state.setIn(['toolbar', 'searchKeywords'], payload)
+      state.setIn(['toolbar', 'searchKeywords'], payload),
+
+    [types.USER_EDITOR_ADD]: (state) => {
+      return state.merge({
+        editor: {
+          showing: true,
+          data: R.clone(initialEditorData)
+        }
+      }, { deep: true });
+    },
+
+    [types.USER_EDITOR_CLOSE]: (state) => state.setIn(['editor', 'showing'], false),
+
+    [types.USER_EDITOR_SAVE_FIELDS]: (state, { payload }) => {
+      const data = R.mapObjIndexed(
+        (fieldObj) => ({ value: fieldObj.value })
+      )(payload);
+
+      return state.merge({
+        editor: { data }
+      }, { deep: true });
+    },
+
+    [types.USER_EDITOR_SUBMIT]: (state) => {
+      return state.setIn(['editor', 'submitting'], true);
+    },
+
+    [types.USER_EDITOR_SUBMIT_SUCCESS]: (state) => {
+      return state.merge({
+        editor: {
+          showing: false,
+          submitting: false
+        }
+      }, { deep: true });
+    },
+
+    [types.USER_EDITOR_SUBMIT_FAIL]: (state, { payload }) =>
+      state.merge(
+        { editor: { submitting: false, error: payload } },
+        { deep: true }
+      ),
   },
+
   actions: {
-    reloadUserTable: [types.USER_TABLE_RELOAD],
-    updateUserTableParams: [types.USER_TABLE_PARAMS_UPDATE],
-    updateUserSearchKeywords: [types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE]
+    reloadUserTable: types.USER_TABLE_RELOAD,
+    updateUserTableParams: types.USER_TABLE_PARAMS_UPDATE,
+    updateUserSearchKeywords: types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE,
+    addUser: types.USER_EDITOR_ADD,
+    closeUserEditor: types.USER_EDITOR_CLOSE,
+    saveUserEditorFields: types.USER_EDITOR_SAVE_FIELDS,
+    submitUserData: [types.USER_EDITOR_SUBMIT, undefined, () => ({ isPromise: true })]
   },
+
   selectors: ({ createSelector }) => {
     const getUserToolbar = (state) => state.views.userManagement.toolbar;
     const getUserTable = (state) => state.views.userManagement.table;
+    const getUserEditor = (state) => state.views.userManagement.editor;
 
     const getUserTableView = createSelector(
       getUserTable,
@@ -75,9 +137,11 @@ export default {
     return {
       getUserTable,
       getUserToolbar,
+      getUserEditor,
       getUserTableView
     };
   },
+
   sagas: ({ select, put, call }, { getAction, getSelector }) => ({
     * [types.USER_TABLE_RELOAD]() {
       const table = yield select(getSelector('getUserTable'));
@@ -113,6 +177,18 @@ export default {
 
     * [types.USER_TOOLBAR_SEARCH_KEYWORDS_UPDATE]() {
       yield put(getAction('reloadUserTable')());
+    },
+
+    * [types.USER_EDITOR_SUBMIT]({ payload }) {
+      try {
+        const ret = yield call(api.saveUserData, payload);
+        yield put({ type: types.USER_EDITOR_SUBMIT_SUCCESS, payload: ret });
+        yield put(getAction('reloadUserTable')());
+        return ret;
+      } catch (err) {
+        yield put({ type: types.USER_EDITOR_SUBMIT_FAIL, payload: err });
+        console.error(err);
+      }
     }
   })
 };

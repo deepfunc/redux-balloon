@@ -17,7 +17,7 @@ function initUserTable() {
     { userName: 'Cesar C Hillman', age: 42, sex: 'male', address: '1396 Jefferson Stree' },
     { userName: 'Marcel M Flournoy', age: 23, sex: 'male', address: '1905 Concord Street' }
   ];
-  for (let i = 1; i <= 64; i++) {
+  for (let i = 64; i >= 1; i--) {
     const randomUser = data[getRandomInt(0, data.length)];
     const user = {
       id: i,
@@ -46,7 +46,7 @@ const hasKeywords = (keywords) => (user) => {
   return ret;
 };
 
-userManagementRouter.post('/getTableData', async ctx => {
+userManagementRouter.post('/getTableData', async (ctx) => {
   const { paging: { current, pageSize }, searchKeywords } = ctx.request.body;
   let data = userTable;
 
@@ -61,6 +61,17 @@ userManagementRouter.post('/getTableData', async ctx => {
     setTimeout(() => resolve(), 500);
   });
   ctx.body = ctx.responseUtil.returnSuccess({ items, total: data.length });
+});
+
+userManagementRouter.post('/saveUserData', async (ctx) => {
+  let newUser = ctx.request.body;
+  newUser.id = userTable.length + 1;
+  userTable.unshift(newUser);
+
+  await new Promise((resolve) => {
+    setTimeout(() => resolve(), 1000);
+  });
+  ctx.body = ctx.responseUtil.returnSuccess(newUser);
 });
 
 module.exports = userManagementRouter;

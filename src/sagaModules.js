@@ -119,8 +119,16 @@ function handleActionForHelper(saga, { namespace, key, needInject }, opts, extra
 
   return function* (action) {
     try {
-      yield call(saga, action, ...injections);
+      const ret = yield call(saga, action, ...injections);
+      const { _resolve } = action;
+      if (typeof _resolve === 'function') {
+        _resolve(ret);
+      }
     } catch (err) {
+      const { _reject } = action;
+      if (typeof _reject === 'function') {
+        _reject(err);
+      }
       throw new SagaError(err, { namespace, key });
     }
   };

@@ -3,7 +3,7 @@ export default {
   sagas: ({ takeEvery }) => {
     function* handleTest(arg1, action) {
       // throw new Error('handleTest error');
-      console.log('handleTest', arg1, action);
+      // console.log('handleTest', arg1, action);
     }
 
     return function* () {

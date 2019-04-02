@@ -30,11 +30,6 @@ class UserToolbar extends React.Component {
                 onClick={this.handleAdd}
               />
               <Button
-                icon="edit"
-                title="edit"
-                onClick={this.handleEdit}
-              />
-              <Button
                 icon="reload"
                 title="reload"
                 onClick={this.handleReload}
@@ -59,14 +54,6 @@ class UserToolbar extends React.Component {
 
     if (onAdd) {
       onAdd();
-    }
-  };
-
-  handleEdit = () => {
-    const { onEdit } = this.props;
-
-    if (onEdit) {
-      onEdit();
     }
   };
 

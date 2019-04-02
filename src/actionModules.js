@@ -35,6 +35,9 @@ function createActions(modules) {
       const [actionDefMap] = modules;
       return mapObjIndexed(
         (actionDef, key) => {
+          if (typeof actionDef === 'string' || actionDef instanceof String) {
+            actionDef = [actionDef];
+          }
           const action = createAction(...actionDef);
           actionMap[key] = action;
           return action;

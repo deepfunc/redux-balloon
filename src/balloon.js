@@ -10,6 +10,7 @@ import {
   runSagaModules
 } from './sagaModules';
 import createStore from './createStore';
+import promiseMiddleware from './promiseMiddleware';
 import {
   identity,
   any,
@@ -122,6 +123,7 @@ export default function () {
       updateInjectedArgs();
       sagaMiddleware = createSagaMiddleware();
       let { middlewares = [], onEnhanceStore = identity } = runOpts;
+      middlewares.unshift(promiseMiddleware);
       middlewares.push(sagaMiddleware);
 
       const store = createStore({

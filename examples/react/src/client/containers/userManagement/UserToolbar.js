@@ -9,7 +9,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   reloadTable: biz.actions.reloadUserTable,
-  updateSearchKeywords: biz.actions.updateUserSearchKeywords
+  updateSearchKeywords: biz.actions.updateUserSearchKeywords,
+  onAdd: biz.actions.addUser
 };
 
 const enhance = compose(
