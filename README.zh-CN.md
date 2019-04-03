@@ -12,9 +12,10 @@
 
 - **基于 redux 社区最佳实践组成**（redux-saga、redux-actions、reselect）
 - **Model 概念**：通过 `reducers`, `actions`, `selectors` 和 `sagas` 组织 model
+- **可按树形组织 Redux State 对象**
 - **优化业务文件碎片**：一个业务，一个单一的模型文件
 - **灵活的 sagas 定义方式**
-- **支持多种 UI 框架**：例如 `React` 和 `微信小程序（Wepy）`   
+- **支持多种 UI 框架**：例如 `React` 和 `微信小程序（WePY）`   
 
 ## 兼容性
 
@@ -52,12 +53,12 @@ class UserList extends React.Component {
   }
 
   initData() {
-    const {fetchUsers} = this.props;
+    const { fetchUsers } = this.props;
     fetchUsers();
   }
   
   render() {
-    const {users} = this.props;
+    const { users } = this.props;
     // 展示用户列表数据 ...
   }
 }
@@ -75,12 +76,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(UserList);
 
 
 
-`biz` 是什么？这就是用 `redux-balloon` 来实现的业务代码。
+`biz` 是什么？这就是用 `redux-balloon` 来实现的业务层代码。
 
 #### `biz.js`
 
 ```javascript
-import { balloon } from 'redux-balloon';
+import balloon from 'redux-balloon';
 import * as types from './types';
 import * as api from './api';
 
@@ -88,19 +89,19 @@ const users = {
   namespace: 'users',
   state: [],
   reducers: {
-    [types.USERS_PUT]: (state, {payload}) => payload
+    [types.USERS_PUT]: (state, { payload }) => payload
   },
   actions: {
-    fetchUsers: [types.USERS_GET]
+    fetchUsers: types.USERS_GET
   },
   selectors: () => ({
     getUsers: (state) => state.users
   }),
   sagas: {
-    * [types.USERS_FETCH](action, {call, put}) {
+    * [types.USERS_FETCH](action, { call, put }) {
       // 通过参数注入 saga effects。
       const users = yield call(api.fetchUsers);
-      yield put({type: types.USERS_PUT, payload: users});
+      yield put({ type: types.USERS_PUT, payload: users });
     }
   }
 };
@@ -137,7 +138,7 @@ ReactDOM.render(<App/>, document.getElementById('app'));
 
 
 
-你不需要 import redux, redux-saga（或者 redux-actions, reselect）到你的 js 文件中；你也不需要手动配置启动 redux 和连接 redux-saga。所以，如果你使用 redux 技术栈， 通过使用 `redux-balloon` 你可以用一种便捷的方式来编写业务层代码，并应用在多种 UI 层框架中。:smile:
+你不需要 import redux, redux-saga（或者 redux-actions, reselect）到你的 js 文件中；你也不需要手动配置启动 redux 和连接 redux-saga。所以，如果你使用 redux 技术栈， 通过使用 `redux-balloon`，你可以用一种便捷的方式来编写业务层代码，并应用在多种 UI 层框架中。:smile:
 
 ## 文档
 
@@ -147,7 +148,9 @@ ReactDOM.render(<App/>, document.getElementById('app'));
 
 ## 完整示例
 
-制作中...
+[React example](https://github.com/IAMSUPERMONKEY/redux-balloon/tree/master/examples/react)
+
+WePY example 正在制作中...
 
 
 
