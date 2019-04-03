@@ -14,9 +14,10 @@ Lightweight front-end business framework based on [redux](https://github.com/red
 
 - **Based on redux community best practices** (redux-saga, redux-actions, reselect, etc.)
 - **Model concepts**: organize model with `reducers`, `actions`, `selectors` and `sagas`
+- **You can organize Redux State Object as a tree**
 - **Optimize file fragmentation**: one business, one model file
 - **Define sagas of model flexibility**
-- **Support multiple UI frameworks**: e.g., `React` and `Wechat Mini Program(Wepy)`   
+- **Support multiple UI frameworks**: e.g., `React` and `Wechat Mini Program(WePY)`   
 
 
 
@@ -56,12 +57,12 @@ class UserList extends React.Component {
   }
 
   initData() {
-    const {fetchUsers} = this.props;
+    const { fetchUsers } = this.props;
     fetchUsers();
   }
   
   render() {
-    const {users} = this.props;
+    const { users } = this.props;
     // display users data ...
   }
 }
@@ -84,7 +85,7 @@ What is `biz` ? It is our business code by using `redux-balloon`.
 #### `biz.js`
 
 ```javascript
-import { balloon } from 'redux-balloon';
+import balloon from 'redux-balloon';
 import * as types from './types';
 import * as api from './api';
 
@@ -92,19 +93,19 @@ const users = {
   namespace: 'users',
   state: [],
   reducers: {
-    [types.USERS_PUT]: (state, {payload}) => payload
+    [types.USERS_PUT]: (state, { payload }) => payload
   },
   actions: {
-    fetchUsers: [types.USERS_GET]
+    fetchUsers: types.USERS_GET
   },
   selectors: () => ({
     getUsers: (state) => state.users
   }),
   sagas: {
-    * [types.USERS_FETCH](action, {call, put}) {
+    * [types.USERS_FETCH](action, { call, put }) {
       // saga effects are treated as parameter injection.
       const users = yield call(api.fetchUsers);
-      yield put({type: types.USERS_PUT, payload: users});
+      yield put({ type: types.USERS_PUT, payload: users });
     }
   }
 };
@@ -153,7 +154,9 @@ You don't need to import redux, redux-saga (and redux-actions, reselect) in your
 
 ## Complete Examples
 
-Making...
+[React example](https://github.com/IAMSUPERMONKEY/redux-balloon/tree/master/examples/react)
+
+WePY example making...
 
 
 
