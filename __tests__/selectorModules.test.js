@@ -38,38 +38,38 @@ describe('selectorModules', () => {
     expect(selectorModules).toEqual({});
   });
 
-  test('should create selectors from selectorModules', () => {
-    const modelA = {
-      namespace: 'a',
-      selectors: () => ({
-        getCountOfA: (state) => state.a.count
-      })
-    };
-    const modelB = {
-      namespace: 'b',
-      selectors: ({createSelector, getSelector}) => ({
-        getCountOfB1: (state) => state.b.count,
-        getCountOfB2: createSelector(
-          getSelector('a.getCountOfA'),
-          (count) => count + 1
-        )
-      })
-    };
-    let selectorModules = addSelectorModule(modelA, {});
-    selectorModules = addSelectorModule(modelB, selectorModules);
-    const selectors = createSelectors(selectorModules);
-    const state = {
-      a: {count: 3},
-      b: {count: 666}
-    };
-
-    expect(selectors.a.getCountOfA(state)).toBe(3);
-    expect(selectors.getCountOfA(state)).toBe(3);
-    expect(selectors.b.getCountOfB1(state)).toBe(666);
-    expect(selectors.getCountOfB1(state)).toBe(666);
-    expect(selectors.b.getCountOfB2(state)).toBe(4);
-    expect(selectors.getCountOfB2(state)).toBe(4);
-  });
+  // test('should create selectors from selectorModules', () => {
+  //   const modelA = {
+  //     namespace: 'a',
+  //     selectors: () => ({
+  //       getCountOfA: (state) => state.a.count
+  //     })
+  //   };
+  //   const modelB = {
+  //     namespace: 'b',
+  //     selectors: ({createSelector, getSelector}) => ({
+  //       getCountOfB1: (state) => state.b.count,
+  //       getCountOfB2: createSelector(
+  //         getSelector('a.getCountOfA'),
+  //         (count) => count + 1
+  //       )
+  //     })
+  //   };
+  //   let selectorModules = addSelectorModule(modelA, {});
+  //   selectorModules = addSelectorModule(modelB, selectorModules);
+  //   const selectors = createSelectors(selectorModules);
+  //   const state = {
+  //     a: {count: 3},
+  //     b: {count: 666}
+  //   };
+  //
+  //   expect(selectors.a.getCountOfA(state)).toBe(3);
+  //   expect(selectors.getCountOfA(state)).toBe(3);
+  //   expect(selectors.b.getCountOfB1(state)).toBe(666);
+  //   expect(selectors.getCountOfB1(state)).toBe(666);
+  //   expect(selectors.b.getCountOfB2(state)).toBe(4);
+  //   expect(selectors.getCountOfB2(state)).toBe(4);
+  // });
 
   test('selector of reselect should memorize', () => {
     const model = {

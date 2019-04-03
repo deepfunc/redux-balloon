@@ -1,12 +1,19 @@
 import invariant from 'invariant';
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import { assocPath, dissocPath, mapObjIndexed, identity } from 'ramda';
 import { NAMESPACE_SEP, REDUCER_ROOT_NAMESPACE } from './constants';
-import { pathOfNS, isPlainObject, isArray } from './utils';
+import {
+  assocPath,
+  dissocPath,
+  mapObjIndexed,
+  identity,
+  pathOfNS,
+  isPlainObject,
+  isArray
+} from './utils';
 
 function addReducerModule(model, existingModules) {
-  const {namespace, state = null, reducers} = model;
+  const { namespace, state = null, reducers } = model;
   if (typeof reducers === 'undefined') {
     return existingModules;
   }
@@ -24,7 +31,7 @@ function delReducerModule(namespace, existingModules) {
 }
 
 function createReducers(modules, opts = {}) {
-  const {onEnhanceReducer = identity} = opts;
+  const { onEnhanceReducer = identity } = opts;
   const create = (modules, namespace) => {
     if (isArray(modules)) {
       const [handlers, state] = modules;

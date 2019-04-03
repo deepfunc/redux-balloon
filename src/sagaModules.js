@@ -1,13 +1,10 @@
 import invariant from 'invariant';
-import { assoc, dissoc, forEachObjIndexed } from 'ramda';
-import createSagaMiddleware, * as ReduxSaga from 'redux-saga';
-import * as sagaEffects from 'redux-saga/effects';
+import { createSagaMiddleware, ReduxSaga } from './sagaImports';
+import SagaError from './SagaError';
 import {
-  takeEveryHelper,
-  takeLatestHelper,
-  throttleHelper
-} from 'redux-saga/lib/internal/sagaHelpers';
-import {
+  assoc,
+  dissoc,
+  forEachObjIndexed,
   isPlainObject,
   isFunction,
   isArray,
@@ -15,8 +12,10 @@ import {
   noop
 } from './utils';
 
+const sagaEffects = ReduxSaga.effects;
+
 function addSagaModule(model, existingModules) {
-  const {namespace, sagas} = model;
+  const { namespace, sagas } = model;
   if (typeof sagas === 'undefined') {
     return existingModules;
   }
@@ -34,17 +33,22 @@ function delSagaModule(namespace, existingModules) {
 }
 
 function runSagaModules(modules, runSaga, opts, extras) {
-  const {onSagaError = noop} = opts;
-  const _extras = {...extras, ReduxSaga};
+  const { onSagaError = noop } = opts;
+  const _extras = { ...extras, ReduxSaga };
   forEachObjIndexed((module, namespace) => {
     const sagas = module[0];
     const saga = createSaga(sagas, namespace, opts, _extras);
-    runSaga(saga).done.catch(e => onSagaError(e, {namespace}));
+    runSaga(saga).done.catch(err => {
+      if ((err instanceof SagaError) === false) {
+        err = new SagaError(err, { namespace });
+      }
+      onSagaError(err);
+    });
   }, modules);
 }
 
 function createSaga(sagas, namespace, opts, extras) {
-  const {fork, take, cancel} = sagaEffects;
+  const { fork, take, cancel } = sagaEffects;
 
   return function* () {
     const watcher = createWatcher(sagas, namespace, opts, extras);
@@ -71,6 +75,7 @@ function createWatcher(sagas, namespace, opts, extras) {
   }
 
   return function* () {
+    const { takeEvery, takeLatest, throttle } = sagaEffects;
     const keys = Object.keys(sagasObj);
 
     for (const key of keys) {
@@ -89,35 +94,42 @@ function createWatcher(sagas, namespace, opts, extras) {
       }
       const handler = handleActionForHelper(
         saga,
-        {namespace, key, needInject},
+        { namespace, key, needInject },
         opts,
         extras
       );
 
       switch (type) {
         case 'takeLatest':
-          yield takeLatestHelper(key, handler);
+          yield takeLatest(key, handler);
           break;
         case 'throttle':
-          yield throttleHelper(ms, key, handler);
+          yield throttle(ms, key, handler);
           break;
         default:
-          yield takeEveryHelper(key, handler);
+          yield takeEvery(key, handler);
       }
     }
   };
 }
 
-function handleActionForHelper(saga, {namespace, key, needInject}, opts, extras) {
-  const {call} = sagaEffects;
-  const {onSagaError = noop} = opts;
+function handleActionForHelper(saga, { namespace, key, needInject }, opts, extras) {
+  const { call } = sagaEffects;
   const injections = needInject ? [sagaEffects, extras] : [];
 
   return function* (action) {
     try {
-      yield call(saga, action, ...injections);
-    } catch (e) {
-      onSagaError(e, {namespace, key});
+      const ret = yield call(saga, action, ...injections);
+      const { _resolve } = action;
+      if (typeof _resolve === 'function') {
+        _resolve(ret);
+      }
+    } catch (err) {
+      const { _reject } = action;
+      if (typeof _reject === 'function') {
+        _reject(err);
+      }
+      throw new SagaError(err, { namespace, key });
     }
   };
 }

@@ -3,7 +3,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 export default function (
   {
     reducers,
-    initialState,
+    preloadedState,
     middlewares,
     devtools = noop => noop
   }) {
@@ -12,5 +12,5 @@ export default function (
     devtools
   ];
 
-  return createStore(reducers, initialState, compose(...enhancers));
+  return createStore(reducers, preloadedState, compose(...enhancers));
 }

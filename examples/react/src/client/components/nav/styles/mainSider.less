@@ -1,0 +1,28 @@
+.root {
+  transition: all .2s;
+
+  :global {
+    .ant-menu-inline, .ant-menu-vertical {
+      border-right: 0;
+    }
+
+    .ant-menu-inline .ant-menu-item {
+
+    }
+  }
+}
+
+.collapsed {
+  width: 80px;
+
+  .collapseSwitcher {
+    text-align: center;
+    padding: 0;
+
+    > :global(.anticon) {
+      font-size: 16px;
+      line-height: 40px;
+      margin: 0;
+    }
+  }
+}

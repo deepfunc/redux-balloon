@@ -1,10 +1,16 @@
 import invariant from 'invariant';
-import { assocPath, dissocPath, map, mapObjIndexed, merge } from 'ramda';
 import { createAction } from 'redux-actions';
-import { pathOfNS, isPlainObject, isArray } from './utils';
+import {
+  assocPath,
+  dissocPath,
+  mapObjIndexed,
+  pathOfNS,
+  isPlainObject,
+  isArray
+} from './utils';
 
 function addActionModule(model, existingModules) {
-  const {namespace, actions} = model;
+  const { namespace, actions } = model;
   if (typeof actions === 'undefined') {
     return existingModules;
   }
@@ -29,6 +35,9 @@ function createActions(modules) {
       const [actionDefMap] = modules;
       return mapObjIndexed(
         (actionDef, key) => {
+          if (typeof actionDef === 'string' || actionDef instanceof String) {
+            actionDef = [actionDef];
+          }
           const action = createAction(...actionDef);
           actionMap[key] = action;
           return action;
@@ -37,11 +46,11 @@ function createActions(modules) {
       );
     }
 
-    return map((module) => create(module), modules);
+    return mapObjIndexed((module) => create(module), modules);
   };
 
   const actions = create(modules);
-  return merge(actions, actionMap);
+  return { ...actions, ...actionMap };
 }
 
 export {
