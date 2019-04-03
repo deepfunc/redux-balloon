@@ -120,10 +120,14 @@ export default function () {
   function run(opts = {}) {
     if (biz.status === Status.IDLE) {
       runOpts = opts;
+      runOpts.usePromiseMiddleware =
+        runOpts.usePromiseMiddleware == null ? true : runOpts.usePromiseMiddleware;
       updateInjectedArgs();
       sagaMiddleware = createSagaMiddleware();
       let { middlewares = [], onEnhanceStore = identity } = runOpts;
-      middlewares.unshift(promiseMiddleware);
+      if (runOpts.usePromiseMiddleware) {
+        middlewares.unshift(promiseMiddleware);
+      }
       middlewares.push(sagaMiddleware);
 
       const store = createStore({

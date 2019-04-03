@@ -60,4 +60,5 @@ package-lock.json
 /coverage/
 /es/
 /lib/
+/wepy/
 /dist/

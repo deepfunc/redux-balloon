@@ -14,8 +14,9 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@': path.join(rootDir, 'src/client'),
-      'redux-balloon': path.join(rootDir, '../../src')
+      '@': path.join(rootDir, 'src/client')
+      // 'redux-balloon': path.join(rootDir, '../../src'),
+      // 'redux-balloon': path.join(rootDir, 'node_modules/redux-balloon/wpy')
     },
     extensions: ['.js', '.jsx', '.json']
   },

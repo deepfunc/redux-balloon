@@ -14,6 +14,7 @@ if (process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION_
 
 biz.run({
   devtools,
+  // usePromiseMiddleware: false,
   onSagaError: (err) => {
     console.error('onSagaError', err);
   }
