@@ -7,7 +7,7 @@
 创建应用，返回 balloon 实例:
 
 ```javascript
-import { balloon } from 'redux-balloon';
+import balloon from 'redux-balloon';
 
 const biz = balloon();
 ```
@@ -56,6 +56,8 @@ const model = {
 };
 ```
 
+> 可按树形组织 Redux State 对象。
+
 
 
 ### reducers
@@ -69,7 +71,7 @@ const model = {
   namespace: 'globals.loginInfo',
   state: {},
   reducers: {
-    ['LOGIN_INFO_PUT']: (state, {payload}) => payload,
+    ['LOGIN_INFO_PUT']: (state, { payload }) => payload,
     ['LOGIN_INFO_CLEAR']: () => ({})
   }
 };
@@ -79,7 +81,7 @@ const model = {
 
 ### [actions]
 
-定义 actions 为 key/value 对象， `value` 是一个数组. value[0] 是某个 action 的 type，value[1] 是 `payloadCreator` 函数, value[2] 是 `metaCreator` 函数, value[1] 或 value[2] 是可选的。
+定义 actions 为 key/value 对象， `value` 可以是一个字符串或是一个数组. 字符串或 value[0] 是某个 action 的 type，value[1] 是 `payloadCreator` 函数, value[2] 是 `metaCreator` 函数, value[1] 或 value[2] 是可选的。
 
 > Balloon 使用 redux-actions 来创建 actions。你可以看看 [文档](https://redux-actions.js.org/api/createaction#createactiontype-payloadcreator-metacreator) 中是如何使用payloadCreator 和 metaCreator的。
 
@@ -88,11 +90,11 @@ const model = {
   namespace: 'globals.loginInfo',
   state: {},
   reducers: {
-    ['LOGIN_INFO_PUT']: (state, {payload}) => payload,
+    ['LOGIN_INFO_PUT']: (state, { payload }) => payload,
     ['LOGIN_INFO_CLEAR']: () => ({})
   },
   actions: {
-    login: ['USER_LOGIN']
+    login: 'USER_LOGIN'
   }
 };
 ```
@@ -113,6 +115,48 @@ biz.store.dispatch(biz.actions.login('username', 'xxxxxx'));
 
 
 
+#### 支持 dispatch 一个 action 后返回 Promise
+
+有时候在 view 层我们会需要知道 action 的异步执行结果，那么在定义 action 的时候支持返回 Promise 方式：
+
+```javascript
+const model = {
+  namespace: 'globals.loginInfo',
+  // ...
+  
+  actions: {
+    login: [
+      'USER_LOGIN',
+      undefined,
+      
+      // metaCreator 返回对象具有 isPromise=true 属性
+      () => ({ isPromise: true })
+    ]
+  },
+  sagas: function ({...}) {    
+    return {
+      'USER_LOGIN': function* (action) {
+      	const ret = yield call(api.login, {...});
+        
+        // 异步处理完返回结果
+      	return ret;
+      }
+    };
+  }
+};
+
+// ...
+biz.store.dispatch(biz.actions.login(...)).then((ret) => {
+  // 执行成功返回结果, 弹个成功提示框什么的
+}).catch((err) => {
+  // 执行失败
+});
+```
+
+
+
+
+
 ### [selectors]
 
 定义 selectors 为一个函数。 函数值返回一个 key/value 对象， key 是单个 selector 的名字, value 是函数。
@@ -122,11 +166,11 @@ const model = {
   namespace: 'globals.loginInfo',
   state: {},
   reducers: {
-    ['LOGIN_INFO_PUT']: (state, {payload}) => payload,
+    ['LOGIN_INFO_PUT']: (state, { payload }) => payload,
     ['LOGIN_INFO_CLEAR']: () => ({})
   },
   actions: {
-    login: ['USER_LOGIN']
+    login: 'USER_LOGIN'
   },
   selectors: () => ({
   	getLoginInfo: (state) => state.globals.loginInfo
@@ -157,7 +201,7 @@ import moment from 'moment';
 const model = {
   namespace: 'globals.loginInfo',
   // ...
-  selectors: ({createSelector}) => {
+  selectors: ({ createSelector }) => {
     const getLoginInfo = createSelector(
       (state) => state.state.globals.loginInfo,
       (loginInfo) => Object.assign({}, loginInfo, {
@@ -165,7 +209,7 @@ const model = {
       })
     );
     
-    return {getLoginInfo};
+    return { getLoginInfo };
   }
 };
 ```
@@ -180,14 +224,14 @@ const model = {
 const model = {
   namespace: 'views.somePage',
   // ...
-  selectors: ({createSelector, getSelector}) => {
+  selectors: ({ createSelector, getSelector }) => {
     const getAllInfo = createSelector(
       (state) => views.somePage.someInfo,
       getSelector('views.otherPage.getOtherInfo'),
-      (someInfo, otherInfo) => ({someInfo, otherInfo})
+      (someInfo, otherInfo) => ({ someInfo, otherInfo })
     );
     
-    return {getAllInfo};
+    return { getAllInfo };
   }
 };
 ```
@@ -215,25 +259,37 @@ const model = {
   // ...
   sagas: {
     // 这是 takeEvery
-    'SOME_GET': function* (action, {call, put}) {
+    'SOME_GET': function* (action, { call, put }) {
       // saga effects 将通过参数注入
       const ret = yield call(api.fetchSome);
-      yield put({type: 'SOME_PUT', payload: ret});
+      yield put({ type: 'SOME_PUT', payload: ret });
     },
     
     // 这是 takeLatest
     'OTHER_GET': [
-      function* (action, {call, put, select}, {ReduxSaga, actions, selectors}) {
-        // 通过第三个参数，你可以使用 model 定义的 actions 和 selectors
-        // 或者也可以使用 redux-saga 其他的功能函数
-        const {delay} = ReduxSaga;
-        yield delay(1000);
-        
-        const data = yield select(selectors.getSomeData);
-        const ret = yield call(api.fetchOther, data);
-        yield put(actions.putOtherData(ret));
+      function* (
+        action,
+        { call, put, select },
+        { ReduxSaga, getAction, getSelector }
+      ) {
+          // 通过第三个参数，你可以使用 model 定义的 actions 和 selectors
+          // 或者也可以使用 redux-saga 其他的功能函数
+          const { delay } = ReduxSaga;
+          yield delay(1000);
+
+          const data = yield select(getSelector('getSomeData'));
+          const ret = yield call(api.fetchOther, data);
+          yield put(getAction('putOtherData')(ret));
       },
-      {type: 'takeLatest'}
+      { type: 'takeLatest' }
+    ],
+    
+    // 这是 throttle
+    '..._GET': [
+      function* (...) {
+        // ...
+      },
+      { type: 'throttle', ms: 1000 }
     ]
   }
 };
@@ -248,8 +304,8 @@ import * as api from './api';
 
 const model = {
   // ...
-  sagas: function ({select, put, call}, {ReduxSaga, actions, selectors}) {
-    const {delay} = ReduxSaga;
+  sagas: function ({ select, put, call }, { ReduxSaga, getAction, getSelector }) {
+    const { delay } = ReduxSaga;
     
     return {
       'SOME_GET': function* (action) {
@@ -261,11 +317,11 @@ const model = {
         function* (action) {
           yield delay(1000);
 
-          const data = yield select(selectors.getSomeData);
+          const data = yield select(getSelector('getSomeData'));
           const ret = yield call(api.fetchOther, data);
-          yield put(actions.putOtherData(ret));
+          yield put(getAction('putOtherData')(ret));
         },
-        {type: 'takeLatest'}
+        { type: 'takeLatest' }
       ]
     };
   }
@@ -281,16 +337,16 @@ import * as api from './api';
 
 const model = {
   // ...
-  sagas: function ({takeLatest, select, put, call},
-                   {ReduxSaga, actions, selectors}) {
-    const {delay} = ReduxSaga;
+  sagas: function ({ takeLatest, select, put, call },
+                   { ReduxSaga, getAction, getSelector }) {
+    const { delay } = ReduxSaga;
     
     const handleGetSome = function* (action) {
       yield delay(1000);
 
-      const data = yield select(selectors.getSomeData);
+      const data = yield select(getSelector('getSomeData'));
       const ret = yield call(api.fetchOther, data);
-      yield put(actions.putOtherData(ret));
+      yield put(getAction('putOtherData')(ret));
     };
     
     return function* () {
@@ -299,6 +355,10 @@ const model = {
   }
 };
 ```
+
+> 注意如果采用这种方式定义 sagas，处理支持 Promise 方式的 action 时需要手动调用完成。
+>
+> 传递给 saga 处理函数的 action 对象将具有 _resolve() 和 _reject() 两个函数属性，处理完业务逻辑调用即可。
 
 
 
@@ -311,11 +371,12 @@ biz.run({
   // initialState: {...},
   // devtools: ...,
   // middlewares: [...],
+  // usePromiseMiddleware: true,
   // onSagaError: ...,
   // onEnhanceReducer: ...
 });
 
-const {store, actions, selectors} = biz;
+const { store, actions, selectors } = biz;
 const state = store.getState();
 const loginInfo = selectors.getLoginInfo(state);
 store.dispatch(actions.getSome());
@@ -380,6 +441,12 @@ biz.run({
 
 
 
+### [usePromiseMiddleware=true]
+
+是否使用这个中间件来支持 dispatch 一个 action 时返回 Promise。这个选项默认是开启的，不需要使用的时候可以手动关闭。
+
+
+
 ### [onSagaError]
 
 当某些 sagas 抛出异常时，可以在这里进行全局捕获：
@@ -387,7 +454,7 @@ biz.run({
 ```javascript
 biz.run({
   // ...
-  onSagaError: (e, {namespace, key}) => {
+  onSagaError: (e, { namespace, key }) => {
     // if you define sagas as the third way, key will be undefined
     console.log(`catch a sagas error！namespace: ${namespace} key: ${key}`, e);
   }
@@ -396,7 +463,7 @@ biz.run({
 
 
 
-> 执行 run() 后，你任然可以通过 biz.model() 注册新的 model。 
+> 执行 run() 后，你仍然可以通过 biz.model() 注册新的 model并立即应用。 
 
 
 
