@@ -6,12 +6,12 @@ import {
 
 describe('actionModules', () => {
   test('[model.actions] should be plain object', () => {
-    const model = {namespace: 'hello', actions: 666};
+    const model = { namespace: 'hello', actions: 666 };
     expect(() => addActionModule(model, {})).toThrow(/should be plain object/);
   });
 
   test('[model.actions] could be undefined', () => {
-    const model = {namespace: 'hello'};
+    const model = { namespace: 'hello' };
     const actionModules = addActionModule(model, {});
     expect(actionModules).toEqual({});
   });
@@ -20,9 +20,9 @@ describe('actionModules', () => {
     const actions = {
       getSome: ['SOME_GET']
     };
-    const model = {namespace: 'hello', actions};
+    const model = { namespace: 'hello', actions };
     expect(addActionModule(model, {})).toMatchObject({
-      hello: [{getSome: expect.any(Array)}]
+      hello: [{ getSome: expect.any(Array) }]
     });
   });
 
@@ -30,10 +30,10 @@ describe('actionModules', () => {
     const actions = {
       getSome: ['SOME_GET']
     };
-    const model = {namespace: 'a.b', actions};
+    const model = { namespace: 'a.b', actions };
     expect(addActionModule(model, {})).toMatchObject({
       a: {
-        b: [{getSome: expect.any(Array)}]
+        b: [{ getSome: expect.any(Array) }]
       }
     });
   });
@@ -42,7 +42,7 @@ describe('actionModules', () => {
     const actions = {
       getSome: ['SOME_GET']
     };
-    const model = {namespace: 'hello', actions};
+    const model = { namespace: 'hello', actions };
     let actionModules = addActionModule(model, {});
     actionModules = delActionModule('hello', actionModules);
     expect(actionModules).toEqual({});
@@ -50,11 +50,11 @@ describe('actionModules', () => {
 
   test('should create actions from actionModules', () => {
     let actionModules = addActionModule(
-      {namespace: 'a', actions: {getSome: ['SOME_GET']}},
+      { namespace: 'a', actions: { getSome: ['SOME_GET'] } },
       {}
     );
     actionModules = addActionModule(
-      {namespace: 'b.c', actions: {getOther: ['OTHER_GET']}},
+      { namespace: 'b.c', actions: { getOther: ['OTHER_GET'] } },
       actionModules
     );
     const actions = createActions(actionModules);
@@ -79,7 +79,7 @@ describe('actionModules', () => {
     );
     const actions = createActions(actionModules);
 
-    expect(actions.a.getSome(3)).toEqual({type: 'SOME_GET', payload: 4});
+    expect(actions.a.getSome(3)).toEqual({ type: 'SOME_GET', payload: 4 });
   });
 
   test('should create actions of using metaCreator', () => {
@@ -90,7 +90,7 @@ describe('actionModules', () => {
           getSome: [
             'SOME_GET',
             undefined,
-            () => ({admin: true})
+            () => ({ admin: true })
           ]
         }
       }
@@ -100,7 +100,7 @@ describe('actionModules', () => {
     expect(actions.a.getSome(4)).toEqual({
       type: 'SOME_GET',
       payload: 4,
-      meta: {admin: true}
+      meta: { admin: true }
     });
   });
 });

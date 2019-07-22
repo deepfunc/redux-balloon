@@ -1,9 +1,10 @@
 import invariant from 'invariant';
-import { any } from './utils';
+import { any, isPlainObject } from './utils';
 
 export default function checkModel(model, existingModels) {
-  const { namespace } = model;
+  const { namespace, reducers } = model;
 
+  // check namespace
   invariant(
     namespace,
     '[model.namespace] should be defined'
@@ -15,5 +16,11 @@ export default function checkModel(model, existingModels) {
   invariant(
     !any(model => model.namespace === namespace, existingModels),
     '[model.namespace] should be unique!'
+  );
+
+  // check reducers
+  invariant(
+    isPlainObject(reducers),
+    `[model.reducers] should be plain object, but got ${typeof reducers}`
   );
 }

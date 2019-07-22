@@ -35,7 +35,7 @@ describe('sagaModules', () => {
   });
 
   test('[model.sagas] could be undefined', () => {
-    const model = {namespace: 'hello'};
+    const model = { namespace: 'hello' };
     expect(addSagaModule(model, {})).toEqual({});
   });
 
@@ -97,21 +97,21 @@ describe('sagaModules', () => {
       };
       const model = {
         namespace: 'hello',
-        sagas: ({put}) => {
+        sagas: ({ put }) => {
           return function* () {
-            yield put({type: 'HELLO_SAGA'});
+            yield put({ type: 'HELLO_SAGA' });
           };
         }
       };
 
       const sagaModules = addSagaModule(model, {});
       runSagaModules(sagaModules, runSagaMock, {}, {});
-      expect(dispatched).toContainEqual({type: 'HELLO_SAGA'});
+      expect(dispatched).toContainEqual({ type: 'HELLO_SAGA' });
     });
 
     test('should run sagas: sagas is plain object', (done) => {
       const dispatched = [];
-      const {subscribe, emit} = createEmitter();
+      const { subscribe, emit } = createEmitter();
       const runSagaMock = (saga) => {
         return runSaga({
           subscribe,
@@ -123,14 +123,14 @@ describe('sagaModules', () => {
       const model = {
         namespace: 'hello',
         sagas: {
-          * 'SOME_GET'(action, {put}) {
-            yield put({type: 'SOME_GET_OK'});
+          * 'SOME_GET'(action, { put }) {
+            yield put({ type: 'SOME_GET_OK' });
           },
           'OTHER_GET': [
-            function* (action, {put}) {
-              yield put({type: 'OTHER_GET_OK'});
+            function* (action, { put }) {
+              yield put({ type: 'OTHER_GET_OK' });
             },
-            {type: 'takeLatest'}
+            { type: 'takeLatest' }
           ]
         }
       };
@@ -138,14 +138,14 @@ describe('sagaModules', () => {
       const sagaModules = addSagaModule(model, {});
       runSagaModules(sagaModules, runSagaMock, {}, {});
       setTimeout(() => {
-        emit({type: 'SOME_GET'});
-        emit({type: 'OTHER_GET'});
+        emit({ type: 'SOME_GET' });
+        emit({ type: 'OTHER_GET' });
       }, 10);
       setTimeout(
         () => {
           expect(dispatched).toEqual(expect.arrayContaining([
-            {type: 'SOME_GET_OK'},
-            {type: 'OTHER_GET_OK'}
+            { type: 'SOME_GET_OK' },
+            { type: 'OTHER_GET_OK' }
           ]));
           done();
         },
@@ -155,7 +155,7 @@ describe('sagaModules', () => {
 
     test('should run sagas: sagas is function, and return plain object', (done) => {
       const dispatched = [];
-      const {subscribe, emit} = createEmitter();
+      const { subscribe, emit } = createEmitter();
       const runSagaMock = (saga) => {
         return runSaga({
           subscribe,
@@ -166,16 +166,16 @@ describe('sagaModules', () => {
       };
       const model = {
         namespace: 'hello',
-        sagas: ({put}) => {
+        sagas: ({ put }) => {
           return {
             * 'SOME_GET'(action) {
-              yield put({type: 'SOME_GET_OK'});
+              yield put({ type: 'SOME_GET_OK' });
             },
             'OTHER_GET': [
               function* (action) {
-                yield put({type: 'OTHER_GET_OK'});
+                yield put({ type: 'OTHER_GET_OK' });
               },
-              {type: 'takeLatest'}
+              { type: 'takeLatest' }
             ]
           };
         }
@@ -184,14 +184,14 @@ describe('sagaModules', () => {
       const sagaModules = addSagaModule(model, {});
       runSagaModules(sagaModules, runSagaMock, {}, {});
       setTimeout(() => {
-        emit({type: 'SOME_GET'});
-        emit({type: 'OTHER_GET'});
+        emit({ type: 'SOME_GET' });
+        emit({ type: 'OTHER_GET' });
       }, 10);
       setTimeout(
         () => {
           expect(dispatched).toEqual(expect.arrayContaining([
-            {type: 'SOME_GET_OK'},
-            {type: 'OTHER_GET_OK'}
+            { type: 'SOME_GET_OK' },
+            { type: 'OTHER_GET_OK' }
           ]));
           done();
         },

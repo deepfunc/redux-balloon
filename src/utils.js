@@ -72,6 +72,52 @@ export function dissocPath(path, obj) {
   }
 }
 
+export function mergeDeepLeft(lObj, rObj) {
+  return mergeDeepWithKey(function (k, lVal, rVal) {
+    return lVal;
+  }, lObj, rObj);
+}
+
+export function mergeDeepWithKey(fn, lObj, rObj) {
+  return mergeWithKey(function (k, lVal, rVal) {
+    if (isPlainObject(lVal) && isPlainObject(rVal)) {
+      return mergeDeepWithKey(fn, lVal, rVal);
+    } else {
+      return fn(k, lVal, rVal);
+    }
+  }, lObj, rObj);
+}
+
+export function mergeWithKey(fn, lObj, rObj) {
+  const result = {};
+  const lKeys = Object.keys(lObj);
+  const rKeys = Object.keys(rObj);
+
+  for (const k of lKeys) {
+    result[k] = rObj.hasOwnProperty(k) ? fn(k, lObj[k], rObj[k]) : lObj[k];
+  }
+
+  for (const k of rKeys) {
+    if (!result.hasOwnProperty(k)) {
+      result[k] = rObj[k];
+    }
+  }
+
+  return result;
+}
+
+export function pick(names, obj) {
+  const result = {};
+  let idx = 0;
+  while (idx < names.length) {
+    if (obj.hasOwnProperty(names[idx])) {
+      result[names[idx]] = obj[names[idx]];
+    }
+    idx += 1;
+  }
+  return result;
+}
+
 export function forEachObjIndexed(fn, obj) {
   const keys = Object.keys(obj);
   for (const key of keys) {

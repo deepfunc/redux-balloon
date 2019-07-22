@@ -6,12 +6,12 @@ import {
 
 describe('selectorModules', () => {
   test('[model.selectors] should be function', () => {
-    const model = {namespace: 'hello', selectors: {}};
+    const model = { namespace: 'hello', selectors: {} };
     expect(() => addSelectorModule(model, {})).toThrow(/should be function/);
   });
 
   test('[model.selectors] could be undefined', () => {
-    const model = {namespace: 'hello'};
+    const model = { namespace: 'hello' };
     const selectorModules = addSelectorModule(model, {});
     expect(selectorModules).toEqual({});
   });
@@ -21,7 +21,7 @@ describe('selectorModules', () => {
       getA: (state) => state.a,
       getB: (state) => state.b
     });
-    const model = {namespace: 'hello', selectors};
+    const model = { namespace: 'hello', selectors };
     expect(addSelectorModule(model, {})).toEqual({
       hello: [expect.any(Function)]
     });
@@ -32,7 +32,7 @@ describe('selectorModules', () => {
       getA: (state) => state.a,
       getB: (state) => state.b
     });
-    const model = {namespace: 'hello', selectors};
+    const model = { namespace: 'hello', selectors };
     let selectorModules = addSelectorModule(model, {});
     selectorModules = delSelectorModule('hello', selectorModules);
     expect(selectorModules).toEqual({});
@@ -74,7 +74,7 @@ describe('selectorModules', () => {
   test('selector of reselect should memorize', () => {
     const model = {
       namespace: 'a',
-      selectors: ({createSelector}) => ({
+      selectors: ({ createSelector }) => ({
         getContent: createSelector(
           (state) => state.a.content,
           (content) => `content: ${content}`
@@ -82,11 +82,11 @@ describe('selectorModules', () => {
       })
     };
     const selectors = createSelectors(addSelectorModule(model, {}));
-    selectors.getContent({a: {content: '123456'}});
+    selectors.getContent({ a: { content: '123456' } });
     expect(selectors.getContent.recomputations()).toBe(1);
-    selectors.getContent({a: {content: '123456'}});
+    selectors.getContent({ a: { content: '123456' } });
     expect(selectors.getContent.recomputations()).toBe(1);
-    selectors.getContent({a: {content: '666'}});
+    selectors.getContent({ a: { content: '666' } });
     expect(selectors.getContent.recomputations()).toBe(2);
   });
 });
