@@ -1,43 +1,17 @@
-import invariant from 'invariant';
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { NAMESPACE_SEP, REDUCER_ROOT_NAMESPACE } from './constants';
 import {
-  assocPath,
-  dissocPath,
   mapObjIndexed,
   identity,
   pathOfNS,
-  isPlainObject,
   isArray,
   init,
   noop,
   pick
 } from './utils';
 
-function addReducerModule(model, existingModules) {
-  const { namespace, state = null, reducers } = model;
-  if (typeof reducers === 'undefined') {
-    return existingModules;
-  }
-
-  invariant(
-    isPlainObject(reducers),
-    `[model.reducers] should be plain object, but got ${typeof reducers}`
-  );
-
-  return assocPath(
-    pathOfNS(namespace),
-    [reducers, state],
-    existingModules
-  );
-}
-
-function delReducerModule(namespace, existingModules) {
-  return dissocPath(pathOfNS(namespace), existingModules);
-}
-
-function createReducers(modules, opts = {}) {
+function createReducersBackup(modules, opts = {}) {
   const { onEnhanceReducer = identity } = opts;
   const create = (modules, namespace) => {
     if (isArray(modules)) {
@@ -58,7 +32,7 @@ function createReducers(modules, opts = {}) {
   return create(modules, REDUCER_ROOT_NAMESPACE);
 }
 
-function testCreateReducers(models) {
+function createReducers(models, opts = {}) {
   function addModelReducer(model, rootDef) {
     const { namespace, state = null, reducers } = model;
     const paths = pathOfNS(namespace);
@@ -141,9 +115,6 @@ function testCreateReducers(models) {
             hasChanged = hasChanged || state === undefined || nextState[key] !== state[key];
           }
 
-          // console.log('action', action);
-          // console.log('state', state);
-          // console.log('hasChanged', hasChanged);
           return hasChanged ? nextState : state;
         };
       };
@@ -159,6 +130,7 @@ function testCreateReducers(models) {
     return ret;
   }
 
+  const { onEnhanceReducer = identity } = opts;
   const rootDef = {};
 
   for (const model of models) {
@@ -171,8 +143,5 @@ function testCreateReducers(models) {
 }
 
 export {
-  addReducerModule,
-  delReducerModule,
-  createReducers,
-  testCreateReducers
+  createReducers
 };

@@ -1,6 +1,6 @@
 import invariant from 'invariant';
 import checkModel from './checkModel';
-import { addReducerModule, delReducerModule, createReducers } from './reducerModules';
+import { createReducers } from './reducerModules';
 import { addActionModule, delActionModule, createActions } from './actionModules';
 import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules';
 import {
@@ -23,7 +23,6 @@ import {
 import { Status } from './constants';
 
 export default function () {
-  let reducerModules = {};
   let reducers;
   let actionModules = {};
   let actions;
@@ -56,7 +55,6 @@ export default function () {
       checkModel(model, biz.models);
     }
 
-    reducerModules = addReducerModule(model, reducerModules);
     actionModules = addActionModule(model, actionModules);
     selectorModules = addSelectorModule(model, selectorModules);
     sagaModules = addSagaModule(model, sagaModules);
@@ -92,7 +90,7 @@ export default function () {
   }
 
   function updateInjectedArgs() {
-    reducers = createReducers(reducerModules, runOpts);
+    reducers = createReducers(biz.models, runOpts);
     actions = createActions(actionModules);
     selectors = createSelectors(selectorModules, getSelector);
   }
@@ -103,7 +101,6 @@ export default function () {
       `[app.models] don't has this namespace: ${namespace}`
     );
 
-    reducerModules = delReducerModule(namespace, reducerModules);
     actionModules = delActionModule(namespace, actionModules);
     selectorModules = delSelectorModule(namespace, selectorModules);
     sagaModules = delSagaModule(namespace, sagaModules);

@@ -1,11 +1,9 @@
-import invariant from 'invariant';
 import { createAction } from 'redux-actions';
 import {
   assocPath,
   dissocPath,
   mapObjIndexed,
   pathOfNS,
-  isPlainObject,
   isArray
 } from './utils';
 
@@ -14,11 +12,6 @@ function addActionModule(model, existingModules) {
   if (typeof actions === 'undefined') {
     return existingModules;
   }
-
-  invariant(
-    isPlainObject(actions),
-    `[model.actions] should be plain object, but got ${typeof actions}`
-  );
 
   return assocPath(pathOfNS(namespace), [actions], existingModules);
 }

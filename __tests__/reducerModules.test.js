@@ -1,38 +1,11 @@
 import sinon from 'sinon';
-import {
-  addReducerModule,
-  delReducerModule,
-  createReducers, testCreateReducers
-} from '../src/reducerModules';
+import { createReducers } from '../src/reducerModules';
 
 describe('reducerModules', () => {
-  test('[model.reducers] should be plain object', () => {
-    const model = { namespace: 'hello', reducers: 666 };
-    expect(() => addReducerModule(model, {}))
-      .toThrow(/should be plain object/);
-  });
-
-  test('[model.reducers] could be undefined', () => {
-    const model = { namespace: 'hello' };
-    const reducerModules = addReducerModule(model, {});
-    expect(reducerModules).toEqual({});
-  });
-
-  test('should add reducers module', () => {
-    const reducers = {
-      'SOME_DO': state => state
-    };
-    const model = { namespace: 'hello', reducers };
-    expect(addReducerModule(model, {})).toEqual({
-      hello: [
-        { 'SOME_DO': expect.any(Function) },
-        null
-      ]
-    });
-  });
-
   test('should createReducers', () => {
     const models = [];
+    let reducer;
+    let state;
 
     models.push({
       namespace: 'parent',
@@ -43,15 +16,14 @@ describe('reducerModules', () => {
       },
       state: { a: 1 }
     });
-
-    models.push({
-      namespace: 'parent1',
-      reducers: {
-        'PARENT1_SOME_DO': state => {
-          return { a1: state.a1 + 1 };
-        }
-      },
-      state: { a1: 1 }
+    reducer = createReducers(models);
+    state = reducer(undefined, { type: 'UNKNOWN' });
+    expect(state).toEqual({
+      parent: { a: 1 }
+    });
+    state = reducer(undefined, { type: 'PARENT_SOME_DO' });
+    expect(state).toEqual({
+      parent: { a: 2 }
     });
 
     models.push({
@@ -63,6 +35,21 @@ describe('reducerModules', () => {
       },
       state: { x: 1 }
     });
+    reducer = createReducers(models);
+    state = reducer(undefined, { type: 'UNKNOWN' });
+    expect(state).toEqual({
+      parent: {
+        a: 1,
+        b: { x: 1 }
+      }
+    });
+    state = reducer(state, { type: 'PARENT_B_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 1,
+        b: { x: 2 }
+      }
+    });
 
     models.push({
       namespace: 'parent.c',
@@ -73,7 +60,33 @@ describe('reducerModules', () => {
       },
       state: ''
     });
+    reducer = createReducers(models);
+    state = reducer(undefined, { type: 'UNKNOWN' });
+    expect(state).toEqual({
+      parent: {
+        a: 1,
+        b: { x: 1 },
+        c: ''
+      }
+    });
+    state = reducer(state, { type: 'PARENT_C_SOME_DO', payload: 'hello' });
+    expect(state).toEqual({
+      parent: {
+        a: 1,
+        b: { x: 1 },
+        c: 'hello'
+      }
+    });
 
+    models.push({
+      namespace: 'parent1',
+      reducers: {
+        'PARENT1_SOME_DO': state => {
+          return { a1: state.a1 + 1 };
+        }
+      },
+      state: { a1: 1 }
+    });
     models.push({
       namespace: 'parent.b.y',
       reducers: {
@@ -83,64 +96,90 @@ describe('reducerModules', () => {
       },
       state: 1
     });
-
-    const reducer = testCreateReducers(models);
-    let state;
-    // console.log(state = reducer(state, { type: 'UNKNOWN' }));
-    console.log(state = reducer(state, { type: 'UNKNOWN' }));
-    // console.log(state = reducer(state, { type: 'UNKNOWN' }));
-    // console.log(state = reducer(state, { type: 'PARENT_SOME_DO' }));
-    // console.log(state = reducer(state, { type: 'PARENT_B_SOME_DO' }));
-    // console.log(state = reducer(state, { type: 'PARENT_C_SOME_DO', payload: 'hello' }));
-    // console.log(state = reducer(state, { type: 'PARENT_B_Y_SOME_DO' }));
-    console.log(state = reducer(state, { type: 'PARENT1_SOME_DO' }));
-  });
-
-  test('should delete reducers module', () => {
-    const reducers = {
-      'SOME_DO': (state, { payload }) => state
-    };
-    const model = { namespace: 'hello', reducers };
-    let reducerModules = addReducerModule(model, {});
-    reducerModules = delReducerModule('hello', reducerModules);
-    expect(reducerModules).toEqual({});
-  });
-
-  test('should create reducer from reducerModules', () => {
-    const modelA = {
-      namespace: 'a',
-      state: { count: 0 },
-      reducers: {
-        'COUNT_ADD': (state, { payload }) => {
-          return Object.assign({}, state, { count: state.count + payload });
-        }
+    reducer = createReducers(models);
+    state = reducer(undefined, { type: 'UNKNOWN' });
+    expect(state).toEqual({
+      parent: {
+        a: 1,
+        b: {
+          x: 1,
+          y: 1
+        },
+        c: ''
+      },
+      parent1: {
+        a1: 1
       }
-    };
-    const modelB = {
-      namespace: 'b',
-      state: { content: '' },
-      reducers: {
-        'CONTENT_SET': (state, { payload }) => {
-          return Object.assign({}, state, { content: payload });
-        }
+    });
+    state = reducer(state, { type: 'PARENT_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        b: {
+          x: 1,
+          y: 1
+        },
+        c: ''
+      },
+      parent1: {
+        a1: 1
       }
-    };
-    let reducerModules = addReducerModule(modelA, {});
-    reducerModules = addReducerModule(modelB, reducerModules);
-    const reducer = createReducers(reducerModules);
-    const initialState = reducer(undefined, { type: 'UNKNOWN' });
-
-    expect(initialState).toEqual({
-      a: { count: 0 },
-      b: { content: '' }
     });
-    expect(reducer(initialState, { type: 'COUNT_ADD', payload: 4 })).toEqual({
-      a: { count: 4 },
-      b: { content: '' }
+    state = reducer(state, { type: 'PARENT_B_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        b: {
+          x: 2,
+          y: 1
+        },
+        c: ''
+      },
+      parent1: {
+        a1: 1
+      }
     });
-    expect(reducer(initialState, { type: 'CONTENT_SET', payload: '666' })).toEqual({
-      a: { count: 0 },
-      b: { content: '666' }
+    state = reducer(state, { type: 'PARENT_C_SOME_DO', payload: 'hello, world' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        b: {
+          x: 2,
+          y: 1
+        },
+        c: 'hello, world'
+      },
+      parent1: {
+        a1: 1
+      }
+    });
+    state = reducer(state, { type: 'PARENT_B_Y_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        b: {
+          x: 2,
+          y: 2
+        },
+        c: 'hello, world'
+      },
+      parent1: {
+        a1: 1
+      }
+    });
+    state = reducer(state, { type: 'PARENT1_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        b: {
+          x: 2,
+          y: 2
+        },
+        c: 'hello, world'
+      },
+      parent1: {
+        a1: 2
+      }
     });
   });
 

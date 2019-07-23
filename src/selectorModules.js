@@ -1,11 +1,9 @@
-import invariant from 'invariant';
 import * as Reselect from 'reselect';
 import {
   assocPath,
   dissocPath,
   pathOfNS,
   mapObjIndexed,
-  isFunction,
   isArray
 } from './utils';
 
@@ -14,11 +12,6 @@ function addSelectorModule(model, existingModules) {
   if (typeof selectors === 'undefined') {
     return existingModules;
   }
-
-  invariant(
-    isFunction(selectors),
-    `[model.selectors] should be function, but got ${typeof selectors}`
-  );
 
   return assocPath(pathOfNS(namespace), [selectors], existingModules);
 }

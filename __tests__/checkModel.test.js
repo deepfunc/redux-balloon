@@ -13,4 +13,33 @@ describe('checkModel', () => {
     const existingModels = [{ namespace: 'some' }];
     expect(() => checkModel({ namespace: 'some' }, existingModels)).toThrow();
   });
+
+  test('reduces should be plain object', () => {
+    expect(() => checkModel({
+      namespace: 'test',
+      reducers: 123
+    })).toThrow();
+  });
+
+  test('actions should be plain object', () => {
+    expect(() => checkModel({
+      namespace: 'test',
+      actions: function () {
+      }
+    })).toThrow();
+  });
+
+  test('selectors should be function', () => {
+    expect(() => checkModel({
+      namespace: 'test',
+      selectors: {}
+    })).toThrow();
+  });
+
+  test('sagas should be plain object or function', () => {
+    expect(() => checkModel({
+      namespace: 'test',
+      sagas: 123
+    })).toThrow();
+  });
 });

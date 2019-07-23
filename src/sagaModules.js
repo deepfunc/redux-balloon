@@ -1,11 +1,9 @@
-import invariant from 'invariant';
 import { createSagaMiddleware, ReduxSaga } from './sagaImports';
 import SagaError from './SagaError';
 import {
   assoc,
   dissoc,
   forEachObjIndexed,
-  isPlainObject,
   isFunction,
   isArray,
   getTypeOfCancelSaga,
@@ -19,11 +17,6 @@ function addSagaModule(model, existingModules) {
   if (typeof sagas === 'undefined') {
     return existingModules;
   }
-
-  invariant(
-    isPlainObject(sagas) || isFunction(sagas),
-    `[model.sagas] should be plain object or function, but got ${typeof sagas}`
-  );
 
   return assoc(namespace, [sagas], existingModules);
 }
