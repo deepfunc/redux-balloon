@@ -1,45 +1,25 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import { NAMESPACE_SEP, REDUCER_ROOT_NAMESPACE } from './constants';
+import { REDUCER_ROOT_NAMESPACE, NAMESPACE_SEP } from './constants';
 import {
-  mapObjIndexed,
   identity,
   pathOfNS,
-  isArray,
   init,
   noop,
   pick
 } from './utils';
 
-function createReducersBackup(modules, opts = {}) {
-  const { onEnhanceReducer = identity } = opts;
-  const create = (modules, namespace) => {
-    if (isArray(modules)) {
-      const [handlers, state] = modules;
-      return onEnhanceReducer(handleActions(handlers, state), namespace);
-    }
-
-    const reducers = mapObjIndexed(
-      (childModule, childKey) => {
-        return create(childModule, namespace + NAMESPACE_SEP + childKey);
-      },
-      modules
-    );
-
-    return onEnhanceReducer(combineReducers(reducers), namespace);
-  };
-
-  return create(modules, REDUCER_ROOT_NAMESPACE);
-}
-
 function createReducers(models, opts = {}) {
-  function addModelReducer(model, rootDef) {
+  function addModelReducer(model, rootDef, onEnhanceReducer) {
     const { namespace, state = null, reducers } = model;
     const paths = pathOfNS(namespace);
     const parentNodeNames = init(paths);
     const firstLevelNodeName = paths[0];
     const restNodeNames = paths.slice(1);
-    const modelReducer = handleActions(reducers, state);
+    const modelReducer = onEnhanceReducer(
+      handleActions(reducers, state),
+      REDUCER_ROOT_NAMESPACE + NAMESPACE_SEP + namespace
+    );
     let firstLevelNodeReducer;
 
     if (parentNodeNames.length > 0) {
@@ -135,13 +115,11 @@ function createReducers(models, opts = {}) {
 
   for (const model of models) {
     // 每个 model 按顺序加入
-    addModelReducer(model, rootDef);
+    addModelReducer(model, rootDef, onEnhanceReducer);
   }
 
   // 创建 rootReducer
-  return combineReducers(rootDef);
+  return onEnhanceReducer(combineReducers(rootDef), REDUCER_ROOT_NAMESPACE);
 }
 
-export {
-  createReducers
-};
+export { createReducers };

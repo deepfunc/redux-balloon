@@ -38,7 +38,25 @@ describe('checkModel', () => {
 
   test('sagas should be plain object or function', () => {
     expect(() => checkModel({
-      namespace: 'test',
+      namespace: 'hello',
+      sagas: {
+        * 'SOME_GET'(action) {
+          yield 'some';
+        }
+      }
+    })).not.toThrow();
+
+    expect(() => checkModel({
+      namespace: 'hello',
+      sagas: () => {
+        return function* () {
+          yield 'hello, sagas';
+        };
+      }
+    })).not.toThrow();
+
+    expect(() => checkModel({
+      namespace: 'hello',
       sagas: 123
     })).toThrow();
   });

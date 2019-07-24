@@ -5,11 +5,6 @@ import {
 } from '../src/actionModules';
 
 describe('actionModules', () => {
-  test('[model.actions] should be plain object', () => {
-    const model = { namespace: 'hello', actions: 666 };
-    expect(() => addActionModule(model, {})).toThrow(/should be plain object/);
-  });
-
   test('[model.actions] could be undefined', () => {
     const model = { namespace: 'hello' };
     const actionModules = addActionModule(model, {});

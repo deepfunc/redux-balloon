@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { createReducers } from '../src/reducerModules';
 
 describe('reducerModules', () => {
-  test('should createReducers', () => {
+  test('should create reducers', () => {
     const models = [];
     let reducer;
     let state;
@@ -184,22 +184,58 @@ describe('reducerModules', () => {
   });
 
   test('should call onEnhanceReducer', () => {
-    const modelA = {
+    const models = [];
+    let reducer;
+    let state;
+
+    models.push({
       namespace: 'a',
       state: { count: 0 },
       reducers: {
-        'COUNT_ADD': (state, { payload }) => {
+        'A_COUNT_ADD': (state, { payload }) => {
           return Object.assign({}, state, { count: state.count + payload });
         }
       }
-    };
-    let reducerModules = addReducerModule(modelA, {});
+    });
+    models.push({
+      namespace: 'b',
+      state: 0,
+      reducers: {
+        'B_COUNT_ADD': (state, { payload }) => {
+          return state + payload;
+        }
+      }
+    });
+    models.push({
+      namespace: 'a.c',
+      state: { text: '' },
+      reducers: {
+        'A_C_UPDATE_TEXT': (state, { payload }) => {
+          return { text: payload };
+        }
+      }
+    });
+
     const f = sinon.fake();
     const onEnhanceReducer = (reducer, namespace) => {
       switch (namespace) {
         case 'root.a':
           return (state, action) => {
-            if (action.type === 'COUNT_ADD') {
+            if (action.type === 'A_COUNT_ADD') {
+              f(state, action);
+            }
+            return reducer(state, action);
+          };
+        case 'root.b':
+          return (state, action) => {
+            if (action.type === 'B_COUNT_ADD') {
+              f(state, action);
+            }
+            return reducer(state, action);
+          };
+        case 'root.a.c':
+          return (state, action) => {
+            if (action.type === 'A_C_UPDATE_TEXT') {
               f(state, action);
             }
             return reducer(state, action);
@@ -209,11 +245,44 @@ describe('reducerModules', () => {
       }
     };
 
-    const reducer = createReducers(reducerModules, { onEnhanceReducer });
-    const initialState = reducer(undefined, { type: 'UNKNOWN' });
-    reducer(initialState, { type: 'COUNT_ADD', payload: 4 });
+    reducer = createReducers(models, { onEnhanceReducer });
+    state = reducer(undefined, { type: 'UNKNOWN' });
+    expect(state).toEqual({
+      a: {
+        count: 0,
+        c: {
+          text: ''
+        }
+      },
+      b: 0
+    });
+
+    state = reducer(state, { type: 'A_COUNT_ADD', payload: 4 });
     expect(f.callCount).toBe(1);
-    expect(f.firstCall.args[0]).toEqual({ count: 0 });
-    expect(f.firstCall.args[1]).toEqual({ type: 'COUNT_ADD', payload: 4 });
+    expect(f.firstCall.args[0]).toEqual({ count: 0, c: { text: '' } });
+    expect(f.firstCall.args[1]).toEqual({ type: 'A_COUNT_ADD', payload: 4 });
+
+    state = reducer(state, { type: 'B_COUNT_ADD', payload: 2 });
+    expect(f.callCount).toBe(2);
+    expect(f.secondCall.args[0]).toEqual(0);
+    expect(f.secondCall.args[1]).toEqual({ type: 'B_COUNT_ADD', payload: 2 });
+
+    state = reducer(state, { type: 'A_C_UPDATE_TEXT', payload: 'hello, world' });
+    expect(f.callCount).toBe(3);
+    expect(f.thirdCall.args[0]).toEqual({ text: '' });
+    expect(f.thirdCall.args[1]).toEqual({
+      type: 'A_C_UPDATE_TEXT',
+      payload: 'hello, world'
+    });
+
+    expect(state).toEqual({
+      a: {
+        count: 4,
+        c: {
+          text: 'hello, world'
+        }
+      },
+      b: 2
+    });
   });
 });

@@ -5,11 +5,6 @@ import {
 } from '../src/selectorModules';
 
 describe('selectorModules', () => {
-  test('[model.selectors] should be function', () => {
-    const model = { namespace: 'hello', selectors: {} };
-    expect(() => addSelectorModule(model, {})).toThrow(/should be function/);
-  });
-
   test('[model.selectors] could be undefined', () => {
     const model = { namespace: 'hello' };
     const selectorModules = addSelectorModule(model, {});

@@ -104,14 +104,13 @@ export default function () {
     actionModules = delActionModule(namespace, actionModules);
     selectorModules = delSelectorModule(namespace, selectorModules);
     sagaModules = delSagaModule(namespace, sagaModules);
+    biz.models = filter(model => model.namespace !== namespace, biz.models);
 
     if (biz.status === Status.RUNNING) {
       updateInjectedArgs();
       biz.store.replaceReducer(reducers);
       biz.store.dispatch({ type: getTypeOfCancelSaga(namespace) });
     }
-
-    biz.models = filter(model => model.namespace !== namespace, biz.models);
   }
 
   function run(opts = {}) {
