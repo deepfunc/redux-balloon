@@ -3,7 +3,7 @@ import { createReducers } from '../src/reducerModules';
 
 describe('reducerModules', () => {
   test('should create reducers', () => {
-    const models = [];
+    let models = [];
     let reducer;
     let state;
 
@@ -43,6 +43,7 @@ describe('reducerModules', () => {
         b: { x: 1 }
       }
     });
+
     state = reducer(state, { type: 'PARENT_B_SOME_DO' });
     expect(state).toEqual({
       parent: {
@@ -69,6 +70,7 @@ describe('reducerModules', () => {
         c: ''
       }
     });
+
     state = reducer(state, { type: 'PARENT_C_SOME_DO', payload: 'hello' });
     expect(state).toEqual({
       parent: {
@@ -111,6 +113,7 @@ describe('reducerModules', () => {
         a1: 1
       }
     });
+
     state = reducer(state, { type: 'PARENT_SOME_DO' });
     expect(state).toEqual({
       parent: {
@@ -125,6 +128,7 @@ describe('reducerModules', () => {
         a1: 1
       }
     });
+
     state = reducer(state, { type: 'PARENT_B_SOME_DO' });
     expect(state).toEqual({
       parent: {
@@ -139,6 +143,7 @@ describe('reducerModules', () => {
         a1: 1
       }
     });
+
     state = reducer(state, { type: 'PARENT_C_SOME_DO', payload: 'hello, world' });
     expect(state).toEqual({
       parent: {
@@ -153,6 +158,7 @@ describe('reducerModules', () => {
         a1: 1
       }
     });
+
     state = reducer(state, { type: 'PARENT_B_Y_SOME_DO' });
     expect(state).toEqual({
       parent: {
@@ -167,6 +173,7 @@ describe('reducerModules', () => {
         a1: 1
       }
     });
+
     state = reducer(state, { type: 'PARENT1_SOME_DO' });
     expect(state).toEqual({
       parent: {
@@ -179,6 +186,66 @@ describe('reducerModules', () => {
       },
       parent1: {
         a1: 2
+      }
+    });
+
+    models = [];
+    models.push({
+      namespace: 'parent.child',
+      reducers: {
+        'PARENT_CHILD_SOME_DO': state => {
+          return state + 1;
+        }
+      },
+      state: 1
+    });
+    models.push({
+      namespace: 'parent',
+      reducers: {
+        'PARENT_SOME_DO': state => {
+          return { a: state.a + 1 };
+        }
+      },
+      state: { a: 1 }
+    });
+    reducer = createReducers(models);
+    state = reducer(undefined, { type: 'UNKNOWN' });
+    expect(state).toEqual({
+      parent: {
+        a: 1,
+        child: 1
+      }
+    });
+
+    state = reducer(state, { type: 'PARENT_CHILD_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 1,
+        child: 2
+      }
+    });
+
+    state = reducer(state, { type: 'PARENT_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        child: 2
+      }
+    });
+
+    state = reducer(undefined, { type: 'UNKNOWN' });
+    state = reducer(state, { type: 'PARENT_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        child: 1
+      }
+    });
+    state = reducer(state, { type: 'PARENT_CHILD_SOME_DO' });
+    expect(state).toEqual({
+      parent: {
+        a: 2,
+        child: 2
       }
     });
   });

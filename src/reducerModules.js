@@ -31,7 +31,9 @@ function createReducers(models, opts = {}) {
       );
     } else {
       // 没有祖先节点
-      firstLevelNodeReducer = createNodeReducer(modelReducer);
+      firstLevelNodeReducer = rootDef[firstLevelNodeName] || noop;
+      const { childrenReducerMap } = firstLevelNodeReducer;
+      firstLevelNodeReducer = createNodeReducer(modelReducer, childrenReducerMap);
     }
 
     // 最终目的是把第一层节点设置好
