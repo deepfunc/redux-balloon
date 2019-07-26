@@ -6,7 +6,8 @@ module.exports = {
       '@babel/env',
       {
         modules: BABEL_ENV === 'commonjs' ? 'cjs' : false,
-        loose: true
+        loose: true,
+        targets: NODE_ENV === 'test' ? { node: 'current' } : {}
       }
     ]
   ],
