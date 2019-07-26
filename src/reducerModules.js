@@ -1,57 +1,67 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { REDUCER_ROOT_NAMESPACE, NAMESPACE_SEP } from './constants';
-import {
-  identity,
-  pathOfNS,
-  init,
-  noop,
-  pick
-} from './utils';
+import { identity, pathOfNS, noop, pick } from './utils';
 
 function createReducers(models, opts = {}) {
   function addModelReducer(model, rootDef, onEnhanceReducer) {
     const { namespace, state = null, reducers } = model;
-    const paths = pathOfNS(namespace);
-    const parentNodeNames = init(paths);
-    const firstLevelNodeName = paths[0];
-    const restNodeNames = paths.slice(1);
-    const modelReducer = onEnhanceReducer(
-      handleActions(reducers, state),
-      REDUCER_ROOT_NAMESPACE + NAMESPACE_SEP + namespace
-    );
+    if (reducers == null) {
+      return;
+    }
+
+    const nodeNames = pathOfNS(namespace);
+    const firstLevelNodeName = nodeNames[0];
+    const restNodeNames = nodeNames.slice(1);
+    const modelReducer = handleActions(reducers, state);
     let firstLevelNodeReducer;
 
-    if (parentNodeNames.length > 0) {
+    if (nodeNames.length > 1) {
       // 处理祖先节点
       firstLevelNodeReducer = createPathLevelNodeReducer(
         rootDef[firstLevelNodeName],
+        [firstLevelNodeName],
         restNodeNames,
-        modelReducer
+        modelReducer,
+        onEnhanceReducer
       );
     } else {
       // 没有祖先节点
       firstLevelNodeReducer = rootDef[firstLevelNodeName] || noop;
       const { childrenReducerMap } = firstLevelNodeReducer;
-      firstLevelNodeReducer = createNodeReducer(modelReducer, childrenReducerMap);
+      firstLevelNodeReducer =
+        createNodeReducer(modelReducer, childrenReducerMap, onEnhanceReducer, namespace);
     }
 
     // 最终目的是把第一层节点设置好
     rootDef[firstLevelNodeName] = firstLevelNodeReducer;
   }
 
-  function createPathLevelNodeReducer(currNodeReducer = noop, restNodeNames, modelReducer) {
+  function createPathLevelNodeReducer(
+    currNodeReducer = noop,
+    curPathNodeNames,
+    restNodeNames,
+    modelReducer,
+    onEnhanceReducer
+  ) {
     const { reducer, childrenReducerMap = {} } = currNodeReducer;
     const nextLevelNodeName = restNodeNames[0];
     let nextLevelNodeReducer;
 
     if (restNodeNames.length === 1) {
-      nextLevelNodeReducer = createNodeReducer(modelReducer);
+      nextLevelNodeReducer = createNodeReducer(
+        modelReducer,
+        undefined,
+        onEnhanceReducer,
+        curPathNodeNames.concat(restNodeNames).join(NAMESPACE_SEP)
+      );
     } else {
       nextLevelNodeReducer = createPathLevelNodeReducer(
         childrenReducerMap[nextLevelNodeName],
+        curPathNodeNames.concat(restNodeNames[0]),
         restNodeNames.slice(1),
-        modelReducer
+        modelReducer,
+        onEnhanceReducer
       );
     }
 
@@ -60,11 +70,13 @@ function createReducers(models, opts = {}) {
       {
         ...childrenReducerMap,
         [nextLevelNodeName]: nextLevelNodeReducer
-      }
+      },
+      onEnhanceReducer,
+      curPathNodeNames.join(NAMESPACE_SEP)
     );
   }
 
-  function createNodeReducer(reducer, childrenReducerMap) {
+  function createNodeReducer(reducer, childrenReducerMap, onEnhanceReducer, namespace) {
     // 默认就是节点自身的 reducer
     let ret = reducer;
 
@@ -107,6 +119,10 @@ function createReducers(models, opts = {}) {
       ret = combineReducers(childrenReducerMap);
     }
 
+    ret = onEnhanceReducer(
+      ret,
+      REDUCER_ROOT_NAMESPACE + NAMESPACE_SEP + namespace
+    );
     ret.reducer = reducer;
     ret.childrenReducerMap = childrenReducerMap;
     return ret;
