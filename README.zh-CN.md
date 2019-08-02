@@ -4,6 +4,11 @@
 
 # Redux Balloon
 
+[![npm version](https://img.shields.io/npm/v/redux-balloon)](https://badge.fury.io/js/redux-balloon)
+[![Build Status](https://travis-ci.org/IAMSUPERMONKEY/redux-balloon.svg?branch=master)](https://travis-ci.org/IAMSUPERMONKEY/redux-balloon)
+[![Coverage Status](https://coveralls.io/repos/github/IAMSUPERMONKEY/redux-balloon/badge.svg?branch=master)](https://coveralls.io/github/IAMSUPERMONKEY/redux-balloon?branch=master)
+[![Dependencies Status](https://david-dm.org/IAMSUPERMONKEY/redux-balloon.svg)](https://david-dm.org/IAMSUPERMONKEY/redux-balloon)
+
 基于 [redux](https://github.com/reduxjs/redux), [redux-saga](https://github.com/redux-saga/redux-saga), [redux-actions](https://github.com/redux-utilities/redux-actions), [reselect](https://github.com/reduxjs/reselect) 的轻量级前端框架。(灵感来自于 redux ducks style 和 DvaJS)
 
 ------
