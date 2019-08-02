@@ -3,6 +3,7 @@ node_js:
   - "10.16.1"
 script:
   - npm test
+  - npm run coveralls
 branches:
   only:
     - master
