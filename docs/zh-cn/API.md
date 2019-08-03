@@ -60,6 +60,34 @@ const model = {
 
 
 
+#### 支持合并父、子 model 的 state
+
+```javascript
+const parentModel = {
+  namespace: 'parent',
+  state: { a: 1 },
+  // ...
+};
+const childModel = {
+  namespace: 'parent.child',
+  state: { b: 1 },
+  // ...
+};
+
+biz.model(parentModel).model(childModel).run();
+console.log(biz.getState());
+/*
+  parent: {
+  	a: 1,
+  	child: { b: 1 }
+  }
+/*
+```
+
+> state 合并与 model 的加载顺序无关；如果父 state 里有属性与子名称空间 key 同名，则被子 state 覆盖。
+
+
+
 ### reducers
 
 定义 reducers 为 key/value 对象，key 是某个 action 的 type 属性。

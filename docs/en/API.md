@@ -60,6 +60,34 @@ const model = {
 
 
 
+#### support merging state between parent model and child model
+
+```javascript
+const parentModel = {
+  namespace: 'parent',
+  state: { a: 1 },
+  // ...
+};
+const childModel = {
+  namespace: 'parent.child',
+  state: { b: 1 },
+  // ...
+};
+
+biz.model(parentModel).model(childModel).run();
+console.log(biz.getState());
+/*
+  parent: {
+  	a: 1,
+  	child: { b: 1 }
+  }
+/*
+```
+
+> Merging have no concern with loading sequence of models; If an property of parent's state has same name as child's namespace key, it will be overrided by child state.
+
+
+
 ### reducers
 
 Define reducers as key/value object. key is type of some action.

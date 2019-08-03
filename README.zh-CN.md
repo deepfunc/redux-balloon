@@ -17,7 +17,7 @@
 
 - **基于 redux 社区最佳实践组成**（redux-saga、redux-actions、reselect）
 - **Model 概念**：通过 `reducers`, `actions`, `selectors` 和 `sagas` 组织 model
-- **可按树形组织 Redux State 对象**
+- **可按树形组织 Redux State 对象**，支持合并父、子 model 的 state
 - **优化业务文件碎片**：一个业务，一个单一的模型文件
 - **灵活的 sagas 定义方式**
 - **支持多种 UI 框架**：例如 `React` 和 `微信小程序（WePY）`   

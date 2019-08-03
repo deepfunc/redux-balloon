@@ -20,6 +20,7 @@ Lightweight front-end business framework based on [redux](https://github.com/red
 - **Based on redux community best practices** (redux-saga, redux-actions, reselect, etc.)
 - **Model concepts**: organize model with `reducers`, `actions`, `selectors` and `sagas`
 - **You can organize Redux State Object as a tree**
+  - support merging state between parent model and child model
 - **Optimize file fragmentation**: one business, one model file
 - **Define sagas of model flexibility**
 - **Support multiple UI frameworks**: e.g., `React` and `Wechat Mini Program(WePY)`   
