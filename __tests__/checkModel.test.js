@@ -21,11 +21,10 @@ describe('checkModel', () => {
     })).toThrow();
   });
 
-  test('actions should be plain object', () => {
+  test('actions should be plain object or function', () => {
     expect(() => checkModel({
       namespace: 'test',
-      actions: function () {
-      }
+      actions: 123
     })).toThrow();
   });
 

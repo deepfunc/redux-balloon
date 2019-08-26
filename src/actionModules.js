@@ -1,10 +1,12 @@
 import { createAction } from 'redux-actions';
+import { actionCreator } from './actionCreator';
 import {
   assocPath,
   dissocPath,
   mapObjIndexed,
   pathOfNS,
-  isArray
+  isArray,
+  isFunction
 } from './utils';
 
 function addActionModule(model, existingModules) {
@@ -25,7 +27,10 @@ function createActions(modules) {
 
   const create = (modules) => {
     if (isArray(modules)) {
-      const [actionDefMap] = modules;
+      let [actionDefMap] = modules;
+      if (isFunction(actionDefMap)) {
+        actionDefMap = actionDefMap(actionCreator);
+      }
       return mapObjIndexed(
         (actionDef, key) => {
           if (typeof actionDef === 'string' || actionDef instanceof String) {
@@ -39,7 +44,7 @@ function createActions(modules) {
       );
     }
 
-    return mapObjIndexed((module) => create(module), modules);
+    return mapObjIndexed(mod => create(mod), modules);
   };
 
   const actions = create(modules);

@@ -111,7 +111,7 @@ const model = {
 
 定义 actions 为 key/value 对象， `value` 可以是一个字符串或是一个数组. 字符串或 value[0] 是某个 action 的 type，value[1] 是 `payloadCreator` 函数, value[2] 是 `metaCreator` 函数, value[1] 或 value[2] 是可选的。
 
-> Balloon 使用 redux-actions 来创建 actions。你可以看看 [文档](https://redux-actions.js.org/api/createaction#createactiontype-payloadcreator-metacreator) 中是如何使用payloadCreator 和 metaCreator的。
+> Balloon 使用 redux-actions 来创建 actions。你可以看看 [文档](https://redux-actions.js.org/api/createaction#createactiontype-payloadcreator-metacreator) 中是如何使用payloadCreator 和 metaCreator 的。
 
 ```javascript
 const model = {

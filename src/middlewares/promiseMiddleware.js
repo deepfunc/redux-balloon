@@ -1,7 +1,8 @@
-export default function promiseMiddleware(store) {
+import { isApiAction, isPromiseAction } from '../actionCreator';
+
+export default function promiseMiddleware() {
   return next => action => {
-    const { meta = {} } = action;
-    if (meta.isPromise === true) {
+    if (isApiAction(action) || isPromiseAction(action)) {
       return new Promise((resolve, reject) => {
         next({
           _resolve: resolve,

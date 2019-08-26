@@ -39,7 +39,7 @@ function createSelectors(modules, getSelector) {
       return createSelectorMap(selectorDefFunc);
     }
 
-    return mapObjIndexed((module) => create(module), modules);
+    return mapObjIndexed(mod => create(mod), modules);
   };
 
   selectors = { ...create(modules), ...selectorMap };

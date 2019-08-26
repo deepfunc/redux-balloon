@@ -13,7 +13,8 @@ import {
 const sagaEffects = ReduxSaga.effects;
 
 function addSagaModule(model, existingModules) {
-  const { namespace, sagas } = model;
+  const { namespace } = model;
+  const sagas = model['workflow'] || model['sagas'];
   if (typeof sagas === 'undefined') {
     return existingModules;
   }
@@ -28,11 +29,11 @@ function delSagaModule(namespace, existingModules) {
 function runSagaModules(modules, runSaga, opts, extras) {
   const { onSagaError = noop } = opts;
   const _extras = { ...extras, ReduxSaga };
-  forEachObjIndexed((module, namespace) => {
-    const sagas = module[0];
+  forEachObjIndexed((mod, namespace) => {
+    const sagas = mod[0];
     const saga = createSaga(sagas, namespace, opts, _extras);
     runSaga(saga).done.catch(err => {
-      if ((err instanceof SagaError) === false) {
+      if (!(err instanceof SagaError)) {
         err = new SagaError(err, { namespace });
       }
       onSagaError(err);

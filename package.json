@@ -55,7 +55,8 @@
     "redux": "^4.0.1",
     "redux-actions": "^2.6.4",
     "redux-saga": "^0.16.2",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "seamless-immutable": "^7.1.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.0",

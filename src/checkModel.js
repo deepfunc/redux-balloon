@@ -32,8 +32,11 @@ export default function checkModel(model, existingModels = []) {
 
   // check actions
   invariant(
-    typeof actions === 'undefined' || isPlainObject(actions),
-    `[model.actions] should be undefined or plain object, but got ${typeof actions}`
+    typeof actions === 'undefined'
+    || isPlainObject(actions)
+    || isFunction(actions),
+    '[model.actions] should be undefined or plain object'
+    + ' or function, but got ' + typeof actions
   );
 
   // check selectors
@@ -44,9 +47,9 @@ export default function checkModel(model, existingModels = []) {
 
   // check sagas
   invariant(
-    typeof sagas === 'undefined' ||
-    isPlainObject(sagas) ||
-    isFunction(sagas),
+    typeof sagas === 'undefined'
+    || isPlainObject(sagas)
+    || isFunction(sagas),
     `[model.sagas] should be undefined or plain object or function, but got ${typeof sagas}`
   );
 }

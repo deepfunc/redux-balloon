@@ -10,7 +10,7 @@ import {
   runSagaModules
 } from './sagaModules';
 import createStore from './createStore';
-import promiseMiddleware from './promiseMiddleware';
+import promiseMiddleware from './middlewares/promiseMiddleware';
 import {
   identity,
   any,
@@ -18,9 +18,11 @@ import {
   lazyInvoker,
   warning,
   isProdENV,
-  getTypeOfCancelSaga
+  getTypeOfCancelSaga,
+  isPlainObject
 } from './utils';
-import { Status } from './constants';
+import { BizStatus } from './constants';
+import createApiModel from './models/api';
 
 export default function () {
   let reducers;
@@ -33,7 +35,7 @@ export default function () {
   let runOpts;
 
   const biz = {
-    status: Status.IDLE,
+    status: BizStatus.IDLE,
     models: [],
     model,
     unmodel,
@@ -60,7 +62,7 @@ export default function () {
     sagaModules = addSagaModule(model, sagaModules);
     biz.models.push(model);
 
-    if (biz.status === Status.RUNNING) {
+    if (biz.status === BizStatus.RUNNING) {
       updateInjectedArgs();
       biz.store.replaceReducer(reducers);
       const { namespace } = model;
@@ -106,7 +108,7 @@ export default function () {
     sagaModules = delSagaModule(namespace, sagaModules);
     biz.models = filter(model => model.namespace !== namespace, biz.models);
 
-    if (biz.status === Status.RUNNING) {
+    if (biz.status === BizStatus.RUNNING) {
       updateInjectedArgs();
       biz.store.replaceReducer(reducers);
       biz.store.dispatch({ type: getTypeOfCancelSaga(namespace) });
@@ -114,18 +116,13 @@ export default function () {
   }
 
   function run(opts = {}) {
-    if (biz.status === Status.IDLE) {
+    if (biz.status === BizStatus.IDLE) {
       runOpts = opts;
-      runOpts.usePromiseMiddleware =
-        runOpts.usePromiseMiddleware == null ? true : runOpts.usePromiseMiddleware;
+      runOpts = initBuiltInModel(runOpts);
       updateInjectedArgs();
-      sagaMiddleware = createSagaMiddleware();
-      let { middlewares = [], onEnhanceStore = identity } = runOpts;
-      if (runOpts.usePromiseMiddleware) {
-        middlewares.unshift(promiseMiddleware);
-      }
-      middlewares.push(sagaMiddleware);
+      const middlewares = initMiddlewares(runOpts);
 
+      const { onEnhanceStore = identity } = runOpts;
       const store = createStore({
         ...runOpts,
         reducers,
@@ -141,9 +138,32 @@ export default function () {
         { getAction, getSelector }
       );
 
-      biz.status = Status.RUNNING;
+      biz.status = BizStatus.RUNNING;
     } else {
       warning(`only run() in [app.status === 'IDLE'], but there is ${biz.status}`);
     }
+  }
+
+  function initBuiltInModel(opts) {
+    let rst = { ...opts };
+    if (isPlainObject(opts.apiModel)) {
+      biz.model(createApiModel(opts.apiModel));
+      rst.usePromiseMiddleware = true;
+    }
+    return rst;
+  }
+
+  function initMiddlewares(opts) {
+    let middlewares = [];
+
+    if (opts.usePromiseMiddleware) {
+      middlewares.push(promiseMiddleware);
+    }
+    const { middlewares: middlewaresOpt = [] } = opts;
+    middlewares = middlewares.concat(middlewaresOpt);
+    sagaMiddleware = createSagaMiddleware();
+    middlewares.push(sagaMiddleware);
+
+    return middlewares;
   }
 }

@@ -11,6 +11,7 @@ module.exports = {
       'named': 'never',
       'asyncArrow': 'always'
     }],
-    'generator-star-spacing': ['error', 'after']
+    'generator-star-spacing': ['error', 'after'],
+    'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }]
   }
 };

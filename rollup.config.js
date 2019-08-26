@@ -19,7 +19,7 @@ export default [
       nodeResolve(),
       commonjs(),
       babel(),
-      replace({'process.env.NODE_ENV': JSON.stringify('development')})
+      replace({ 'process.env.NODE_ENV': JSON.stringify('development') })
     ]
   },
 
@@ -36,7 +36,7 @@ export default [
       nodeResolve(),
       commonjs(),
       babel(),
-      replace({'process.env.NODE_ENV': JSON.stringify('production')}),
+      replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       terser({
         compress: {
           pure_getters: true,

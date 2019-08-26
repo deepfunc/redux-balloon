@@ -13,7 +13,12 @@ function createReducers(models, opts = {}) {
   }
 
   // 创建 rootReducer
-  return onEnhanceReducer(combineReducers(rootDef), REDUCER_ROOT_NAMESPACE);
+  let rootReducer = identity;
+  if (Object.keys(rootDef).length > 0) {
+    rootReducer = combineReducers(rootDef);
+  }
+
+  return onEnhanceReducer(rootReducer, REDUCER_ROOT_NAMESPACE);
 }
 
 function addModelReducer(model, rootDef, onEnhanceReducer) {

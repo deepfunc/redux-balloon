@@ -54,7 +54,7 @@ import biz from '../biz';
 
 class UserList extends React.Component {
   componentDidMount() {
-  	this.initData();
+    this.initData();
   }
 
   initData() {
@@ -69,11 +69,11 @@ class UserList extends React.Component {
 }
   
 const mapStateToProps = (state) => ({
-    users: biz.selectors.getUsers(state)
+  users: biz.selectors.getUsers(state)
 });
 
 const mapDispatchToProps = {
-    fetchUsers: biz.actions.fetchUsers
+  fetchUsers: biz.actions.fetchUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);
