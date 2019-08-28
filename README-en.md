@@ -1,7 +1,3 @@
-[English](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/README.md) | 简体中文
-
-
-
 # Redux Balloon
 
 [![npm version](https://img.shields.io/npm/v/redux-balloon)](https://badge.fury.io/js/redux-balloon)
@@ -9,32 +5,37 @@
 [![Coverage Status](https://coveralls.io/repos/github/IAMSUPERMONKEY/redux-balloon/badge.svg?branch=master)](https://coveralls.io/github/IAMSUPERMONKEY/redux-balloon?branch=master)
 [![Dependencies Status](https://david-dm.org/IAMSUPERMONKEY/redux-balloon.svg)](https://david-dm.org/IAMSUPERMONKEY/redux-balloon)
 
-基于 [redux](https://github.com/reduxjs/redux), [redux-saga](https://github.com/redux-saga/redux-saga), [redux-actions](https://github.com/redux-utilities/redux-actions), [reselect](https://github.com/reduxjs/reselect) 的轻量级前端框架。(灵感来自于 redux ducks style 和 DvaJS)
+Lightweight front-end business framework based on [redux](https://github.com/reduxjs/redux), [redux-saga](https://github.com/redux-saga/redux-saga), [redux-actions](https://github.com/redux-utilities/redux-actions), [reselect](https://github.com/reduxjs/reselect).(Inspired by redux ducks style and DvaJS)
 
-------
+---
 
-## 特性
 
-- **基于 redux 社区最佳实践组成**（redux-saga、redux-actions、reselect）
-- **Model 概念**：通过 `reducers`, `actions`, `selectors` 和 `sagas` 组织 model
-- **可按树形组织 Redux State 对象**，支持合并父、子 model 的 state
-- **优化业务文件碎片**：一个业务，一个单一的模型文件
-- **灵活的 sagas 定义方式**
-- **支持多种 UI 框架**：例如 `React` 和 `微信小程序（WePY）`   
 
-## 兼容性
+## Features
 
-支持现代浏览器和 IE9。
+- **Based on redux community best practices** (redux-saga, redux-actions, reselect, etc.)
+- **Model concepts**: organize model with `reducers`, `actions`, `selectors` and `sagas`
+- **You can organize Redux State Object as a tree**
+  - support merging state between parent model and child model
+- **Optimize file fragmentation**: one business, one model file
+- **Define sagas of model flexibility**
+- **Support multiple UI frameworks**: e.g., `React` and `Wechat Mini Program(WePY)`   
+
+
+
+## Browsers support
+
+Modern browsers and IE9.
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| IE9, IE10, IE11, Edge                                        | last 2 versions                                              | last 2 versions                                              | last 2 versions                                              |
+| --------- | --------- | --------- | --------- |
+| IE9, IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions |
 
 
 
-## 入门指南
+## Getting started
 
-### 安装
+### Install
 
 ```bash
 $ npm install --save redux-balloon
@@ -42,9 +43,9 @@ $ npm install --save redux-balloon
 
 
 
-### 使用范例
+### Usage Example
 
-假设我们要做一个界面获取用户列表数据并且展示出来（使用 `react` 和 `react-redux`）。
+Suppose we have a UI to fetch user data and display them (use `react` and `react-redux`).
 
 #### `UserList.js`
 
@@ -64,7 +65,7 @@ class UserList extends React.Component {
   
   render() {
     const { users } = this.props;
-    // 展示用户列表数据 ...
+    // display users data ...
   }
 }
   
@@ -81,7 +82,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(UserList);
 
 
 
-`biz` 是什么？这就是用 `redux-balloon` 来实现的业务层代码。
+What is `biz` ? It is our business code by using `redux-balloon`.
 
 #### `biz.js`
 
@@ -104,7 +105,7 @@ const users = {
   }),
   sagas: {
     * [types.USERS_FETCH](action, { call, put }) {
-      // 通过参数注入 saga effects。
+      // saga effects are treated as parameter injection.
       const users = yield call(api.fetchUsers);
       yield put({ type: types.USERS_PUT, payload: users });
     }
@@ -121,7 +122,7 @@ export default biz;
 
 
 
-为了让应用跑起来，我们需要配置入口。
+To run our app, we'll connect it.
 
 #### `app.js`
 
@@ -143,47 +144,49 @@ ReactDOM.render(<App/>, document.getElementById('app'));
 
 
 
-你不需要 import redux, redux-saga（或者 redux-actions, reselect）到你的 js 文件中；你也不需要手动配置启动 redux 和连接 redux-saga。所以，如果你使用 redux 技术栈， 通过使用 `redux-balloon`，你可以用一种便捷的方式来编写业务层代码，并应用在多种 UI 层框架中。:smile:
-
-## 文档
-
-[API.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/docs/zh-cn/API.md)
+You don't need to import redux, redux-saga (and redux-actions, reselect) in your js files; and you don't need initialize redux or redux-saga. By using `redux-balloon`, you can write business codes in easy way and run them in some different UI frameworks. :smile:
 
 
 
-## 完整示例
+## Documentation
 
-[React example](https://github.com/IAMSUPERMONKEY/redux-balloon/tree/master/examples/react)
-
-WePY example 正在制作中...
+[API.md](docs/en/API.md)
 
 
 
-## 更新日志
+## Complete Examples
 
-[CHANGELOG.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/CHANGELOG.md)
+[React example](examples/react)
+
+WePY example making...
 
 
 
-## 目录介绍
+## Change Log
+
+[CHANGELOG.md](CHANGELOG.md)
+
+
+
+## Directory
 
 ```
-├── __tests__             - 单元测试
-├── examples              - 使用示例
-├── docs                  - 文档
-├── src                   - 源码
-└── CHANGELOG.md          - 更新日志
+├── __tests__             - unit tests
+├── examples              - how to use it
+├── docs                  - documents
+├── src                   - source codes
+└── CHANGELOG.md          - change log
 ```
 
 
 
-## 许可证
+## License
 
 [MIT](https://tldrlegal.com/license/mit-license)
 
 
 
-## 贡献者指南
+## Contribution Guide
 
-[CONTRIBUTING.md](https://github.com/IAMSUPERMONKEY/redux-balloon/blob/master/CONTRIBUTING.md)
+[CONTRIBUTING.md](CONTRIBUTING.md)
 
