@@ -2,9 +2,9 @@ import { isLatestForApiAction, isEveryForApiAction } from '../../actionCreator';
 import { ApiStatus } from './constants.js';
 import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './types';
 
-const latestHandlerMap = {};
+const handlerMapForLatest = {};
 
-export default function createApiWorkflowCreator(apiMap) {
+export default function createApiWorkflowCreator(apiMap = {}) {
   return function apiWorkflowCreator(effects, extras) {
     const { all, call, takeLatest, takeEvery, put } = effects;
     const { getAction } = extras;
@@ -20,8 +20,8 @@ export default function createApiWorkflowCreator(apiMap) {
 
     const createLatestHandler = function* (action) {
       const { type } = action;
-      if (!latestHandlerMap[type]) {
-        latestHandlerMap[type] = true;
+      if (!handlerMapForLatest[type]) {
+        handlerMapForLatest[type] = true;
         yield takeLatest(
           action => isLatestForApiAction(action) && action.type === type,
           apiActionHandler

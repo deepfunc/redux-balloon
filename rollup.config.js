@@ -18,7 +18,7 @@ export default [
     plugins: [
       nodeResolve(),
       commonjs(),
-      babel(),
+      babel({ runtimeHelpers: true }),
       replace({ 'process.env.NODE_ENV': JSON.stringify('development') })
     ]
   },
@@ -35,7 +35,7 @@ export default [
     plugins: [
       nodeResolve(),
       commonjs(),
-      babel(),
+      babel({ runtimeHelpers: true }),
       replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
       terser({
         compress: {
