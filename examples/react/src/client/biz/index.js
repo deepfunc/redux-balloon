@@ -1,4 +1,5 @@
 import balloon from 'redux-balloon';
+import * as api from './services';
 import userManagement from './models/userManagement';
 
 const biz = balloon();
@@ -11,6 +12,7 @@ if (process.env.NODE_ENV === 'development' && window.__REDUX_DEVTOOLS_EXTENSION_
 }
 
 biz.run({
+  apiModel: { apiMap: api },
   devtools,
   onSagaError: (err) => {
     console.error('onSagaError', err);
