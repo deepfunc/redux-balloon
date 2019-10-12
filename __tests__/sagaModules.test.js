@@ -1,4 +1,5 @@
-import { runSaga } from 'redux-saga';
+import { runSaga, stdChannel } from 'redux-saga';
+import EventEmitter from 'events';
 import {
   addSagaModule,
   delSagaModule,
@@ -41,21 +42,15 @@ describe('sagaModules', () => {
 
   describe('run sagas', () => {
     function createEmitter() {
-      const listeners = [];
+      const emitter = new EventEmitter();
+      const channel = stdChannel();
+      emitter.on('action', channel.put);
 
       return {
-        subscribe(callback) {
-          listeners.push(callback);
-          return () => {
-            const index = listeners.indexOf(callback);
-            if (index >= 0) {
-              listeners.splice(index, 1);
-            }
-          };
-        },
+        channel,
 
         emit(action) {
-          listeners.forEach(callback => callback(action));
+          emitter.emit('action', action);
         }
       };
     }
@@ -83,10 +78,10 @@ describe('sagaModules', () => {
 
     test('should run sagas: sagas is plain object', (done) => {
       const dispatched = [];
-      const { subscribe, emit } = createEmitter();
+      const { channel, emit } = createEmitter();
       const runSagaMock = (saga) => {
         return runSaga({
-          subscribe,
+          channel,
           dispatch: (action) => {
             dispatched.push(action);
           }
@@ -121,16 +116,16 @@ describe('sagaModules', () => {
           ]));
           done();
         },
-        20
+        100
       );
     });
 
     test('should run sagas: sagas is function, and return plain object', (done) => {
       const dispatched = [];
-      const { subscribe, emit } = createEmitter();
+      const { channel, emit } = createEmitter();
       const runSagaMock = (saga) => {
         return runSaga({
-          subscribe,
+          channel,
           dispatch: (action) => {
             dispatched.push(action);
           }

@@ -32,7 +32,7 @@ function runSagaModules(modules, runSaga, opts, extras) {
   forEachObjIndexed((mod, namespace) => {
     const sagas = mod[0];
     const saga = createSaga(sagas, namespace, opts, _extras);
-    runSaga(saga).done.catch(err => {
+    runSaga(saga).toPromise().catch(err => {
       if (!(err instanceof SagaError)) {
         err = new SagaError(err, { namespace });
       }
