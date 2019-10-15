@@ -1,6 +1,6 @@
 {
   "name": "redux-balloon",
-  "version": "0.13.0",
+  "version": "1.0.0",
   "description": "Lightweight business framework for Redux apps",
   "license": "MIT",
   "repository": {
@@ -41,9 +41,8 @@
     "build": "run-s clean && run-p build:*",
     "build:esm": "cross-env BABEL_ENV=esm babel src --out-dir es",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
-    "build:wepy": "gulp buildWePY",
     "build:umd": "cross-env BABEL_ENV=umd rollup -c && es-check es5 dist/redux-balloon.min.js",
-    "clean": "rimraf dist es lib wepy",
+    "clean": "rimraf dist es lib",
     "test": "jest",
     "test:watch": "npm test -- --watch",
     "test:cov": "npm test -- --coverage",

@@ -69,21 +69,30 @@ function createWatcher(sagas, namespace, opts, extras) {
   }
 
   return function* () {
-    const { takeEvery, takeLatest, throttle } = sagaEffects;
+    const typeWhiteList = [
+      'takeEvery',
+      'takeLatest',
+      'takeLeading',
+      'throttle',
+      'debounce'
+    ];
     const keys = Object.keys(sagasObj);
 
     for (const key of keys) {
+      // takeEvery is default
       let type = 'takeEvery';
-      let ms;
       let saga = sagasObj[key];
+      let opts;
 
       if (isArray(saga)) {
         saga = sagasObj[key][0];
-        const opts = sagasObj[key][1];
+        opts = sagasObj[key][1];
         type = opts.type;
 
-        if (type === 'throttle') {
-          ms = opts.ms;
+        if (!typeWhiteList.includes(type)) {
+          throw new Error(
+            `only support these types: [${typeWhiteList}], but got: ${type}. namespace: ${namespace}, key: ${key}`
+          );
         }
       }
       const handler = handleActionForHelper(
@@ -94,14 +103,13 @@ function createWatcher(sagas, namespace, opts, extras) {
       );
 
       switch (type) {
-        case 'takeLatest':
-          yield takeLatest(key, handler);
-          break;
         case 'throttle':
-          yield throttle(ms, key, handler);
+        case 'debounce':
+          yield sagaEffects[type](opts.ms, key, handler);
           break;
         default:
-          yield takeEvery(key, handler);
+          // takeEvery, takeLatest, takeLeading
+          yield sagaEffects[type](key, handler);
       }
     }
   };

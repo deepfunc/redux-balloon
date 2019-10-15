@@ -28,7 +28,7 @@
     "react-dom": "^16.6.3",
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
-    "redux-balloon": "^0.13.0",
+    "redux-balloon": "^1.0.0",
     "seamless-immutable": "^7.1.4",
     "serve-favicon": "^2.5.0",
     "throttle-debounce": "^2.0.1",
