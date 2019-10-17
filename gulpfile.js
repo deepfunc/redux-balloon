@@ -5,18 +5,40 @@ const replace = require('gulp-replace');
 
 gulp.task('buildWePY', function (callback) {
   runSequence(
-    'buildBabel',
+    'copySrc',
     'replaceSagaReference',
+    'buildBabel',
     callback
   );
 });
 
-gulp.task('buildBabel', shell.task([
-  'cross-env BABEL_ENV=commonjs babel src --out-dir wepy'
+gulp.task('copySrc', shell.task([
+  'cp -r src wepy'
 ]));
 
 gulp.task('replaceSagaReference', function () {
   gulp.src('./wepy/sagaImports.js')
-    .pipe(replace('redux-saga', 'redux-saga/dist/redux-saga'))
+    .pipe(
+      replace(
+        'import * as ReduxSaga from \'redux-saga\';',
+        'import * as ReduxSaga from \'redux-saga/dist/redux-saga.umd\';'
+      )
+    )
+    .pipe(
+      replace(
+        'import * as effects from \'redux-saga/effects\';',
+        ''
+      )
+    )
+    .pipe(
+      replace(
+        'const SagaEffects = effects;',
+        'const SagaEffects = ReduxSaga.effects;'
+      )
+    )
     .pipe(gulp.dest('./wepy'));
 });
+
+gulp.task('buildBabel', shell.task([
+  'cross-env BABEL_ENV=wepy babel wepy --out-dir wepy'
+]));

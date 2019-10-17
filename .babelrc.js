@@ -5,14 +5,14 @@ module.exports = {
     [
       '@babel/env',
       {
-        modules: BABEL_ENV === 'commonjs' ? 'cjs' : false,
+        modules: (BABEL_ENV === 'commonjs' || BABEL_ENV === 'wepy') ? 'cjs' : false,
         loose: true,
         targets: NODE_ENV === 'test' ? { node: 'current' } : {}
       }
     ]
   ],
   plugins: [
-    '@babel/plugin-transform-runtime',
+    BABEL_ENV !== 'wepy' && '@babel/plugin-transform-runtime',
     // don't use `loose` mode here - need to copy symbols when spreading
     '@babel/plugin-proposal-object-rest-spread',
     NODE_ENV === 'test' && '@babel/transform-modules-commonjs'
