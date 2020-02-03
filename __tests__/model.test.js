@@ -26,8 +26,8 @@ describe('model', () => {
   test('should dynamic load model', () => {
     const app = balloon();
     app.model({
-      namespace: 'a',
-      state: { count: 0 },
+      namespace: 'views.a',
+      state: { count: 1 },
       reducers: {
         'COUNT_A_ADD': (state, { payload }) => {
           return Object.assign({}, state, { count: state.count + payload });
@@ -35,12 +35,22 @@ describe('model', () => {
       },
       actions: {
         addCountForA: ['COUNT_A_ADD']
+      },
+      selectors: () => {
+        console.log('a selectors');
+        const getA = state => state.views.a;
+
+        return { getA };
       }
     });
     app.run();
+
+    console.log('app.state1:', app.getState());
+    console.log('app.selectors.getA:', app.selectors.getA(app.getState()));
+
     app.model({
-      namespace: 'b',
-      state: { count: 0 },
+      namespace: 'views.b',
+      state: { count: 2 },
       reducers: {
         'COUNT_B_ADD': (state, { payload }) => {
           return Object.assign({}, state, { count: state.count + payload });
@@ -48,13 +58,23 @@ describe('model', () => {
       },
       actions: {
         addCountForB: ['COUNT_B_ADD']
+      },
+      selectors: () => {
+        console.log('b selectors');
+        const getB = state => state.views.b;
+
+        return { getB };
       }
     });
-    const { store, actions } = app;
 
-    expect(store.getState()).toEqual({ a: { count: 0 }, b: { count: 0 } });
-    store.dispatch(actions.addCountForB(4));
-    expect(store.getState()).toEqual({ a: { count: 0 }, b: { count: 4 } });
+    console.log('app.state2:', app.getState());
+    console.log('app.selectors.getB:', app.selectors.getB(app.getState()));
+
+    // const { store, actions } = app;
+    //
+    // expect(store.getState()).toEqual({ a: { count: 0 }, b: { count: 0 } });
+    // store.dispatch(actions.addCountForB(4));
+    // expect(store.getState()).toEqual({ a: { count: 0 }, b: { count: 4 } });
   });
 
   test('should unload model', () => {
