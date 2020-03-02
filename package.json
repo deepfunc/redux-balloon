@@ -51,6 +51,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.2.0",
+    "@types/redux-actions": "^2.6.1",
     "invariant": "^2.2.4",
     "redux": "^4.0.1",
     "redux-actions": "^2.6.4",
@@ -89,7 +90,8 @@
     "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-terser": "^3.0.0",
     "run-sequence": "^2.2.1",
-    "sinon": "^7.2.0"
+    "sinon": "^7.2.0",
+    "typescript": "^3.7.5"
   },
   "browserslist": [
     "> 1%",
