@@ -4,11 +4,25 @@ import {
   createActions
 } from '../src/actionModules';
 
+import { createAction } from 'redux-actions';
+
 describe('actionModules', () => {
   test('[model.actions] could be undefined', () => {
-    const model = { namespace: 'hello' };
-    const actionModules = addActionModule(model, {});
-    expect(actionModules).toEqual({});
+    const fn = createAction(
+      'TEST',
+      (a, b) => {
+        return { c: a + b };
+      },
+      (...args) => {
+        console.log('args:', args);
+        return args;
+      }
+    );
+    const action = fn(1, 2, 3);
+    console.log('action:', action);
+    // const model = { namespace: 'hello' };
+    // const actionModules = addActionModule(model, {});
+    // expect(actionModules).toEqual({});
   });
 
   test('should add action module', () => {
