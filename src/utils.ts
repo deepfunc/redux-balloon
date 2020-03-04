@@ -1,17 +1,20 @@
+import { StringIndexObject } from './types/utils';
 import { NAMESPACE_SEP } from './constants';
 
-export function pathOfNS(namespace: string) {
+type MapObject = { [key: string]: any };
+
+export function pathArrayOfNS(namespace: string): string[] {
   return namespace.split(NAMESPACE_SEP);
 }
 
-export function noop() {
+export function noop(): void {
 }
 
-export function identity(x: any) {
+export function identity(x: any): any {
   return x;
 }
 
-export function path(paths: Array<string>, obj: object) {
+export function path(paths: string[], obj: StringIndexObject): any {
   let val: any = obj;
   for (let i = 0; i < paths.length; i++) {
     if (val == null) {
@@ -22,12 +25,12 @@ export function path(paths: Array<string>, obj: object) {
   return val;
 }
 
-export function init(list: Array<any>) {
+export function init(list: any[]): any[] {
   return list.slice(0, -1);
 }
 
-export function assoc(prop: string, val: any, obj: { [key: string]: any }) {
-  const result: { [key: string]: any } = {};
+export function assoc(prop: string, val: any, obj: StringIndexObject): StringIndexObject {
+  const result: StringIndexObject = {};
   for (const p in obj) {
     result[p] = obj[p];
   }
@@ -35,8 +38,8 @@ export function assoc(prop: string, val: any, obj: { [key: string]: any }) {
   return result;
 }
 
-export function dissoc(prop: string, obj: { [key: string]: any }) {
-  const result: { [key: string]: any } = {};
+export function dissoc(prop: string, obj: StringIndexObject): StringIndexObject {
+  const result: StringIndexObject = {};
   for (const p in obj) {
     result[p] = obj[p];
   }
@@ -44,7 +47,7 @@ export function dissoc(prop: string, obj: { [key: string]: any }) {
   return result;
 }
 
-export function assocPath(path: Array<string>, val: any, obj: { [key: string]: any }) {
+export function assocPath(path: string[], val: any, obj: StringIndexObject): StringIndexObject {
   if (path.length === 0) {
     return val;
   }
@@ -56,10 +59,7 @@ export function assocPath(path: Array<string>, val: any, obj: { [key: string]: a
   return assoc(idx, val, obj);
 }
 
-export function dissocPath(
-  path: Array<string>,
-  obj: { [key: string]: any }
-): { [key: string]: any } {
+export function dissocPath(path: string[], obj: StringIndexObject): StringIndexObject {
   if (path.length === 0) {
     return obj;
   } else if (path.length === 1) {
@@ -77,9 +77,9 @@ export function dissocPath(
 
 export function mergeDeepWithKey(
   fn: (key: string, lVal: any, rVal: any) => any,
-  lObj: { [key: string]: any },
-  rObj: { [key: string]: any }
-): { [key: string]: any } {
+  lObj: StringIndexObject,
+  rObj: StringIndexObject
+): StringIndexObject {
   return mergeWithKey(function (k, lVal, rVal) {
     if (isPlainObject(lVal) && isPlainObject(rVal)) {
       return mergeDeepWithKey(fn, lVal, rVal);
@@ -91,10 +91,10 @@ export function mergeDeepWithKey(
 
 export function mergeWithKey(
   fn: (key: string, lVal: any, rVal: any) => any,
-  lObj: { [key: string]: any },
-  rObj: { [key: string]: any }
-) {
-  const result: { [key: string]: any } = {};
+  lObj: StringIndexObject,
+  rObj: StringIndexObject
+): StringIndexObject {
+  const result: StringIndexObject = {};
   const lKeys = Object.keys(lObj);
   const rKeys = Object.keys(rObj);
 
@@ -111,8 +111,8 @@ export function mergeWithKey(
   return result;
 }
 
-export function pick(names: Array<string>, obj: { [key: string]: any }) {
-  const result: { [key: string]: any } = {};
+export function pick(names: string[], obj: StringIndexObject): StringIndexObject {
+  const result: StringIndexObject = {};
   let idx = 0;
   while (idx < names.length) {
     if (obj.hasOwnProperty(names[idx])) {
@@ -124,9 +124,9 @@ export function pick(names: Array<string>, obj: { [key: string]: any }) {
 }
 
 export function forEachObjIndexed(
-  fn: (val: any, key: string, obj: { [key: string]: any }) => void,
-  obj: { [key: string]: any }
-) {
+  fn: (val: any, key: string, obj: StringIndexObject) => void,
+  obj: StringIndexObject
+): void {
   const keys = Object.keys(obj);
   for (const key of keys) {
     fn(obj[key], key, obj);
@@ -134,9 +134,9 @@ export function forEachObjIndexed(
 }
 
 export function mapObjIndexed(
-  fn: (val: any, key: string, obj: { [key: string]: any }) => any,
-  obj: { [key: string]: any }
-) {
+  fn: (val: any, key: string, obj: StringIndexObject) => any,
+  obj: StringIndexObject
+): StringIndexObject {
   const keys = Object.keys(obj);
   return keys.reduce(function (acc: { [key: string]: any }, key) {
     acc[key] = fn(obj[key], key, obj);
@@ -144,7 +144,7 @@ export function mapObjIndexed(
   }, {});
 }
 
-export function any(pred: (item: any) => boolean, list: Array<any>): boolean {
+export function any(pred: (item: any) => boolean, list: any[]): boolean {
   let ret = false;
 
   for (const item of list) {
@@ -158,8 +158,8 @@ export function any(pred: (item: any) => boolean, list: Array<any>): boolean {
 
 export function filter(
   pred: (item: any) => boolean,
-  filterable: { filter(item: any): boolean }
-) {
+  filterable: { filter(item: any): any[] }
+): any[] {
   return filterable.filter(pred);
 }
 
@@ -167,7 +167,7 @@ export function filter(
  * @param {any} obj The object to inspect.
  * @returns {boolean} True if the argument appears to be a plain object.
  */
-export function isPlainObject(obj: object) {
+export function isPlainObject(obj: object): boolean {
   if (typeof obj !== 'object' || obj === null) {
     return false;
   }
@@ -180,19 +180,16 @@ export function isPlainObject(obj: object) {
   return Object.getPrototypeOf(obj) === proto;
 }
 
-export const isArray = Array.isArray.bind(Array);
+export const isArray: typeof Array.isArray = Array.isArray.bind(Array);
 
 export function isFunction(o: any): o is Function {
   return typeof o === 'function';
 }
 
-export function lazyInvoker(
-  lazyTarget: Function | object,
-  methodNamespace: string
-) {
+export function lazyInvoker(lazyTarget: Function | object, methodNamespace: string): any {
   return function (...args: any[]) {
     const target = isFunction(lazyTarget) ? lazyTarget() : lazyTarget;
-    const pathArr = pathOfNS(methodNamespace);
+    const pathArr = pathArrayOfNS(methodNamespace);
     const thisArg = path(init(pathArr), target);
     const method = path(pathArr, target);
 
@@ -206,7 +203,7 @@ export function lazyInvoker(
  * @param {String} message The warning message.
  * @returns {void}
  */
-export function warning(message: string) {
+export function warning(message: string): void {
   /* eslint-disable no-console */
   if (typeof console !== 'undefined' && typeof console.error === 'function') {
     console.error(message);
