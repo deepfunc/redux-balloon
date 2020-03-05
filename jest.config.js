@@ -1,9 +1,10 @@
 module.exports = {
   verbose: true,
+  preset: 'ts-jest/presets/js-with-babel',
   transform: {
     '^.+\\.jsx?$': 'babel-jest'
   },
-  testRegex: '/__tests__/.*\\.(test|spec)\\.js$',
+  testRegex: '/__tests__/.*\\.(test|spec)\\.[jt]sx?$',
   testPathIgnorePatterns: [
     'node_modules',
     'setup/.*-setup.js',

@@ -16,19 +16,18 @@ export type ActionDefinition<Payload, Meta> =
   ActionType | ActionDefinitionTuple<Payload, Meta>;
 
 export interface ActionDefinitionMapObject {
-  [key: string]: ActionDefinition<any, any>
+  [key: string]: ActionDefinition<any, any>;
 }
 
 export interface MetaOfApiAction {
-  isApi: true,
-  isLatest?: boolean
+  isApi: true;
+  isLatest?: boolean;
 }
 
 export type ApiAction<Payload> = ActionMeta<Payload, MetaOfApiAction>;
 
-
 export interface MetaOfPromiseAction {
-  isPromise: true
+  isPromise: true;
 }
 
 export type PromiseAction<Payload> = ActionMeta<Payload, MetaOfPromiseAction>;
