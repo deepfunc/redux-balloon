@@ -28,6 +28,7 @@ module.exports = {
           'requireLast': true
         }
     }],
+    '@typescript-eslint/no-non-null-assertion': 'off',
     'generator-star-spacing': ['error', 'after'],
     'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }]
   }

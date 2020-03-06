@@ -8,15 +8,12 @@ export type MetaCreator<Meta> = ActionFunctionAny<Meta>;
 
 export type ActionDefinitionTuple<Payload, Meta> = [
   ActionType,
-  (PayloadCreator<Payload> | null)?,
-  (MetaCreator<Meta> | null)?
+  PayloadCreator<Payload> | null | undefined,
+  (MetaCreator<Meta> | null | undefined)?
 ];
 
-export type ActionDefinition<Payload, Meta> =
-  ActionType | ActionDefinitionTuple<Payload, Meta>;
-
 export interface ActionDefinitionMapObject {
-  [key: string]: ActionDefinition<any, any>;
+  [key: string]: ActionType | ActionDefinitionTuple<any, any>;
 }
 
 export interface MetaOfApiAction {
