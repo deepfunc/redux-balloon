@@ -50,16 +50,16 @@ function createApiMetaCreator<T>(
 
 function defPromiseAction<Payload, Meta>(
   actDef: ActionType | ActionDefinitionTuple<Payload, Meta>
-): Required<ActionDefinitionTuple<Payload, MetaOfPromiseAction>> {
+): NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfPromiseAction>> {
   if (isActionDefinitionTuple(actDef)) {
     const type = actDef[0];
-    const payloadCreator = actDef[1] !== undefined ? actDef[1] : null;
+    const payloadCreator = actDef[1] != null ? actDef[1] : identity;
     const metaCreator = actDef[2] != null
       ? createPromiseMetaCreator(actDef[2])
       : createPromiseMetaCreator();
     return [type, payloadCreator, metaCreator];
   } else {
-    return [actDef, null, createPromiseMetaCreator()];
+    return [actDef, identity, createPromiseMetaCreator()];
   }
 }
 
@@ -103,15 +103,15 @@ function createMergeMetaCreator<MetaBase extends object, T>(
 }
 
 function isApiAction(action: AnyAction): action is ApiAction<any> {
-  return (action.meta && action.meta.isApi === true);
+  return (action.meta && action.meta.isApi);
 }
 
 function isLatestForApiAction(action: ApiAction<any>): boolean {
-  return (action.meta && action.meta.isApi === true && action.meta.isLatest === true);
+  return (action.meta && action.meta.isApi && action.meta.isLatest === true);
 }
 
 function isPromiseAction(action: AnyAction): action is PromiseAction<any> {
-  return (action.meta && action.meta.isPromise === true);
+  return (action.meta && action.meta.isPromise);
 }
 
 const actionCreator = {

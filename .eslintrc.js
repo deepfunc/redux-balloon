@@ -13,6 +13,11 @@ module.exports = {
   },
   rules: {
     'semi': ['error', 'always'],
+    'space-before-function-paren': ['error', {
+      'anonymous': 'always',
+      'named': 'never',
+      'asyncArrow': 'always'
+    }],
     '@typescript-eslint/space-before-function-paren': ['error', {
       'anonymous': 'always',
       'named': 'never',
@@ -29,6 +34,7 @@ module.exports = {
         }
     }],
     '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/strict-boolean-expressions': 'off',
     'generator-star-spacing': ['error', 'after'],
     'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }]
   }
