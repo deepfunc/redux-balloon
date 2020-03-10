@@ -6,15 +6,16 @@ import {
   MetaOfPromiseAction,
   ApiAction,
   PromiseAction,
-  ActionType
+  ActionType,
+  DefApiActionFunc,
+  DefPromiseActionFunc
 } from './types/actions';
-import { NonNullableAndRequiredProperties } from './types/utils';
 import { isArray, identity } from './utils';
 
-function defApiAction<Payload, Meta>(
+const defApiAction: DefApiActionFunc = function <Payload, Meta>(
   actDef: ActionType | ActionDefinitionTuple<Payload, Meta>,
   isLatest: boolean = true
-): NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfApiAction>> {
+) {
   if (isActionDefinitionTuple(actDef)) {
     const type = actDef[0];
     const payloadCreator = actDef[1] != null ? actDef[1] : identity;
@@ -25,7 +26,7 @@ function defApiAction<Payload, Meta>(
   } else {
     return [actDef, identity, createApiMetaCreator(isLatest)];
   }
-}
+};
 
 function isActionDefinitionTuple(o: any): o is ActionDefinitionTuple<any, any> {
   return isArray(o) && o.length >= 1 && o.length <= 3;
@@ -48,9 +49,9 @@ function createApiMetaCreator<T>(
     : createMergeMetaCreator(apiMetaBase, prevMetaCreator);
 }
 
-function defPromiseAction<Payload, Meta>(
+const defPromiseAction: DefPromiseActionFunc = function <Payload, Meta>(
   actDef: ActionType | ActionDefinitionTuple<Payload, Meta>
-): NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfPromiseAction>> {
+) {
   if (isActionDefinitionTuple(actDef)) {
     const type = actDef[0];
     const payloadCreator = actDef[1] != null ? actDef[1] : identity;
@@ -61,7 +62,7 @@ function defPromiseAction<Payload, Meta>(
   } else {
     return [actDef, identity, createPromiseMetaCreator()];
   }
-}
+};
 
 function createPromiseMetaCreator(): MetaCreator<MetaOfPromiseAction>;
 

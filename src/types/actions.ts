@@ -1,4 +1,5 @@
 import { ActionFunctionAny, ActionMeta } from 'redux-actions';
+import { NonNullableAndRequiredProperties } from './utils';
 
 export type ActionType = string;
 
@@ -28,3 +29,7 @@ export interface MetaOfPromiseAction {
 }
 
 export type PromiseAction<Payload> = ActionMeta<Payload, MetaOfPromiseAction>;
+
+export type DefApiActionFunc = <Payload, Meta>(actDef: ActionType | ActionDefinitionTuple<Payload, Meta>, isLatest?: boolean) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfApiAction>>;
+
+export type DefPromiseActionFunc = <Payload, Meta>(actDef: ActionType | ActionDefinitionTuple<Payload, Meta>) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfPromiseAction>>;

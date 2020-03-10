@@ -1,12 +1,11 @@
 import { StringIndexObject } from './types/utils';
 import { NAMESPACE_SEP } from './constants';
 
-type MapObject = { [key: string]: any };
-
 export function pathArrayOfNS(namespace: string): string[] {
   return namespace.split(NAMESPACE_SEP);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noop(): void {
 }
 

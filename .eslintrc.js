@@ -13,11 +13,7 @@ module.exports = {
   },
   rules: {
     'semi': ['error', 'always'],
-    'space-before-function-paren': ['error', {
-      'anonymous': 'always',
-      'named': 'never',
-      'asyncArrow': 'always'
-    }],
+    'space-before-function-paren': "off",
     '@typescript-eslint/space-before-function-paren': ['error', {
       'anonymous': 'always',
       'named': 'never',
