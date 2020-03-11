@@ -8,8 +8,9 @@ import {
   PromiseAction,
   ActionType,
   DefApiActionFunc,
-  DefPromiseActionFunc
-} from './types/actions';
+  DefPromiseActionFunc,
+  ActionDefiner
+} from './types';
 import { isArray, identity } from './utils';
 
 const defApiAction: DefApiActionFunc = function <Payload, Meta>(
@@ -115,14 +116,15 @@ function isPromiseAction(action: AnyAction): action is PromiseAction<any> {
   return (action.meta && action.meta.isPromise);
 }
 
-const actionCreator = {
+const actionDefiner: ActionDefiner = {
   defApiAction,
   defPromiseAction
 };
 
 export {
-  actionCreator,
+  actionDefiner,
   isApiAction,
   isLatestForApiAction,
-  isPromiseAction
+  isPromiseAction,
+  isActionDefinitionTuple
 };

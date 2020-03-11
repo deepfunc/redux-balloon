@@ -1,4 +1,4 @@
-import { isLatestForApiAction, isEveryForApiAction } from '../../actionCreator';
+import { isLatestForApiAction, isEveryForApiAction } from '../../actionDefiner';
 import { ApiStatus } from './constants.js';
 import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './types';
 

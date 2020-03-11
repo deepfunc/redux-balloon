@@ -1,4 +1,4 @@
-import { isApiAction, isPromiseAction } from '../actionCreator';
+import { isApiAction, isPromiseAction } from '../actionDefiner';
 
 export default function promiseMiddleware() {
   return next => action => {

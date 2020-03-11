@@ -13,10 +13,6 @@ export type ActionDefinitionTuple<Payload, Meta> = [
   (MetaCreator<Meta> | null | undefined)?
 ];
 
-export interface ActionDefinitionMapObject {
-  [key: string]: ActionType | ActionDefinitionTuple<any, any>;
-}
-
 export interface MetaOfApiAction {
   isApi: true;
   isLatest?: boolean;
@@ -33,3 +29,14 @@ export type PromiseAction<Payload> = ActionMeta<Payload, MetaOfPromiseAction>;
 export type DefApiActionFunc = <Payload, Meta>(actDef: ActionType | ActionDefinitionTuple<Payload, Meta>, isLatest?: boolean) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfApiAction>>;
 
 export type DefPromiseActionFunc = <Payload, Meta>(actDef: ActionType | ActionDefinitionTuple<Payload, Meta>) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfPromiseAction>>;
+
+export interface ActionDefiner {
+  defApiAction: DefApiActionFunc;
+  defPromiseAction: DefPromiseActionFunc;
+}
+
+export interface ActionsDefinitionMapObject {
+  [key: string]: ActionType | ActionDefinitionTuple<any, any>;
+}
+
+export type ActionsDefinitionFunc = (actionDefiner: ActionDefiner) => ActionsDefinitionMapObject;

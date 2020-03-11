@@ -1,20 +1,20 @@
 import { createAction } from 'redux-actions';
 import {
-  actionCreator,
+  actionDefiner,
   isApiAction,
   isLatestForApiAction,
   isPromiseAction
-} from '../src/actionCreator';
+} from '../src/actionDefiner';
 
 describe('actionCreator', () => {
   test('should define api action', () => {
-    let actionDef = actionCreator.defApiAction('TYPE_TEST');
+    let actionDef = actionDefiner.defApiAction('TYPE_TEST');
     expect(actionDef.length).toBe(3);
     expect(actionDef[0]).toBe('TYPE_TEST');
     expect(actionDef[1](1)).toBe(1);
     expect(actionDef[2]()).toEqual({ isApi: true, isLatest: true });
 
-    actionDef = actionCreator.defApiAction(
+    actionDef = actionDefiner.defApiAction(
       [
         'TYPE_TEST',
         (obj) => ({ ...obj, hello: 'world' })
@@ -26,7 +26,7 @@ describe('actionCreator', () => {
     });
     expect(actionDef[2]()).toEqual({ isApi: true, isLatest: false });
 
-    actionDef = actionCreator.defApiAction([
+    actionDef = actionDefiner.defApiAction([
       'TYPE_TEST',
       null,
       () => ({ hello: 'world' })
@@ -41,19 +41,19 @@ describe('actionCreator', () => {
   });
 
   test('should be an api action', () => {
-    const actionDef = actionCreator.defApiAction('TYPE_TEST');
+    const actionDef = actionDefiner.defApiAction('TYPE_TEST');
     const action = createAction(...actionDef);
     expect(isApiAction(action())).toBe(true);
   });
 
   test('should be an api action and for latest', () => {
-    const actionDef = actionCreator.defApiAction('TYPE_TEST');
+    const actionDef = actionDefiner.defApiAction('TYPE_TEST');
     const action = createAction(...actionDef);
     expect(isLatestForApiAction(action())).toBe(true);
   });
 
   test('should be an api action and not for latest', () => {
-    const actionDef = actionCreator.defApiAction('TYPE_TEST', false);
+    const actionDef = actionDefiner.defApiAction('TYPE_TEST', false);
     const action = createAction(...actionDef);
     expect(isLatestForApiAction(action())).toBeFalsy();
   });
@@ -64,13 +64,13 @@ describe('actionCreator', () => {
   });
 
   test('should define promise action', () => {
-    let actionDef = actionCreator.defPromiseAction('TYPE_TEST');
+    let actionDef = actionDefiner.defPromiseAction('TYPE_TEST');
     expect(actionDef.length).toBe(3);
     expect(actionDef[0]).toBe('TYPE_TEST');
     expect(actionDef[1](1)).toBe(1);
     expect(actionDef[2]()).toEqual({ isPromise: true });
 
-    actionDef = actionCreator.defPromiseAction([
+    actionDef = actionDefiner.defPromiseAction([
       'TYPE_TEST',
       (obj) => ({ ...obj, hello: 'world' })
     ]);
@@ -80,7 +80,7 @@ describe('actionCreator', () => {
     });
     expect(actionDef[2]()).toEqual({ isPromise: true });
 
-    actionDef = actionCreator.defPromiseAction([
+    actionDef = actionDefiner.defPromiseAction([
       'TYPE_TEST',
       null,
       () => ({ hello: 'world' })
@@ -94,7 +94,7 @@ describe('actionCreator', () => {
   });
 
   test('should be a promise action', () => {
-    const actionDef = actionCreator.defPromiseAction('TYPE_TEST');
+    const actionDef = actionDefiner.defPromiseAction('TYPE_TEST');
     const action = createAction(...actionDef);
     expect(isPromiseAction(action())).toBe(true);
   });
