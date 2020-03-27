@@ -50,7 +50,6 @@ describe('actionModules', () => {
       namespace: 'hello',
       actions
     };
-
     modules = addActionModule(model, {});
     expect(modules.hello[0].getSome.length).toBe(3);
     expect(modules.hello[0].getSome[0]).toBe('SOME_GET');
@@ -96,59 +95,57 @@ describe('actionModules', () => {
     expect(actionModules).toEqual({});
   });
 
-  // test('should create actions from actionModules', () => {
-  //   let actionModules = addActionModule(
-  //     { namespace: 'a', actions: { getSome: ['SOME_GET'] } },
-  //     {}
-  //   );
-  //   actionModules = addActionModule(
-  //     { namespace: 'b.c', actions: { getOther: ['OTHER_GET'] } },
-  //     actionModules
-  //   );
-  //   const actions = createActions(actionModules);
-  //
-  //   expect(actions.a.getSome).toEqual(expect.any(Function));
-  //   expect(actions.b.c.getOther).toEqual(expect.any(Function));
-  //   expect(actions.getSome).toEqual(expect.any(Function));
-  //   expect(actions.getOther).toEqual(expect.any(Function));
-  // });
-  //
-  // test('should create actions of using payloadCreator', () => {
-  //   const actionModules = addActionModule(
-  //     {
-  //       namespace: 'a',
-  //       actions: {
-  //         getSome: [
-  //           'SOME_GET',
-  //           (n) => n + 1
-  //         ]
-  //       }
-  //     }
-  //   );
-  //   const actions = createActions(actionModules);
-  //
-  //   expect(actions.a.getSome(3)).toEqual({ type: 'SOME_GET', payload: 4 });
-  // });
-  //
-  // test('should create actions of using metaCreator', () => {
-  //   const actionModules = addActionModule(
-  //     {
-  //       namespace: 'a',
-  //       actions: {
-  //         getSome: [
-  //           'SOME_GET',
-  //           undefined,
-  //           () => ({ admin: true })
-  //         ]
-  //       }
-  //     }
-  //   );
-  //   const actions = createActions(actionModules);
-  //
-  //   expect(actions.a.getSome(4)).toEqual({
-  //     type: 'SOME_GET',
-  //     payload: 4,
-  //     meta: { admin: true }
-  //   });
-  // });
+  test('should create actions from actionModules', () => {
+    let actionModules = addActionModule(
+      { namespace: 'a', actions: { getSome: ['SOME_GET'] } },
+      {}
+    );
+    actionModules = addActionModule(
+      { namespace: 'b.c', actions: { getOther: ['OTHER_GET'] } },
+      actionModules
+    );
+    const actions = createActions(actionModules);
+    expect(actions.a.getSome).toEqual(expect.any(Function));
+    expect(actions.b.c.getOther).toEqual(expect.any(Function));
+    expect(actions.getSome).toEqual(expect.any(Function));
+    expect(actions.getOther).toEqual(expect.any(Function));
+  });
+
+  test('should create actions of using payloadCreator', () => {
+    const actionModules = addActionModule(
+      {
+        namespace: 'a',
+        actions: {
+          getSome: [
+            'SOME_GET',
+            (n: number) => n + 1
+          ]
+        }
+      }
+    );
+    const actions = createActions(actionModules);
+    expect(actions.a.getSome(3)).toEqual({ type: 'SOME_GET', payload: 4 });
+  });
+
+  test('should create actions of using metaCreator', () => {
+    const actionModules = addActionModule(
+      {
+        namespace: 'a',
+        actions: {
+          getSome: [
+            'SOME_GET',
+            undefined,
+            () => ({ admin: true })
+          ]
+        }
+      }
+    );
+    const actions = createActions(actionModules);
+
+    expect(actions.a.getSome(4)).toEqual({
+      type: 'SOME_GET',
+      payload: 4,
+      meta: { admin: true }
+    });
+  });
 });

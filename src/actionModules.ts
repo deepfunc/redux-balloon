@@ -23,7 +23,7 @@ import {
 
 function addActionModule<State>(
   model: Model<State>,
-  existingModules: StringIndexObject
+  existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, actions } = model;
   if (typeof actions === 'undefined') {
@@ -58,8 +58,12 @@ function createActions(modules: StringIndexObject): StringIndexObject {
           if (isActionDefinitionTuple(item)) {
             const type = item[0];
             const payloadCreator = item[1] != null ? item[1] : identity;
-            const metaCreator = item[2] != null ? item[2] : identity;
-            action = createAction(type, payloadCreator, metaCreator);
+            const metaCreator = item[2];
+            if (metaCreator == null) {
+              action = createAction(type, payloadCreator);
+            } else {
+              action = createAction(type, payloadCreator, metaCreator);
+            }
           } else {
             action = createAction(item);
           }
