@@ -8,6 +8,6 @@ import {
  */
 export interface Model<S> {
   namespace: string;
-  state: S;
+  state?: S;
   actions?: ActionsDefinitionMapObject | ActionsDefinitionFunc;
 }

@@ -9,7 +9,7 @@ export type MetaCreator<Meta> = ActionFunctionAny<Meta>;
 
 export type ActionDefinitionTuple<Payload, Meta> = [
   ActionType,
-  PayloadCreator<Payload> | null | undefined,
+  (PayloadCreator<Payload> | null | undefined)?,
   (MetaCreator<Meta> | null | undefined)?
 ];
 
