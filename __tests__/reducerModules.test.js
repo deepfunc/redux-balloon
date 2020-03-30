@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { createReducers } from '../src/reducerModules';
+import { createReducers } from '../src/reducerModules_backup';
 
 describe('reducerModules', () => {
   test('should create reducers', () => {

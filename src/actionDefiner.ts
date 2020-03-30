@@ -6,7 +6,6 @@ import {
   MetaOfPromiseAction,
   ApiAction,
   PromiseAction,
-  ActionType,
   DefApiActionFunc,
   DefPromiseActionFunc,
   ActionDefiner
@@ -14,7 +13,7 @@ import {
 import { isArray, identity } from './utils';
 
 const defApiAction: DefApiActionFunc = function <Payload, Meta>(
-  actDef: ActionType | ActionDefinitionTuple<Payload, Meta>,
+  actDef: string | ActionDefinitionTuple<Payload, Meta>,
   isLatest: boolean = true
 ) {
   if (isActionDefinitionTuple(actDef)) {
@@ -51,7 +50,7 @@ function createApiMetaCreator<T>(
 }
 
 const defPromiseAction: DefPromiseActionFunc = function <Payload, Meta>(
-  actDef: ActionType | ActionDefinitionTuple<Payload, Meta>
+  actDef: string | ActionDefinitionTuple<Payload, Meta>
 ) {
   if (isActionDefinitionTuple(actDef)) {
     const type = actDef[0];

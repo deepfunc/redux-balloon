@@ -1,6 +1,5 @@
 import { createAction } from 'redux-actions';
 import {
-  ActionType,
   ActionDefinitionTuple,
   ActionsDefinitionFunc,
   ActionsDefinitionMapObject,
@@ -53,7 +52,7 @@ function createActions(modules: StringIndexObject): StringIndexObject {
       }
 
       return mapObjIndexed(
-        (item: ActionType | ActionDefinitionTuple<any, any>, key) => {
+        (item: string | ActionDefinitionTuple<any, any>, key) => {
           let action: Function;
           if (isActionDefinitionTuple(item)) {
             const type = item[0];

@@ -2,12 +2,14 @@ import {
   ActionsDefinitionMapObject,
   ActionsDefinitionFunc
 } from './actions';
+import { ReducersDefinitionMapObject } from './reducers';
 
 /**
- * @template S The type of state.
+ * @template State The type of state.
  */
-export interface Model<S> {
+export interface Model<State> {
   namespace: string;
-  state?: S;
+  state?: State;
   actions?: ActionsDefinitionMapObject | ActionsDefinitionFunc;
+  reducers?: ReducersDefinitionMapObject<State, any, any>;
 }

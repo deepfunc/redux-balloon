@@ -1,6 +1,6 @@
 import invariant from 'invariant';
 import checkModel from './checkModel';
-import { createReducers } from './reducerModules';
+import { createReducers } from './reducerModules_backup';
 import { addActionModule, delActionModule, createActions } from './actionModules';
 import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules';
 import {

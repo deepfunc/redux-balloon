@@ -1,14 +1,12 @@
 import { ActionFunctionAny, ActionMeta } from 'redux-actions';
 import { NonNullableAndRequiredProperties } from './utils';
 
-export type ActionType = string;
-
 export type PayloadCreator<Payload> = ActionFunctionAny<Payload>;
 
 export type MetaCreator<Meta> = ActionFunctionAny<Meta>;
 
 export type ActionDefinitionTuple<Payload, Meta> = [
-  ActionType,
+  string,
   (PayloadCreator<Payload> | null | undefined)?,
   (MetaCreator<Meta> | null | undefined)?
 ];
@@ -26,9 +24,9 @@ export interface MetaOfPromiseAction {
 
 export type PromiseAction<Payload> = ActionMeta<Payload, MetaOfPromiseAction>;
 
-export type DefApiActionFunc = <Payload, Meta>(actDef: ActionType | ActionDefinitionTuple<Payload, Meta>, isLatest?: boolean) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfApiAction>>;
+export type DefApiActionFunc = <Payload, Meta>(actDef: string | ActionDefinitionTuple<Payload, Meta>, isLatest?: boolean) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfApiAction>>;
 
-export type DefPromiseActionFunc = <Payload, Meta>(actDef: ActionType | ActionDefinitionTuple<Payload, Meta>) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfPromiseAction>>;
+export type DefPromiseActionFunc = <Payload, Meta>(actDef: string | ActionDefinitionTuple<Payload, Meta>) => NonNullableAndRequiredProperties<ActionDefinitionTuple<Payload, MetaOfPromiseAction>>;
 
 export interface ActionDefiner {
   defApiAction: DefApiActionFunc;
@@ -36,7 +34,7 @@ export interface ActionDefiner {
 }
 
 export interface ActionsDefinitionMapObject {
-  [key: string]: ActionType | ActionDefinitionTuple<any, any>;
+  [actionName: string]: string | ActionDefinitionTuple<any, any>;
 }
 
 export type ActionsDefinitionFunc = (actionDefiner: ActionDefiner) => ActionsDefinitionMapObject;
