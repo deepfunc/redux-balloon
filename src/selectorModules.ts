@@ -9,11 +9,11 @@ import {
 import {
   GetSelectorFunc,
   StringIndexObject,
-  SelectorsDefinitionFunc
+  SelectorsDefinitionFunc, Model
 } from './types';
 
 function addSelectorModule(
-  model: any,
+  model: Model<any>,
   existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, selectors } = model;

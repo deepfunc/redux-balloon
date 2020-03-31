@@ -221,3 +221,7 @@ export function warning(message: string): void {
 export function isProdENV(): boolean {
   return process.env.NODE_ENV === 'production';
 }
+
+export function getTypeOfCancelSaga(namespace: string): string {
+  return `${namespace}/@@CANCEL_SAGA`;
+}

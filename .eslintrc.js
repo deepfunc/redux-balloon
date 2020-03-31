@@ -34,6 +34,7 @@ module.exports = {
     '@typescript-eslint/default-param-last': 'off',
     'generator-star-spacing': ['error', 'after'],
     'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }],
-    'quote-props': 'off'
+    'quote-props': 'off',
+    'no-prototype-builtins': 'off'
   }
 };

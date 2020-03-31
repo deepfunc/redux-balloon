@@ -20,8 +20,8 @@ import {
   identity
 } from './utils';
 
-function addActionModule<State>(
-  model: Model<State>,
+function addActionModule(
+  model: Model<any>,
   existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, actions } = model;
