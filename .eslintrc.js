@@ -31,7 +31,9 @@ module.exports = {
     }],
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
+    '@typescript-eslint/default-param-last': 'off',
     'generator-star-spacing': ['error', 'after'],
-    'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }]
+    'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }],
+    'quote-props': 'off'
   }
 };

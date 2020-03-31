@@ -2,13 +2,13 @@ import invariant from 'invariant';
 import checkModel from './checkModel';
 import { createReducers } from './reducerModules_backup';
 import { addActionModule, delActionModule, createActions } from './actionModules';
-import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules';
+import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules_backup';
 import {
   addSagaModule,
   delSagaModule,
   createSagaMiddleware,
   runSagaModules
-} from './sagaModules';
+} from './sagaModules_backup';
 import createStore from './createStore';
 import promiseMiddleware from './middlewares/promiseMiddleware';
 import {

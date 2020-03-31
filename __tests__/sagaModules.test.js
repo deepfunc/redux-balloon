@@ -4,7 +4,7 @@ import {
   addSagaModule,
   delSagaModule,
   runSagaModules
-} from '../src/sagaModules';
+} from '../src/sagaModules_backup';
 
 describe('sagaModules', () => {
   test('[model.sagas] could be undefined', () => {
