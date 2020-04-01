@@ -9,7 +9,7 @@ import {
   DefApiActionFunc,
   DefPromiseActionFunc,
   ActionDefiner
-} from './types';
+} from './types/actions';
 import { isArray, identity } from './utils';
 
 const defApiAction: DefApiActionFunc = function <Payload, Meta>(

@@ -1,7 +1,11 @@
 import invariant from 'invariant';
+import { Model } from './types/model';
 import { any, isFunction, isPlainObject } from './utils';
 
-export default function checkModel(model, existingModels = []) {
+export default function checkModel(
+  model: Model<any>,
+  existingModels: Array<Model<any>> = []
+): void {
   const {
     namespace,
     reducers,

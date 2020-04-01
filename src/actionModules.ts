@@ -2,10 +2,10 @@ import { createAction } from 'redux-actions';
 import {
   ActionDefinitionTuple,
   ActionsDefinitionFunc,
-  ActionsDefinitionMapObject,
-  Model,
-  StringIndexObject
-} from './types';
+  ActionsDefinitionMapObject
+} from './types/actions';
+import { Model } from './types/model';
+import { StringIndexObject } from './types/utils';
 import {
   actionDefiner,
   isActionDefinitionTuple
@@ -17,7 +17,7 @@ import {
   pathArrayOfNS,
   isArray,
   isFunction,
-  identity
+  identity,
 } from './utils';
 
 function addActionModule(

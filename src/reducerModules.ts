@@ -1,11 +1,11 @@
 import { Reducer, combineReducers } from 'redux';
 import { handleActions, ReduxCompatibleReducerMeta } from 'redux-actions';
 import {
-  Model,
   CreateReducersOptions,
-  EnhanceReducerFunc,
-  StringIndexObject
-} from './types';
+  EnhanceReducerFunc
+} from './types/reducers';
+import { Model } from './types/model';
+import { StringIndexObject } from './types/utils';
 import { REDUCER_ROOT_NAMESPACE, NAMESPACE_SEP } from './constants';
 import { identity, pathArrayOfNS, noop, pick } from './utils';
 

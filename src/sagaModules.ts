@@ -12,9 +12,9 @@ import {
 } from './utils';
 import {
   Saga,
-  SagasDefinition,
-  StringIndexObject
-} from './types';
+  SagasDefinition
+} from './types/sagas';
+import { StringIndexObject } from './types/utils';
 
 const sagaEffects = ReduxSaga.effects;
 

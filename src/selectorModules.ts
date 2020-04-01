@@ -8,9 +8,10 @@ import {
 } from './utils';
 import {
   GetSelectorFunc,
-  StringIndexObject,
-  SelectorsDefinitionFunc, Model
-} from './types';
+  SelectorsDefinitionFunc
+} from './types/selectors';
+import { Model } from './types/model';
+import { StringIndexObject } from './types/utils';
 
 function addSelectorModule(
   model: Model<any>,

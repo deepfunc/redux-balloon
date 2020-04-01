@@ -1,4 +1,4 @@
-import { SagaErrorType } from './types';
+import { SagaErrorType } from './types/sagas';
 
 class SagaError extends Error implements SagaErrorType {
   public sourceErr: Error;

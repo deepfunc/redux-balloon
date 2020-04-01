@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import checkModel from './checkModel';
+import checkModel from './checkModel_backup';
 import { createReducers } from './reducerModules_backup';
 import { addActionModule, delActionModule, createActions } from './actionModules';
 import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules_backup';
@@ -10,7 +10,7 @@ import {
   runSagaModules
 } from './sagaModules_backup';
 import createStore from './createStore_backup';
-import promiseMiddleware from './middlewares/promiseMiddleware';
+import promiseMiddleware from './middlewares/promiseMiddleware_backup';
 import {
   identity,
   any,
