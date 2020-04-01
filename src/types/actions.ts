@@ -38,3 +38,5 @@ export interface ActionsDefinitionMapObject {
 }
 
 export type ActionsDefinitionFunc = (actionDefiner: ActionDefiner) => ActionsDefinitionMapObject;
+
+export type GetActionFunc = <A extends {}>(selectorName: keyof A) => ActionFunctionAny<any>;

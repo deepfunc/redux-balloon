@@ -26,7 +26,7 @@ module.exports = {
       },
       'singleline': {
           'delimiter': 'semi',
-          'requireLast': false
+          'requireLast': true
         }
     }],
     '@typescript-eslint/no-non-null-assertion': 'off',
