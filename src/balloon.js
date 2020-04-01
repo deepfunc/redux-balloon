@@ -9,7 +9,7 @@ import {
   createSagaMiddleware,
   runSagaModules
 } from './sagaModules_backup';
-import createStore from './createStore';
+import createStore from './createStore_backup';
 import promiseMiddleware from './middlewares/promiseMiddleware';
 import {
   identity,

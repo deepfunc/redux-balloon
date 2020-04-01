@@ -1,12 +1,18 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import {
+  createStore,
+  applyMiddleware,
+  compose,
+  Store
+} from 'redux';
 
 export default function (
   {
     reducers,
     preloadedState,
     middlewares,
-    devtools = noop => noop
-  }) {
+    devtools = (noop: any) => noop
+  }: any
+): Store {
   const enhancers = [
     applyMiddleware(...middlewares),
     devtools
