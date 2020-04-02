@@ -54,7 +54,7 @@ export type SimpleSagasDefinitionFunc = (
 export type ManualSagasDefinitionFunc = (
   effects: typeof SagaEffects,
   extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc; }
-) => Generator<any>;
+) => () => Generator<any>;
 
 export type SagasDefinition =
   SagasDefinitionMapObject | SimpleSagasDefinitionFunc | ManualSagasDefinitionFunc;

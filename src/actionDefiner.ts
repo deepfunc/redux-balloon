@@ -111,6 +111,10 @@ function isLatestForApiAction(action: ApiAction<any>): boolean {
   return (action.meta && action.meta.isApi && action.meta.isLatest === true);
 }
 
+function isEveryForApiAction(action: ApiAction<any>): boolean {
+  return (action.meta && action.meta.isApi && action.meta.isLatest === false);
+}
+
 function isPromiseAction(action: AnyAction): action is PromiseAction<any> {
   return (action.meta && action.meta.isPromise);
 }
@@ -124,6 +128,7 @@ export {
   actionDefiner,
   isApiAction,
   isLatestForApiAction,
+  isEveryForApiAction,
   isPromiseAction,
   isActionDefinitionTuple
 };

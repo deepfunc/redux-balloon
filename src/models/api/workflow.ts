@@ -1,16 +1,22 @@
 import { isLatestForApiAction, isEveryForApiAction } from '../../actionDefiner';
-import { ApiStatus } from './constants.js';
-import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './types';
+import { ApiStatus } from './constants';
+import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './actionTypes';
+import { StringIndexObject } from '../../types/utils';
+import {
+  ManualSagasDefinitionFunc
+} from '../../types/sagas';
 
-const handlerMapForLatest = {};
+const handlerMapForLatest: StringIndexObject = {};
 
-export default function createApiWorkflowCreator(apiMap = {}) {
+export default function createApiWorkflowCreator(
+  apiMap: StringIndexObject = {}
+): ManualSagasDefinitionFunc {
   return function apiWorkflowCreator(effects, extras) {
     const { all, call, takeLatest, takeEvery, put } = effects;
     const { getAction } = extras;
 
-    const handleInit = function* () {
-      const payload = {};
+    const handleInit: () => Generator<any> = function* () {
+      const payload: StringIndexObject = {};
       const keys = Object.keys(apiMap);
       keys.forEach(k => {
         payload[k] = { status: ApiStatus.IDLE };
@@ -18,12 +24,12 @@ export default function createApiWorkflowCreator(apiMap = {}) {
       yield put({ type: API_STATUS_INIT_PUT, payload });
     };
 
-    const createLatestHandler = function* (action) {
+    const createLatestHandler = function* (action: any): Generator<any> {
       const { type } = action;
       if (!handlerMapForLatest[type]) {
         handlerMapForLatest[type] = true;
         yield takeLatest(
-          action => isLatestForApiAction(action) && action.type === type,
+          (action: any) => isLatestForApiAction(action) && action.type === type,
           apiActionHandler
         );
 
@@ -32,7 +38,7 @@ export default function createApiWorkflowCreator(apiMap = {}) {
       }
     };
 
-    const apiActionHandler = function* (action) {
+    const apiActionHandler = function* (action: any): Generator<any> {
       const { type, payload, meta, _resolve, _reject } = action;
       const apiName = meta.apiName || type;
       const apiFn = apiMap[apiName];
@@ -57,11 +63,13 @@ export default function createApiWorkflowCreator(apiMap = {}) {
         yield call(updateApiStatus, apiName, { status: ApiStatus.IDLE });
       }
     };
-
-    const updateApiStatus = function* (apiName, status) {
+    const updateApiStatus = function* (
+      apiName: string,
+      statusInfo: { status: ApiStatus; error?: Error; }
+    ): Generator<any> {
       yield put({
         type: API_STATUS_PUT,
-        payload: status,
+        payload: statusInfo,
         meta: { apiName }
       });
     };
@@ -69,8 +77,8 @@ export default function createApiWorkflowCreator(apiMap = {}) {
     return function* apiWorkflow() {
       yield all([
         takeEvery(API_STATUS_INIT, handleInit),
-        takeEvery(action => isLatestForApiAction(action), createLatestHandler),
-        takeEvery(action => isEveryForApiAction(action), apiActionHandler)
+        takeEvery((action: any) => isLatestForApiAction(action), createLatestHandler),
+        takeEvery((action: any) => isEveryForApiAction(action), apiActionHandler)
       ]);
       yield put(getAction('initApiStatus')());
     };

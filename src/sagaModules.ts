@@ -119,7 +119,6 @@ function createWatcher(
 
         if (!typeWhiteList.includes(type)) {
           throw new Error(
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             `only support these types: [${typeWhiteList}], but got: ${type}. namespace: ${namespace}, key: ${key}`
           );
         }

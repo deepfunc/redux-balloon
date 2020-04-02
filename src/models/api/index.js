@@ -2,7 +2,7 @@ import invariant from 'invariant';
 import Immutable from 'seamless-immutable';
 import { isPlainObject, pathOfNS, path } from '../../utils';
 import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './types';
-import createApiWorkflowCreator from './workflow';
+import createApiWorkflowCreator from './workflow_backup';
 
 const { merge } = Immutable;
 
