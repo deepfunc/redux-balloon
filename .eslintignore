@@ -4,3 +4,4 @@ es/
 dist/
 /coverage/
 /examples/
+gulpfile.js

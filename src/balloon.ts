@@ -1,16 +1,16 @@
 import invariant from 'invariant';
-import checkModel from './checkModel_backup';
-import { createReducers } from './reducerModules_backup';
+import checkModel from './checkModel';
+import { createReducers } from './reducerModules';
 import { addActionModule, delActionModule, createActions } from './actionModules';
-import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules_backup';
+import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules';
 import {
   addSagaModule,
   delSagaModule,
   createSagaMiddleware,
   runSagaModules
-} from './sagaModules_backup';
-import createStore from './createStore_backup';
-import promiseMiddleware from './middlewares/promiseMiddleware_backup';
+} from './sagaModules';
+import createStore from './createStore';
+import promiseMiddleware from './middlewares/promiseMiddleware';
 import {
   identity,
   any,
@@ -23,18 +23,24 @@ import {
 } from './utils';
 import { BizStatus } from './constants';
 import createApiModel from './models/api';
+import { Biz, BizRunOptions } from './types/balloon';
+import { Reducer } from 'redux';
+import { StringIndexObject } from './types/utils';
+import { Model } from './types/model';
+import { SelectorFunctionAny } from './types/selectors';
+import { ActionFunctionAny } from 'redux-actions';
 
-export default function () {
-  let reducers;
-  let actionModules = {};
-  let actions;
-  let selectorModules = {};
-  let selectors;
-  let sagaModules = {};
-  let sagaMiddleware;
-  let runOpts;
+export default function (): Biz {
+  let reducers: Reducer;
+  let actionModules: StringIndexObject = {};
+  let actions: StringIndexObject;
+  let selectorModules: StringIndexObject = {};
+  let selectors: StringIndexObject;
+  let sagaModules: StringIndexObject = {};
+  let sagaMiddleware: any;
+  let runOpts: BizRunOptions;
 
-  const biz = {
+  const biz: Biz = {
     status: BizStatus.IDLE,
     models: [],
     model,
@@ -52,7 +58,7 @@ export default function () {
 
   return biz;
 
-  function model(model) {
+  function model<State, Selectors>(model: Model<State, Selectors>): Biz {
     if (!isProdENV()) {
       checkModel(model, biz.models);
     }
@@ -64,7 +70,7 @@ export default function () {
 
     if (biz.status === BizStatus.RUNNING) {
       updateInjectedArgs();
-      biz.store.replaceReducer(reducers);
+      biz.store!.replaceReducer(reducers);
       const { namespace } = model;
       const newSaga = sagaModules[namespace];
       if (newSaga) {
@@ -83,21 +89,21 @@ export default function () {
     return biz;
   }
 
-  function getAction(key) {
-    return lazyInvoker(() => actions, key);
+  function getAction<Actions>(key: keyof Actions): ActionFunctionAny<any> {
+    return lazyInvoker(() => actions, key as string);
   }
 
-  function getSelector(key) {
-    return lazyInvoker(() => selectors, key);
+  function getSelector<Selectors>(key: keyof Selectors): SelectorFunctionAny {
+    return lazyInvoker(() => selectors, key as string);
   }
 
-  function updateInjectedArgs() {
+  function updateInjectedArgs(): void {
     reducers = createReducers(biz.models, runOpts);
     actions = createActions(actionModules);
     selectors = createSelectors(selectorModules, getSelector);
   }
 
-  function unmodel(namespace) {
+  function unmodel(namespace: string): void {
     invariant(
       any(model => model.namespace === namespace, biz.models),
       `[app.models] don't has this namespace: ${namespace}`
@@ -110,12 +116,12 @@ export default function () {
 
     if (biz.status === BizStatus.RUNNING) {
       updateInjectedArgs();
-      biz.store.replaceReducer(reducers);
-      biz.store.dispatch({ type: getTypeOfCancelSaga(namespace) });
+      biz.store!.replaceReducer(reducers);
+      biz.store!.dispatch({ type: getTypeOfCancelSaga(namespace) });
     }
   }
 
-  function run(opts = {}) {
+  function run(opts: BizRunOptions = {}): void {
     if (biz.status === BizStatus.IDLE) {
       runOpts = opts;
       runOpts = initBuiltInModel(runOpts);
@@ -144,8 +150,8 @@ export default function () {
     }
   }
 
-  function initBuiltInModel(opts) {
-    let rst = { ...opts };
+  function initBuiltInModel(opts: BizRunOptions): BizRunOptions {
+    const rst = { ...opts };
     if (isPlainObject(opts.apiModel)) {
       biz.model(createApiModel(opts.apiModel));
       rst.usePromiseMiddleware = true;
@@ -153,7 +159,7 @@ export default function () {
     return rst;
   }
 
-  function initMiddlewares(opts) {
+  function initMiddlewares(opts: BizRunOptions): any[] {
     let middlewares = [];
 
     if (opts.usePromiseMiddleware) {

@@ -14,7 +14,7 @@ import { Model } from './types/model';
 import { StringIndexObject } from './types/utils';
 
 function addSelectorModule(
-  model: Model<any>,
+  model: Model<any, any>,
   existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, selectors } = model;
@@ -38,7 +38,7 @@ function createSelectors(
 ): StringIndexObject {
   let selectorMap = {};
 
-  const createSelectorMap = (defFunc: SelectorsDefinitionFunc): StringIndexObject => {
+  const createSelectorMap = (defFunc: SelectorsDefinitionFunc<any>): StringIndexObject => {
     const map = defFunc({
       getSelector,
       ...Reselect

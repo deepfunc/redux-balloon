@@ -1,14 +1,23 @@
 import invariant from 'invariant';
 import Immutable from 'seamless-immutable';
-import { isPlainObject, pathOfNS, path } from '../../utils';
-import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './types';
-import createApiWorkflowCreator from './workflow_backup';
+import {
+  ApiModelOptions,
+  ApiModelSelectors,
+  ApiModelState,
+  ApiStatusInfo
+} from '../../types/apiModel';
+import { Model } from '../../types/model';
+import { isPlainObject, pathArrayOfNS, path } from '../../utils';
+import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './actionTypes';
+import createApiWorkflowCreator from './workflow';
 
 const { merge } = Immutable;
 
 const DEFAULT_NAMESPACE = 'api';
 
-export default function createApiModel(opts) {
+export default function createApiModel(
+  opts: ApiModelOptions
+): Model<ApiModelState, ApiModelSelectors> {
   const { namespace = DEFAULT_NAMESPACE, apiMap } = opts;
   invariant(
     isPlainObject(apiMap),
@@ -38,9 +47,12 @@ export default function createApiModel(opts) {
       initApiStatus: API_STATUS_INIT
     },
 
-    selectors: () => {
-      const getApiStatus = function (state, apiName) {
-        const apiState = path(pathOfNS(namespace), state);
+    selectors: function () {
+      const getApiStatus = function (
+        state: any,
+        apiName: string
+      ): ApiStatusInfo | undefined {
+        const apiState = path(pathArrayOfNS(namespace), state);
         return (apiState != null) ? apiState[apiName] : undefined;
       };
 

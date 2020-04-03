@@ -1,4 +1,4 @@
-import { StringIndexObject } from './types';
+import { StringIndexObject } from './types/utils';
 import { NAMESPACE_SEP } from './constants';
 
 export function pathArrayOfNS(namespace: string): string[] {
@@ -166,7 +166,7 @@ export function filter(
  * @param {any} obj The object to inspect.
  * @returns {boolean} True if the argument appears to be a plain object.
  */
-export function isPlainObject(obj: object): boolean {
+export function isPlainObject(obj: any): obj is {} {
   if (typeof obj !== 'object' || obj === null) {
     return false;
   }

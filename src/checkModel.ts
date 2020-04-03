@@ -3,8 +3,8 @@ import { Model } from './types/model';
 import { any, isFunction, isPlainObject } from './utils';
 
 export default function checkModel(
-  model: Model<any>,
-  existingModels: Array<Model<any>> = []
+  model: Model<any, any>,
+  existingModels: Array<Model<any, any>> = []
 ): void {
   const {
     namespace,
