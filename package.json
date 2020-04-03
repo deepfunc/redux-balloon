@@ -80,7 +80,7 @@
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-replace": "^1.0.0",
     "gulp-shell": "^0.7.0",
     "jest": "^25.1.0",
@@ -93,7 +93,6 @@
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-replace": "^2.1.0",
     "rollup-plugin-terser": "^3.0.0",
-    "run-sequence": "^2.2.1",
     "sinon": "^7.2.0",
     "ts-jest": "^25.2.1",
     "typescript": "^3.7.5"

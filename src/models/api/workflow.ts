@@ -2,7 +2,7 @@ import { isLatestForApiAction, isEveryForApiAction } from '../../actionDefiner';
 import { ApiStatus } from './constants';
 import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './actionTypes';
 import { StringIndexObject } from '../../types/utils';
-import { ApiStatusInfo } from '../../types/apiModel';
+import { ApiStatusInfo } from './types/apiModel';
 import {
   ManualSagasDefinitionFunc
 } from '../../types/sagas';

@@ -5,7 +5,7 @@ import {
   ApiModelSelectors,
   ApiModelState,
   ApiStatusInfo
-} from '../../types/apiModel';
+} from './types/apiModel';
 import { Model } from '../../types/model';
 import { isPlainObject, pathArrayOfNS, path } from '../../utils';
 import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './actionTypes';
