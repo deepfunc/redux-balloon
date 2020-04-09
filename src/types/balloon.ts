@@ -3,7 +3,7 @@ import { Model } from './model';
 import { StringIndexObject } from './utils';
 import { GetActionFunc } from './actions';
 import { GetSelectorFunc } from './selectors';
-import { ApiModelOptions } from '../models/api/types/apiModel';
+import { ApiModelOptions } from './models/apiModel';
 import { EnhanceReducerFunc } from './reducers';
 import { Store } from 'redux';
 

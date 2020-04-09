@@ -17,11 +17,11 @@ import {
   pathArrayOfNS,
   isArray,
   isFunction,
-  identity,
+  identity
 } from './utils';
 
 function addActionModule(
-  model: Model<any>,
+  model: Model<any, any>,
   existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, actions } = model;

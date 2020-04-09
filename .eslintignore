@@ -5,3 +5,4 @@ dist/
 /coverage/
 /examples/
 gulpfile.js
+rollup.config.js

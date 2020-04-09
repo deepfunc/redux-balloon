@@ -11,6 +11,6 @@ export * from './types/selectors';
 export * from './types/sagas';
 export * from './types/model';
 export * from './types/balloon';
-export * from './models/api/types/apiModel';
+export * from './types/models/apiModel';
 
 export default balloon;

@@ -1,6 +1,6 @@
-import { StringIndexObject } from '../../../types/utils';
-import { SelectorFunctionAny } from '../../../types/selectors';
-import { ApiStatus } from '../constants';
+import { StringIndexObject } from '../utils';
+import { SelectorFunctionAny } from '../selectors';
+import { ApiStatus } from '../../models/api/constants';
 
 export interface ApiModelOptions {
   apiMap: StringIndexObject;
