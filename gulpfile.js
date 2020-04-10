@@ -69,8 +69,7 @@ const build = gulp.series(
 );
 
 module.exports = {
-  build,
-  test: 'templates'
+  build
 };
 
 // "build:umd": "cross-env BABEL_ENV=umd rollup -c && es-check es5 dist/redux-balloon.min.js",
