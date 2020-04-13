@@ -6,7 +6,7 @@ gulp.task('clean for build', shell.task([
 ]));
 
 gulp.task('tsc', shell.task([
-  './node_modules/.bin/tsc -p tsconfig.json --outDir tsc'
+  'npx tsc -p tsconfig.json --outDir tsc'
 ]));
 
 gulp.task('remove types for tsc', shell.task([
@@ -14,11 +14,11 @@ gulp.task('remove types for tsc', shell.task([
 ]));
 
 gulp.task('babel for es', shell.task([
-  './node_modules/.bin/cross-env BABEL_ENV=esm ./node_modules/.bin/babel tsc --out-dir es'
+  'npx cross-env BABEL_ENV=esm babel tsc --out-dir es'
 ]));
 
 gulp.task('babel for lib', shell.task([
-  './node_modules/.bin/cross-env BABEL_ENV=commonjs ./node_modules/.bin/babel tsc --out-dir lib'
+  'npx cross-env BABEL_ENV=commonjs babel tsc --out-dir lib'
 ]));
 
 gulp.task('copy for wepy', shell.task([
@@ -49,7 +49,7 @@ gulp.task('copy for wepy', shell.task([
 });*/
 
 gulp.task('babel for wepy', shell.task([
-  './node_modules/.bin/cross-env BABEL_ENV=wepy ./node_modules/.bin/babel wepy --out-dir wepy'
+  'npx cross-env BABEL_ENV=wepy babel wepy --out-dir wepy'
 ]));
 
 gulp.task('remove tsc', shell.task([
