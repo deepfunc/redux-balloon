@@ -8,13 +8,14 @@ import { SagasDefinition } from './sagas';
 
 /**
  * @template State The type of state.
+ * @template Actions The type of actions.
  * @template Selectors The type of selectors.
  */
-export interface Model<State, Selectors> {
+export interface Model<State, Actions, Selectors> {
   namespace: string;
   state?: State;
-  actions?: ActionsDefinitionMapObject | ActionsDefinitionFunc;
-  reducers?: ReducersDefinitionMapObject<State, any, any>;
+  actions?: ActionsDefinitionMapObject<Actions> | ActionsDefinitionFunc<Actions>;
+  reducers?: ReducersDefinitionMapObject<State>;
   selectors?: SelectorsDefinitionFunc<Selectors>;
   sagas?: SagasDefinition;
   workflow?: SagasDefinition;

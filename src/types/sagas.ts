@@ -1,4 +1,3 @@
-import { AnyAction } from 'redux';
 import * as ReduxSaga from 'redux-saga';
 import * as SagaEffects from 'redux-saga/effects';
 import { GetSelectorFunc } from './selectors';
@@ -9,16 +8,16 @@ export type SagaErrorType = Error & {
   detail?: {};
 };
 
-export type Saga<Args extends any[] = any[]> = (...args: Args) => Generator<any>;
+export type Saga<Args extends any[] = any[]> = (...args: Args) => Generator<any, any, any>;
 
 export type SagaHelperFuncName =
   'takeEvery' | 'takeLatest' | 'takeLeading' | 'throttle' | 'debounce';
 
 export type SagaFunc = (
-  action: AnyAction,
+  action: any,
   effects: typeof SagaEffects,
-  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc; }
-) => IterableIterator<any>;
+  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc }
+) => Generator<any, any, any>;
 
 export type SagaFuncTuple = [
   SagaFunc,
@@ -32,7 +31,7 @@ export interface SagasDefinitionMapObject {
   [sagaName: string]: SagaFunc | SagaFuncTuple;
 }
 
-export type SimpleSagaFunc = (action: AnyAction) => Generator<any>;
+export type SimpleSagaFunc = (action: any) => Generator<any, any, any>;
 
 export type SimpleSagaFuncTuple = [
   SimpleSagaFunc,
@@ -48,13 +47,13 @@ export interface SimpleSagasDefinitionMapObject {
 
 export type SimpleSagasDefinitionFunc = (
   effects: typeof SagaEffects,
-  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc; }
+  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc }
 ) => SimpleSagasDefinitionMapObject;
 
 export type ManualSagasDefinitionFunc = (
   effects: typeof SagaEffects,
-  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc; }
-) => () => Generator<any>;
+  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc }
+) => () => Generator<any, any, any>;
 
 export type SagasDefinition =
   SagasDefinitionMapObject | SimpleSagasDefinitionFunc | ManualSagasDefinitionFunc;

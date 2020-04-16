@@ -1,7 +1,9 @@
-import { ReducerMeta, ReduxCompatibleReducerMeta } from 'redux-actions';
+import {
+  ReduxCompatibleReducerMeta
+} from 'redux-actions';
 
-export interface ReducersDefinitionMapObject<State, Payload, Meta> {
-  [actionType: string]: ReducerMeta<State, Payload, Meta>;
+export interface ReducersDefinitionMapObject<State> {
+  [actionType: string]: (state: State, action: any) => State;
 }
 
 export interface CreateReducersOptions {

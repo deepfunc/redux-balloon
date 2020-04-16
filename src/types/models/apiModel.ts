@@ -1,3 +1,4 @@
+import { Action } from 'redux-actions';
 import { StringIndexObject } from '../utils';
 import { SelectorFunctionAny } from '../selectors';
 import { ApiStatus } from '../../models/api/constants';
@@ -13,6 +14,12 @@ export interface ApiStatusInfo {
 }
 export interface ApiModelState {
   [apiName: string]: ApiStatusInfo;
+}
+
+export type InitApiStatusAction = Action<undefined>;
+
+export interface ApiModelActions {
+  initApiStatus: InitApiStatusAction;
 }
 
 export interface ApiModelSelectors {

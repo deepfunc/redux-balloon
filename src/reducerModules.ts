@@ -10,7 +10,7 @@ import { REDUCER_ROOT_NAMESPACE, NAMESPACE_SEP } from './constants';
 import { identity, pathArrayOfNS, noop, pick } from './utils';
 
 function createReducers(
-  models: Array<Model<any, any>>,
+  models: Array<Model<any, any, any>>,
   opts: CreateReducersOptions = {}
 ): Reducer {
   const { onEnhanceReducer = identity } = opts;
@@ -31,7 +31,7 @@ function createReducers(
 }
 
 function addModelReducer(
-  model: Model<any, any>,
+  model: Model<any, any, any>,
   rootDef: StringIndexObject,
   onEnhanceReducer: EnhanceReducerFunc
 ): void {

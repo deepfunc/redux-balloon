@@ -58,7 +58,7 @@ export default function (): Biz {
 
   return biz;
 
-  function model<State, Selectors>(model: Model<State, Selectors>): Biz {
+  function model<State, Actions, Selectors>(model: Model<State, Actions, Selectors>): Biz {
     if (!isProdENV()) {
       checkModel(model, biz.models);
     }
@@ -89,7 +89,9 @@ export default function (): Biz {
     return biz;
   }
 
-  function getAction<Actions>(key: keyof Actions): ActionFunctionAny<any> {
+  function getAction<Actions extends {}, Action>(
+    key: keyof Actions
+  ): ActionFunctionAny<Action> {
     return lazyInvoker(() => actions, key as string);
   }
 

@@ -14,7 +14,7 @@ import { Model } from './types/model';
 import { StringIndexObject } from './types/utils';
 
 function addSelectorModule(
-  model: Model<any, any>,
+  model: Model<any, any, any>,
   existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, selectors } = model;

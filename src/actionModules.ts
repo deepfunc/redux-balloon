@@ -21,7 +21,7 @@ import {
 } from './utils';
 
 function addActionModule(
-  model: Model<any, any>,
+  model: Model<any, any, any>,
   existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, actions } = model;
@@ -43,7 +43,7 @@ function createActions(modules: StringIndexObject): StringIndexObject {
   const actionMap: StringIndexObject = {};
 
   const create: (
-    modules: StringIndexObject | [ActionsDefinitionMapObject | ActionsDefinitionFunc]
+    modules: StringIndexObject | [ActionsDefinitionMapObject<any> | ActionsDefinitionFunc<any>]
   ) => StringIndexObject = (modules) => {
     if (isArray(modules)) {
       let [actionDefMap] = modules;

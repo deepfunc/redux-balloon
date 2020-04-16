@@ -2,10 +2,15 @@ import { isLatestForApiAction, isEveryForApiAction } from '../../actionDefiner';
 import { ApiStatus } from './constants';
 import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './actionTypes';
 import { StringIndexObject } from '../../types/utils';
-import { ApiStatusInfo } from '../../types/models/apiModel';
+import {
+  ApiStatusInfo,
+  ApiModelActions,
+  InitApiStatusAction
+} from '../../types/models/apiModel';
 import {
   ManualSagasDefinitionFunc
 } from '../../types/sagas';
+import { ActionCreator } from 'redux';
 
 const handlerMapForLatest: StringIndexObject = {};
 
@@ -81,7 +86,10 @@ export default function createApiWorkflowCreator(
         takeEvery((action: any) => isLatestForApiAction(action), createLatestHandler),
         takeEvery((action: any) => isEveryForApiAction(action), apiActionHandler)
       ]);
-      yield put(getAction('initApiStatus')());
+      const initAction = yield call(
+        getAction<ApiModelActions, InitApiStatusAction>('initApiStatus')
+      );
+      yield put(initAction);
     };
   };
 }

@@ -6,11 +6,12 @@ import { GetSelectorFunc } from './selectors';
 import { ApiModelOptions } from './models/apiModel';
 import { EnhanceReducerFunc } from './reducers';
 import { Store } from 'redux';
+import SagaError from '../SagaError';
 
 export interface Biz {
   status: BizStatus;
   models: any[];
-  model: <State, Selectors>(mode: Model<State, Selectors>) => Biz;
+  model: <State, Actions, Selectors>(mode: Model<State, Actions, Selectors>) => Biz;
   unmodel: (namespace: string) => void;
   run: (opts: BizRunOptions) => void;
   actions: StringIndexObject;
@@ -26,4 +27,6 @@ export interface BizRunOptions {
   apiModel?: ApiModelOptions;
   usePromiseMiddleware?: boolean;
   middlewares?: any[];
+  devtools?: any;
+  onSagaError?: (err: SagaError) => void;
 }

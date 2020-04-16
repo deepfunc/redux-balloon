@@ -2,6 +2,7 @@ import invariant from 'invariant';
 import Immutable from 'seamless-immutable';
 import {
   ApiModelOptions,
+  ApiModelActions,
   ApiModelSelectors,
   ApiModelState,
   ApiStatusInfo
@@ -17,7 +18,7 @@ const DEFAULT_NAMESPACE = 'api';
 
 export default function createApiModel(
   opts: ApiModelOptions
-): Model<ApiModelState, ApiModelSelectors> {
+): Model<ApiModelState, ApiModelActions, ApiModelSelectors> {
   const { namespace = DEFAULT_NAMESPACE, apiMap } = opts;
   invariant(
     isPlainObject(apiMap),
@@ -36,7 +37,7 @@ export default function createApiModel(
 
     reducers: {
       [API_STATUS_INIT_PUT](state, { payload }) {
-        return payload;
+        return merge(state, payload);
       },
       [API_STATUS_PUT](state, { payload, meta }) {
         return merge(state, { [meta.apiName]: payload }, { deep: true });

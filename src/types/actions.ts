@@ -1,5 +1,8 @@
-import { ActionFunctionAny, ActionMeta } from 'redux-actions';
+import { ActionCreator } from 'redux';
+import { ActionFunctionAny, ActionMeta, Action } from 'redux-actions';
 import { NonNullableAndRequiredProperties } from './utils';
+
+export type { Action, ActionCreator };
 
 export type PayloadCreator<Payload> = ActionFunctionAny<Payload>;
 
@@ -15,6 +18,10 @@ export interface MetaOfApiAction {
   isApi: true;
   isLatest?: boolean;
 }
+
+export type PayLoadOfAction<Action extends { payload: any }> = Action['payload'];
+
+export type MetaOfAction<Action extends { meta: any }> = Action['meta'];
 
 export type ApiAction<Payload> = ActionMeta<Payload, MetaOfApiAction>;
 
@@ -33,10 +40,14 @@ export interface ActionDefiner {
   defPromiseAction: DefPromiseActionFunc;
 }
 
-export interface ActionsDefinitionMapObject {
-  [actionName: string]: string | ActionDefinitionTuple<any, any>;
+export type ActionsDefinitionMapObject<Actions> = {
+  [P in keyof Actions]: string | ActionDefinitionTuple<any, any>;
 }
 
-export type ActionsDefinitionFunc = (actionDefiner: ActionDefiner) => ActionsDefinitionMapObject;
+export type ActionsDefinitionFunc<Actions> = (
+  actionDefiner: ActionDefiner
+) => ActionsDefinitionMapObject<Actions>;
 
-export type GetActionFunc = <A extends {}>(selectorName: keyof A) => ActionFunctionAny<any>;
+export type GetActionFunc = <Actions extends {}, Action>(
+  selectorName: keyof Actions
+) => ActionFunctionAny<Action>;
