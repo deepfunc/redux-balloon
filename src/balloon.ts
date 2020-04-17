@@ -27,7 +27,6 @@ import { Biz, BizRunOptions } from './types/balloon';
 import { Reducer } from 'redux';
 import { StringIndexObject } from './types/utils';
 import { Model } from './types/model';
-import { SelectorFunctionAny } from './types/selectors';
 import { ActionFunctionAny } from 'redux-actions';
 
 export default function (): Biz {
@@ -95,8 +94,10 @@ export default function (): Biz {
     return lazyInvoker(() => actions, key as string);
   }
 
-  function getSelector<Selectors>(key: keyof Selectors): SelectorFunctionAny {
-    return lazyInvoker(() => selectors, key as string);
+  function getSelector<Selectors extends {}, Name extends keyof Selectors>(
+    selectorName: Name
+  ): Selectors[Name] {
+    return lazyInvoker(() => selectors, selectorName as string);
   }
 
   function updateInjectedArgs(): void {
