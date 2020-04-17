@@ -16,7 +16,7 @@ export interface Model<State, Actions, Selectors> {
   state?: State;
   actions?: ActionsDefinitionMapObject<Actions> | ActionsDefinitionFunc<Actions>;
   reducers?: ReducersDefinitionMapObject<State>;
-  selectors?: SelectorsDefinitionFunc<Selectors, State>;
+  selectors?: SelectorsDefinitionFunc<Selectors>;
   sagas?: SagasDefinition;
   workflow?: SagasDefinition;
 }

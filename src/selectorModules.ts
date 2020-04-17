@@ -46,7 +46,7 @@ function createSelectors(
   let selectorMap = {};
 
   const createSelectorMap = (
-    defFunc: SelectorsDefinitionFunc<any, any>,
+    defFunc: SelectorsDefinitionFunc<any>,
     namespacePathArray: string[]
   ): StringIndexObject => {
     const map = defFunc({
