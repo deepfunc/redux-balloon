@@ -8,6 +8,7 @@ export default function checkModel(
 ): void {
   const {
     namespace,
+    state,
     reducers,
     actions,
     selectors,
@@ -33,6 +34,12 @@ export default function checkModel(
     typeof reducers === 'undefined' || isPlainObject(reducers),
     `[model.reducers] should be undefined or plain object, but got ${typeof reducers}`
   );
+  if (state != null && reducers == null) {
+    console.warn(
+      'Have you forgotten to define [model.reducers]? '
+      + 'You have defined state for namespace: ' + namespace
+    );
+  }
 
   // check actions
   invariant(

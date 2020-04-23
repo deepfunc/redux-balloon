@@ -83,6 +83,7 @@
     "gulp-replace": "^1.0.0",
     "gulp-shell": "^0.8.0",
     "jest": "^25.2.7",
+    "prettier": "^2.0.4",
     "redux-mock-store": "^1.5.4",
     "rollup": "^0.67.4",
     "rollup-plugin-babel": "^4.4.0",
