@@ -16,7 +16,7 @@ describe('getSelector', () => {
     };
 
     const userModel: Model<UserState, any, UserSelectors> = {
-      namespace: 'gobal.user',
+      namespace: 'user',
       state: { userName: 'Deep', userAge: 36 },
       reducers: {},
       selectors: () => ({

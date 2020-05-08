@@ -36,6 +36,7 @@ import createApiModel from './models/api';
 import { Biz, BizRunOptions } from './types/balloon';
 import { StringIndexObject } from './types/utils';
 import { Model } from './types/model';
+import { ActionKey, ActionFuncType } from './types/actions';
 import { SelectorKey, SelectorFuncType } from './types/selectors';
 
 export default function (): Biz {
@@ -92,10 +93,20 @@ export default function (): Biz {
     return biz;
   }
 
-  function getAction<Actions extends {}, Action>(
-    key: keyof Actions
-  ): ActionFunctionAny<Action> {
-    return lazyInvoker(() => actions, key as string);
+  function getAction<M extends Model, K extends ActionKey<M>>(
+    model: M,
+    key: K
+  ): ActionFuncType<M, K>;
+  function getAction(key: string): any;
+  function getAction(...args: any[]): any {
+    let key: string;
+
+    if (args.length === 1) {
+      key = args[0];
+    } else {
+      key = args[1];
+    }
+    return lazyInvoker(() => actions, key);
   }
 
   function getSelector<M extends Model, K extends SelectorKey<M>>(
