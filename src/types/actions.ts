@@ -52,15 +52,17 @@ export interface ActionDefiner {
   defPromiseAction: DefPromiseActionFunc;
 }
 
-export type ActionsMapObject = {
+export type ActionCreatorsMapObject = {
   [key: string]: (...args: any[]) => any;
 };
 
-export type ActionsDefinitionMapObject<Actions extends ActionsMapObject> = {
+export type ActionsDefinitionMapObject<
+  Actions extends ActionCreatorsMapObject
+> = {
   [P in keyof Actions]: string | ActionDefinitionTuple<any, any>;
 };
 
-export type ActionsDefinition<Actions extends ActionsMapObject> = (
+export type ActionsDefinition<Actions extends ActionCreatorsMapObject> = (
   actionDefiner: ActionDefiner
 ) => ActionsDefinitionMapObject<Actions>;
 

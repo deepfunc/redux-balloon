@@ -9,7 +9,7 @@ describe('getSelector', () => {
       userAge: number;
     };
 
-    type UserSelectors = () => {
+    type UserSelectors = {
       getUsername: (state: UserState) => string;
       getUserAge: (state: UserState) => number;
       getUser: (state: UserState) => UserState;
