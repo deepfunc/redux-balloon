@@ -9,7 +9,11 @@ import {
 } from '../../types/models/apiModel';
 import { Model } from '../../types/model';
 import { isPlainObject, pathArrayOfNS, path } from '../../utils';
-import { API_STATUS_INIT, API_STATUS_INIT_PUT, API_STATUS_PUT } from './actionTypes';
+import {
+  API_STATUS_INIT,
+  API_STATUS_INIT_PUT,
+  API_STATUS_PUT
+} from './actionTypes';
 import createApiWorkflowCreator from './workflow';
 
 const { merge } = Immutable;
@@ -20,10 +24,7 @@ export default function createApiModel(
   opts: ApiModelOptions
 ): Model<ApiModelState, ApiModelActions, ApiModelSelectors> {
   const { namespace = DEFAULT_NAMESPACE, apiMap } = opts;
-  invariant(
-    isPlainObject(apiMap),
-    'ApiModel.apiMap should be a plain object'
-  );
+  invariant(isPlainObject(apiMap), 'ApiModel.apiMap should be a plain object');
 
   return {
     namespace,
@@ -54,7 +55,7 @@ export default function createApiModel(
         apiName: string
       ): ApiStatusInfo | undefined {
         const apiState = path(pathArrayOfNS(namespace), state);
-        return (apiState != null) ? apiState[apiName] : undefined;
+        return apiState != null ? apiState[apiName] : undefined;
       };
 
       return { getApiStatus };
@@ -62,4 +63,4 @@ export default function createApiModel(
 
     workflow: createApiWorkflowCreator(apiMap)
   };
-};
+}

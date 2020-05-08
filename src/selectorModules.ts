@@ -8,15 +8,12 @@ import {
   forEachObjIndexed,
   path
 } from './utils';
-import {
-  GetSelectorFunc,
-  SelectorsDefinitionFunc
-} from './types/selectors';
+import { SelectorsDefinition, GetSelectorFunc } from './types/selectors';
 import { Model } from './types/model';
 import { StringIndexObject } from './types/utils';
 
 function addSelectorModule(
-  model: Model<any, any, any>,
+  model: Model,
   existingModules: StringIndexObject = {}
 ): StringIndexObject {
   const { namespace, selectors } = model;
@@ -46,7 +43,7 @@ function createSelectors(
   let selectorMap = {};
 
   const createSelectorMap = (
-    defFunc: SelectorsDefinitionFunc<any>,
+    defFunc: SelectorsDefinition,
     namespacePathArray: string[]
   ): StringIndexObject => {
     const map = defFunc({
@@ -75,8 +72,4 @@ function createSelectors(
   return { ...create(modules), ...selectorMap };
 }
 
-export {
-  addSelectorModule,
-  delSelectorModule,
-  createSelectors
-};
+export { addSelectorModule, delSelectorModule, createSelectors };

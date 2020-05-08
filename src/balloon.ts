@@ -1,8 +1,18 @@
 import invariant from 'invariant';
+import { Reducer } from 'redux';
+import { ActionFunctionAny } from 'redux-actions';
 import checkModel from './checkModel';
 import { createReducers } from './reducerModules';
-import { addActionModule, delActionModule, createActions } from './actionModules';
-import { addSelectorModule, delSelectorModule, createSelectors } from './selectorModules';
+import {
+  addActionModule,
+  delActionModule,
+  createActions
+} from './actionModules';
+import {
+  addSelectorModule,
+  delSelectorModule,
+  createSelectors
+} from './selectorModules';
 import {
   addSagaModule,
   delSagaModule,
@@ -24,10 +34,9 @@ import {
 import { BizStatus } from './constants';
 import createApiModel from './models/api';
 import { Biz, BizRunOptions } from './types/balloon';
-import { Reducer } from 'redux';
 import { StringIndexObject } from './types/utils';
 import { Model } from './types/model';
-import { ActionFunctionAny } from 'redux-actions';
+import { SelectorKey, SelectorFuncType } from './types/selectors';
 
 export default function (): Biz {
   let reducers: Reducer;
@@ -57,7 +66,7 @@ export default function (): Biz {
 
   return biz;
 
-  function model<State, Actions, Selectors>(model: Model<State, Actions, Selectors>): Biz {
+  function model(model: Model): Biz {
     if (!isProdENV()) {
       checkModel(model, biz.models);
     }
@@ -73,15 +82,10 @@ export default function (): Biz {
       const { namespace } = model;
       const newSaga = sagaModules[namespace];
       if (newSaga) {
-        runSagaModules(
-          { [namespace]: newSaga },
-          sagaMiddleware.run,
-          runOpts,
-          {
-            actions: biz.actions,
-            selectors: biz.selectors
-          }
-        );
+        runSagaModules({ [namespace]: newSaga }, sagaMiddleware.run, runOpts, {
+          actions: biz.actions,
+          selectors: biz.selectors
+        });
       }
     }
 
@@ -94,10 +98,20 @@ export default function (): Biz {
     return lazyInvoker(() => actions, key as string);
   }
 
-  function getSelector<Selectors extends {}, Name extends keyof Selectors>(
-    selectorName: Name
-  ): Selectors[Name] {
-    return lazyInvoker(() => selectors, selectorName as string);
+  function getSelector<M extends Model, K extends SelectorKey<M>>(
+    model: M,
+    key: K
+  ): SelectorFuncType<M, K>;
+  function getSelector(key: string): any;
+  function getSelector(...args: any[]): any {
+    let key: string;
+
+    if (args.length === 1) {
+      key = args[0];
+    } else {
+      key = args[1];
+    }
+    return lazyInvoker(() => selectors, key);
   }
 
   function updateInjectedArgs(): void {
@@ -140,16 +154,16 @@ export default function (): Biz {
       biz.store = onEnhanceStore(store);
       Object.assign(biz, biz.store);
 
-      runSagaModules(
-        sagaModules,
-        sagaMiddleware.run,
-        runOpts,
-        { getAction, getSelector }
-      );
+      runSagaModules(sagaModules, sagaMiddleware.run, runOpts, {
+        getAction,
+        getSelector
+      });
 
       biz.status = BizStatus.RUNNING;
     } else {
-      warning(`only run() in [app.status === 'IDLE'], but there is ${biz.status}`);
+      warning(
+        `only run() in [app.status === 'IDLE'], but there is ${biz.status}`
+      );
     }
   }
 

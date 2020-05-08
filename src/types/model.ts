@@ -1,22 +1,20 @@
-import {
-  ActionsDefinitionMapObject,
-  ActionsDefinitionFunc
-} from './actions';
+import { ActionsDefinitionMapObject, ActionsDefinitionFunc } from './actions';
 import { ReducersDefinitionMapObject } from './reducers';
-import { SelectorsDefinitionFunc } from './selectors';
+import { SelectorsDefinition } from './selectors';
 import { SagasDefinition } from './sagas';
 
-/**
- * @template State The type of state.
- * @template Actions The type of actions.
- * @template Selectors The type of selectors.
- */
-export interface Model<State, Actions, Selectors> {
+export interface Model<
+  State = any,
+  Actions = any,
+  Selectors extends SelectorsDefinition = SelectorsDefinition
+> {
   namespace: string;
   state?: State;
-  actions?: ActionsDefinitionMapObject<Actions> | ActionsDefinitionFunc<Actions>;
+  actions?:
+    | ActionsDefinitionMapObject<Actions>
+    | ActionsDefinitionFunc<Actions>;
   reducers?: ReducersDefinitionMapObject<State>;
-  selectors?: SelectorsDefinitionFunc<Selectors>;
+  selectors?: Selectors;
   sagas?: SagasDefinition;
   workflow?: SagasDefinition;
 }
