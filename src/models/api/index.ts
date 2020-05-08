@@ -4,8 +4,7 @@ import {
   ApiModelOptions,
   ApiModelActions,
   ApiModelSelectors,
-  ApiModelState,
-  ApiStatusInfo
+  ApiModelState
 } from '../../types/models/apiModel';
 import { Model } from '../../types/model';
 import { isPlainObject, pathArrayOfNS, path } from '../../utils';
@@ -45,20 +44,17 @@ export default function createApiModel(
       }
     },
 
-    actions: {
+    actions: () => ({
       initApiStatus: API_STATUS_INIT
-    },
+    }),
 
-    selectors: function () {
-      const getApiStatus = function (
-        state: any,
-        apiName: string
-      ): ApiStatusInfo | undefined {
-        const apiState = path(pathArrayOfNS(namespace), state);
-        return apiState != null ? apiState[apiName] : undefined;
+    selectors: () => {
+      return {
+        getApiStatus(state, apiName) {
+          const apiState = path(pathArrayOfNS(namespace), state);
+          return apiState != null ? apiState[apiName] : undefined;
+        }
       };
-
-      return { getApiStatus };
     },
 
     workflow: createApiWorkflowCreator(apiMap)

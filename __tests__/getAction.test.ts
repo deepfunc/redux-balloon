@@ -1,11 +1,4 @@
-import balloon, {
-  Model,
-  Action,
-  ApiAction,
-  ActionKey,
-  ActionsDefinitionReturnType,
-  ActionFuncType
-} from '../src/index';
+import balloon, { Model, Action, ApiAction } from '../src/index';
 
 describe('getSelector', () => {
   test('should getSelector', () => {
@@ -28,10 +21,6 @@ describe('getSelector', () => {
         };
       }
     };
-
-    type T1 = ActionKey<typeof userModel>;
-    type T2 = ActionsDefinitionReturnType<typeof userModel>;
-    type T3 = ActionFuncType<typeof userModel, 'updateUsername'>;
 
     biz.model(userModel);
     biz.run();

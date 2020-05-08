@@ -3,7 +3,7 @@ import { ActionFunctionAny, ActionMeta, Action } from 'redux-actions';
 import { NonNullableAndRequiredProperties } from './utils';
 import { Model } from './model';
 
-export type { Action, ActionCreator };
+export type { Action, ActionMeta, ActionCreator };
 
 export type PayloadCreator<Payload> = ActionFunctionAny<Payload>;
 

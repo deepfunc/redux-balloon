@@ -1,22 +1,14 @@
 import { createAction } from 'redux-actions';
-import {
-  ActionDefinitionTuple,
-  ActionsDefinitionFunc,
-  ActionsDefinitionMapObject
-} from './types/actions';
+import { ActionDefinitionTuple, ActionsDefinition } from './types/actions';
 import { Model } from './types/model';
 import { StringIndexObject } from './types/utils';
-import {
-  actionDefiner,
-  isActionDefinitionTuple
-} from './actionDefiner';
+import { actionDefiner, isActionDefinitionTuple } from './actionDefiner';
 import {
   assocPath,
   dissocPath,
   mapObjIndexed,
   pathArrayOfNS,
   isArray,
-  isFunction,
   identity
 } from './utils';
 
@@ -43,13 +35,11 @@ function createActions(modules: StringIndexObject): StringIndexObject {
   const actionMap: StringIndexObject = {};
 
   const create: (
-    modules: StringIndexObject | [ActionsDefinitionMapObject<any> | ActionsDefinitionFunc<any>]
-  ) => StringIndexObject = (modules) => {
+    modules: StringIndexObject | [ActionsDefinition<any>]
+  ) => StringIndexObject = modules => {
     if (isArray(modules)) {
-      let [actionDefMap] = modules;
-      if (isFunction(actionDefMap)) {
-        actionDefMap = actionDefMap(actionDefiner);
-      }
+      const [actionDefFunc] = modules;
+      const actionDefMap = actionDefFunc(actionDefiner);
 
       return mapObjIndexed(
         (item: string | ActionDefinitionTuple<any, any>, key) => {
@@ -81,8 +71,4 @@ function createActions(modules: StringIndexObject): StringIndexObject {
   return { ...actions, ...actionMap };
 }
 
-export {
-  addActionModule,
-  delActionModule,
-  createActions
-};
+export { addActionModule, delActionModule, createActions };

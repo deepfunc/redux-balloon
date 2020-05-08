@@ -1,13 +1,10 @@
 import { Reducer, combineReducers } from 'redux';
 import { handleActions, ReduxCompatibleReducerMeta } from 'redux-actions';
-import {
-  CreateReducersOptions,
-  EnhanceReducerFunc
-} from './types/reducers';
+import { CreateReducersOptions, EnhanceReducerFunc } from './types/reducers';
 import { Model } from './types/model';
 import { StringIndexObject } from './types/utils';
 import { REDUCER_ROOT_NAMESPACE, NAMESPACE_SEP } from './constants';
-import { identity, pathArrayOfNS, noop, pick } from './utils';
+import { identity, pathArrayOfNS, noop, pick, isArray } from './utils';
 
 function createReducers(
   models: Array<Model<any, any, any>>,
@@ -31,19 +28,44 @@ function createReducers(
 }
 
 function addModelReducer(
-  model: Model<any, any, any>,
+  model: Model,
   rootDef: StringIndexObject,
   onEnhanceReducer: EnhanceReducerFunc
 ): void {
-  const { namespace, state = null, reducers } = model;
+  const { namespace, state = null, reducers, actions } = model;
   if (reducers == null) {
     return;
+  }
+
+  // 处理 action key 去映射 reducer
+  let actionKeys: string[] = [];
+  let finalReducers: StringIndexObject = reducers;
+  if (actions != null) {
+    const actionsDef = actions({
+      defApiAction: identity,
+      defPromiseAction: identity
+    });
+    actionKeys = Object.keys(actionsDef);
+
+    if (actionKeys.length > 0) {
+      finalReducers = {};
+      const reducerKeys = Object.keys(reducers);
+      for (const key of reducerKeys) {
+        let finalKey = key;
+        if (actionKeys.includes(key)) {
+          finalKey = !isArray(actionsDef[key])
+            ? (actionsDef[key] as string)
+            : actionsDef[key][0];
+        }
+        finalReducers[finalKey] = reducers[key];
+      }
+    }
   }
 
   const nodeNames = pathArrayOfNS(namespace);
   const firstLevelNodeName = nodeNames[0];
   const restNodeNames = nodeNames.slice(1);
-  const modelReducer = handleActions(reducers, state);
+  const modelReducer = handleActions(finalReducers, state);
   let firstLevelNodeReducer;
 
   if (nodeNames.length > 1) {
@@ -59,8 +81,12 @@ function addModelReducer(
     // 没有祖先节点
     firstLevelNodeReducer = rootDef[firstLevelNodeName] || noop;
     const { childrenReducerMap } = firstLevelNodeReducer;
-    firstLevelNodeReducer =
-      createNodeReducer(modelReducer, childrenReducerMap, onEnhanceReducer, namespace);
+    firstLevelNodeReducer = createNodeReducer(
+      modelReducer,
+      childrenReducerMap,
+      onEnhanceReducer,
+      namespace
+    );
   }
 
   // 最终目的是把第一层节点设置好
@@ -137,15 +163,20 @@ function createNodeReducer(
         const nextState: StringIndexObject = {};
         for (const key of selfKeys) {
           nextState[key] = nextSelfState[key];
-          hasChanged = hasChanged || state === undefined || nextState[key] !== state[key];
+          hasChanged =
+            hasChanged || state === undefined || nextState[key] !== state[key];
         }
         for (const key of childrenKeys) {
           const nextStateForChildKey = nextChildrenState[key];
-          if (nextState[key] !== undefined && nextStateForChildKey === undefined) {
+          if (
+            nextState[key] !== undefined &&
+            nextStateForChildKey === undefined
+          ) {
             continue;
           }
           nextState[key] = nextChildrenState[key];
-          hasChanged = hasChanged || state === undefined || nextState[key] !== state[key];
+          hasChanged =
+            hasChanged || state === undefined || nextState[key] !== state[key];
         }
 
         return hasChanged ? nextState : state;

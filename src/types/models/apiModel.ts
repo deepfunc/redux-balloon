@@ -11,21 +11,17 @@ export interface ApiStatusInfo {
   status: ApiStatus;
   error?: Error;
 }
-export interface ApiModelState {
+export type ApiModelState = {
   [apiName: string]: ApiStatusInfo;
-}
+};
 
 export type InitApiStatusAction = Action<undefined>;
 
-export interface ApiModelActions {
-  initApiStatus: InitApiStatusAction;
-}
+export type ApiModelActions = {
+  initApiStatus: () => InitApiStatusAction;
+};
 
-// export interface ApiModelSelectors {
-//   getApiStatus: SelectorFunction<ApiModelState, ApiStatusInfo | undefined>;
-// }
-
-export type ApiModelSelectors = () => {
+export type ApiModelSelectors = {
   getApiStatus: (
     state: ApiModelState,
     apiName: string

@@ -13,7 +13,11 @@ module.exports = {
     semi: ['error', 'always'],
     'space-before-function-paren': 'off',
     'generator-star-spacing': ['error', 'after'],
-    'operator-linebreak': ['error', 'before', { overrides: { '=': 'after' } }],
+    'operator-linebreak': [
+      'error',
+      'after',
+      { overrides: { '?': 'before', ':': 'before' } }
+    ],
     'quote-props': 'off',
     'no-prototype-builtins': 'off',
     '@typescript-eslint/space-before-function-paren': [

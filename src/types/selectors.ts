@@ -9,7 +9,7 @@ export type SelectorsMapObject = {
 
 export type SelectorsDefinition<Selectors extends SelectorsMapObject> = (
   injected: ReselectObject & { getSelector: GetSelectorFunc }
-) => SelectorsMapObject;
+) => Selectors;
 
 type SelectorsDefinitionReturnType<M> = M extends {
   selectors?: SelectorsDefinition<infer S>;

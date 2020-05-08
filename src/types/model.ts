@@ -1,5 +1,5 @@
 import { ActionCreatorsMapObject, ActionsDefinition } from './actions';
-import { ReducersDefinitionMapObject } from './reducers';
+import { ReducersDefinition } from './reducers';
 import { SelectorsMapObject, SelectorsDefinition } from './selectors';
 import { SagasDefinition } from './sagas';
 
@@ -11,7 +11,7 @@ export interface Model<
   namespace: string;
   state?: State;
   actions?: ActionsDefinition<Actions>;
-  reducers?: ReducersDefinitionMapObject<State>;
+  reducers?: ReducersDefinition<State, Actions>;
   selectors?: SelectorsDefinition<Selectors>;
   sagas?: SagasDefinition;
   workflow?: SagasDefinition;

@@ -1,6 +1,5 @@
 import invariant from 'invariant';
 import { Reducer } from 'redux';
-import { ActionFunctionAny } from 'redux-actions';
 import checkModel from './checkModel';
 import { createReducers } from './reducerModules';
 import {
