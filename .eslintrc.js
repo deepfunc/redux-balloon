@@ -12,7 +12,8 @@ module.exports = {
   rules: {
     semi: ['error', 'always'],
     'space-before-function-paren': 'off',
-    'generator-star-spacing': ['error', 'after'],
+    'generator-star-spacing': 'off',
+    // 'generator-star-spacing': ['error', 'after'],
     'operator-linebreak': [
       'error',
       'after',
