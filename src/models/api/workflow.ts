@@ -54,7 +54,12 @@ export default function createApiWorkflowCreator(
         yield call(updateApiStatus, apiName, { status: ApiStatus.LOADING });
         const resp = yield call(apiFn, payload);
         yield call(updateApiStatus, apiName, { status: ApiStatus.SUCCESS });
-        yield put({ type: `${type}_SUCCESS`, payload: resp });
+        yield put({
+          type: `${type}_SUCCESS`,
+          payload: resp,
+          requestPayload: payload,
+          meta
+        });
         yield call(_resolve, resp);
       } catch (e) {
         yield call(updateApiStatus, apiName, {
