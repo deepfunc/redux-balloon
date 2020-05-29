@@ -45,6 +45,8 @@ export default function createApiWorkflowCreator(
       const { type, payload, meta, _resolve, _reject } = action;
       const apiName = meta.apiName || type;
       const apiFn = apiMap[apiName];
+      delete meta.isApi;
+      delete meta.isLatest;
 
       try {
         if (typeof apiFn !== 'function') {
