@@ -45,8 +45,9 @@ export default function createApiWorkflowCreator(
       const { type, payload, meta, _resolve, _reject } = action;
       const apiName = meta.apiName || type;
       const apiFn = apiMap[apiName];
-      delete meta.isApi;
-      delete meta.isLatest;
+      const removedMeta = { ...meta };
+      delete removedMeta.isApi;
+      delete removedMeta.isLatest;
 
       try {
         if (typeof apiFn !== 'function') {
@@ -60,7 +61,7 @@ export default function createApiWorkflowCreator(
           type: `${type}_SUCCESS`,
           payload: resp,
           requestPayload: payload,
-          meta
+          meta: removedMeta
         });
         yield call(_resolve, resp);
       } catch (e) {
