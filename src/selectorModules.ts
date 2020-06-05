@@ -55,6 +55,8 @@ function createSelectors(
         state = path(namespacePathArray, state);
         return selector.call(this, state, ...args);
       };
+      map[key].sourceFunName = selector.name;
+      map[key].sourceFunArgLength = selector.length;
     }, map);
     selectorMap = { ...selectorMap, ...map };
     return map;
