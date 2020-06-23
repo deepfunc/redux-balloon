@@ -69,6 +69,12 @@ export default function createApiWorkflowCreator(
           status: ApiStatus.FAILURE,
           error: e
         });
+        yield put({
+          type: `${type}_FAILED`,
+          payload: e,
+          requestPayload: payload,
+          meta: removedMeta
+        });
         yield call(_reject, e);
       } finally {
         yield call(updateApiStatus, apiName, { status: ApiStatus.IDLE });
