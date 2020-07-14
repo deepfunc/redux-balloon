@@ -11,7 +11,8 @@ import SagaError from '../SagaError';
 export interface Biz {
   status: BizStatus;
   models: any[];
-  model: (mode: Model) => Biz;
+  model: (model: Model) => Biz;
+  addModels: (models: Model[]) => Biz;
   unmodel: (namespace: string) => void;
   run: (opts?: BizRunOptions) => void;
   actions: StringIndexObject;

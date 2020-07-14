@@ -52,6 +52,7 @@ export default function (): Biz {
     status: BizStatus.IDLE,
     models: [],
     model,
+    addModels,
     unmodel,
     run,
     get actions() {
@@ -89,6 +90,13 @@ export default function (): Biz {
       }
     }
 
+    return biz;
+  }
+
+  function addModels(models: Model[]): Biz {
+    for (const m of models) {
+      model(m);
+    }
     return biz;
   }
 
