@@ -1,13 +1,5 @@
 import * as Reselect from 'reselect';
-import {
-  assocPath,
-  dissocPath,
-  pathArrayOfNS,
-  mapObjIndexed,
-  isArray,
-  forEachObjIndexed,
-  path
-} from './utils';
+import { assoc, dissoc, pathArrayOfNS, forEachObjIndexed, path } from './utils';
 import { SelectorsDefinition, GetSelectorFunc } from './types/selectors';
 import { Model } from './types/model';
 import { StringIndexObject } from './types/utils';
@@ -22,18 +14,14 @@ function addSelectorModule(
   }
 
   const pathArray = pathArrayOfNS(namespace);
-  return assocPath(
-    pathArrayOfNS(namespace),
-    [selectors, pathArray],
-    existingModules
-  );
+  return assoc(namespace, [selectors, pathArray], existingModules);
 }
 
 function delSelectorModule(
   namespace: string,
   existingModules: StringIndexObject
 ): StringIndexObject {
-  return dissocPath(pathArrayOfNS(namespace), existingModules);
+  return dissoc(namespace, existingModules);
 }
 
 function createSelectors(
@@ -62,16 +50,12 @@ function createSelectors(
     return map;
   };
 
-  const create = (modules: StringIndexObject): StringIndexObject => {
-    if (isArray(modules)) {
-      const [selectorDefFunc, namespacePathArray] = modules;
-      return createSelectorMap(selectorDefFunc, namespacePathArray);
-    }
+  forEachObjIndexed(m => {
+    const [selectorDefFunc, namespacePathArray] = m;
+    createSelectorMap(selectorDefFunc, namespacePathArray);
+  }, modules);
 
-    return mapObjIndexed(mod => create(mod), modules);
-  };
-
-  return { ...create(modules), ...selectorMap };
+  return selectorMap;
 }
 
 export { addSelectorModule, delSelectorModule, createSelectors };
