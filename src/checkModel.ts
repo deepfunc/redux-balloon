@@ -6,20 +6,10 @@ export default function checkModel(
   model: Model<any, any, any>,
   existingModels: Array<Model<any, any, any>> = []
 ): void {
-  const {
-    namespace,
-    state,
-    reducers,
-    actions,
-    selectors,
-    sagas
-  } = model;
+  const { namespace, state, reducers, actions, selectors, sagas } = model;
 
   // check namespace
-  invariant(
-    namespace,
-    '[model.namespace] should be defined'
-  );
+  invariant(namespace, '[model.namespace] should be defined');
   invariant(
     typeof namespace === 'string',
     `[model.namespace] should be string, but got ${typeof namespace}`
@@ -36,18 +26,20 @@ export default function checkModel(
   );
   if (state != null && reducers == null) {
     console.warn(
-      'Have you forgotten to define [model.reducers]? '
-      + 'You have defined state for namespace: ' + namespace
+      'Have you forgotten to define [model.reducers]? ' +
+        'You have defined state for namespace: ' +
+        namespace
     );
   }
 
   // check actions
   invariant(
-    typeof actions === 'undefined'
-    || isPlainObject(actions)
-    || isFunction(actions),
-    '[model.actions] should be undefined or plain object'
-    + ' or function, but got ' + typeof actions
+    typeof actions === 'undefined' ||
+      isPlainObject(actions) ||
+      isFunction(actions),
+    '[model.actions] should be undefined or plain object' +
+      ' or function, but got ' +
+      typeof actions
   );
 
   // check selectors
@@ -58,9 +50,7 @@ export default function checkModel(
 
   // check sagas
   invariant(
-    typeof sagas === 'undefined'
-    || isPlainObject(sagas)
-    || isFunction(sagas),
+    typeof sagas === 'undefined' || isPlainObject(sagas) || isFunction(sagas),
     `[model.sagas] should be undefined or plain object or function, but got ${typeof sagas}`
   );
 }

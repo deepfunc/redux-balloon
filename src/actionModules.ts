@@ -32,6 +32,10 @@ function createActions(modules: StringIndexObject): StringIndexObject {
 
     forEachObjIndexed((item: string | ActionDefinitionTuple<any, any>, key) => {
       let action: Function;
+      if (actionMap[key] != null) {
+        console.warn(`Redux-Balloon action: ${key} has already been defined!`);
+      }
+
       if (isActionDefinitionTuple(item)) {
         const type = item[0];
         const payloadCreator = item[1] != null ? item[1] : identity;

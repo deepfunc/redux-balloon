@@ -28,7 +28,7 @@ function createSelectors(
   modules: StringIndexObject,
   getSelector: GetSelectorFunc
 ): StringIndexObject {
-  let selectorMap = {};
+  let selectorMap: StringIndexObject = {};
 
   const createSelectorMap = (
     defFunc: SelectorsDefinition<any>,
@@ -39,6 +39,11 @@ function createSelectors(
       ...Reselect
     });
     forEachObjIndexed((selector, key) => {
+      if (selectorMap[key] != null) {
+        console.warn(
+          `Redux-Balloon selector: ${key} has already been defined!`
+        );
+      }
       map[key] = function (state: any, ...args: any[]) {
         state = path(namespacePathArray, state);
         return selector.call(this, state, ...args);
