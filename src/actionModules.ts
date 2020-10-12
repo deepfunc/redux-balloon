@@ -27,13 +27,19 @@ function delActionModule(
 function createActions(modules: StringIndexObject): StringIndexObject {
   const actionMap: StringIndexObject = {};
 
-  const createActionMap = (actionDefFunc: ActionsDefinition<any>): void => {
+  const createActionMap = (
+    actionDefFunc: ActionsDefinition<any>,
+    namespace: string
+  ): void => {
     const actionDefMap = actionDefFunc(actionDefiner);
 
     forEachObjIndexed((item: string | ActionDefinitionTuple<any, any>, key) => {
       let action: Function;
       if (actionMap[key] != null) {
-        console.warn(`Redux-Balloon action: ${key} has already been defined!`);
+        console.warn(
+          `[Redux-Balloon] Action: ${key} has already been defined! ` +
+            `Namespace: ${namespace}`
+        );
       }
 
       if (isActionDefinitionTuple(item)) {
@@ -53,8 +59,8 @@ function createActions(modules: StringIndexObject): StringIndexObject {
     }, actionDefMap);
   };
 
-  forEachObjIndexed(actionDefFunc => {
-    createActionMap(actionDefFunc);
+  forEachObjIndexed((actionDefFunc, key) => {
+    createActionMap(actionDefFunc, key);
   }, modules);
   return actionMap;
 }

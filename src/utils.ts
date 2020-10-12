@@ -5,9 +5,12 @@ export function pathArrayOfNS(namespace: string): string[] {
   return namespace.split(NAMESPACE_SEP);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export function noop(): void {
+export function restoreNamespace(pathArray: string[]): string {
+  return pathArray.join(NAMESPACE_SEP);
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function noop(): void {}
 
 export function identity(x: any): any {
   return x;
@@ -28,7 +31,11 @@ export function init(list: any[]): any[] {
   return list.slice(0, -1);
 }
 
-export function assoc(prop: string, val: any, obj: StringIndexObject): StringIndexObject {
+export function assoc(
+  prop: string,
+  val: any,
+  obj: StringIndexObject
+): StringIndexObject {
   const result: StringIndexObject = {};
   for (const p in obj) {
     result[p] = obj[p];
@@ -37,7 +44,10 @@ export function assoc(prop: string, val: any, obj: StringIndexObject): StringInd
   return result;
 }
 
-export function dissoc(prop: string, obj: StringIndexObject): StringIndexObject {
+export function dissoc(
+  prop: string,
+  obj: StringIndexObject
+): StringIndexObject {
   const result: StringIndexObject = {};
   for (const p in obj) {
     result[p] = obj[p];
@@ -46,7 +56,11 @@ export function dissoc(prop: string, obj: StringIndexObject): StringIndexObject 
   return result;
 }
 
-export function assocPath(path: string[], val: any, obj: StringIndexObject): StringIndexObject {
+export function assocPath(
+  path: string[],
+  val: any,
+  obj: StringIndexObject
+): StringIndexObject {
   if (path.length === 0) {
     return val;
   }
@@ -58,7 +72,10 @@ export function assocPath(path: string[], val: any, obj: StringIndexObject): Str
   return assoc(idx, val, obj);
 }
 
-export function dissocPath(path: string[], obj: StringIndexObject): StringIndexObject {
+export function dissocPath(
+  path: string[],
+  obj: StringIndexObject
+): StringIndexObject {
   if (path.length === 0) {
     return obj;
   } else if (path.length === 1) {
@@ -79,13 +96,17 @@ export function mergeDeepWithKey(
   lObj: StringIndexObject,
   rObj: StringIndexObject
 ): StringIndexObject {
-  return mergeWithKey(function (k, lVal, rVal) {
-    if (isPlainObject(lVal) && isPlainObject(rVal)) {
-      return mergeDeepWithKey(fn, lVal, rVal);
-    } else {
-      return fn(k, lVal, rVal);
-    }
-  }, lObj, rObj);
+  return mergeWithKey(
+    function (k, lVal, rVal) {
+      if (isPlainObject(lVal) && isPlainObject(rVal)) {
+        return mergeDeepWithKey(fn, lVal, rVal);
+      } else {
+        return fn(k, lVal, rVal);
+      }
+    },
+    lObj,
+    rObj
+  );
 }
 
 export function mergeWithKey(
@@ -110,7 +131,10 @@ export function mergeWithKey(
   return result;
 }
 
-export function pick(names: string[], obj: StringIndexObject): StringIndexObject {
+export function pick(
+  names: string[],
+  obj: StringIndexObject
+): StringIndexObject {
   const result: StringIndexObject = {};
   let idx = 0;
   while (idx < names.length) {
@@ -185,7 +209,10 @@ export function isFunction(o: any): o is Function {
   return typeof o === 'function';
 }
 
-export function lazyInvoker(lazyTarget: Function | object, methodNamespace: string): any {
+export function lazyInvoker(
+  lazyTarget: Function | object,
+  methodNamespace: string
+): any {
   return function (...args: any[]) {
     const target = isFunction(lazyTarget) ? lazyTarget() : lazyTarget;
     const pathArr = pathArrayOfNS(methodNamespace);

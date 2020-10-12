@@ -1,5 +1,12 @@
 import * as Reselect from 'reselect';
-import { assoc, dissoc, pathArrayOfNS, forEachObjIndexed, path } from './utils';
+import {
+  assoc,
+  dissoc,
+  pathArrayOfNS,
+  forEachObjIndexed,
+  path,
+  restoreNamespace
+} from './utils';
 import { SelectorsDefinition, GetSelectorFunc } from './types/selectors';
 import { Model } from './types/model';
 import { StringIndexObject } from './types/utils';
@@ -41,7 +48,8 @@ function createSelectors(
     forEachObjIndexed((selector, key) => {
       if (selectorMap[key] != null) {
         console.warn(
-          `Redux-Balloon selector: ${key} has already been defined!`
+          `[Redux-Balloon] Selector: ${key} has already been defined! ` +
+            `Namespace: ${restoreNamespace(namespacePathArray)}`
         );
       }
       map[key] = function (state: any, ...args: any[]) {

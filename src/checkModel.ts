@@ -26,7 +26,7 @@ export default function checkModel(
   );
   if (state != null && reducers == null) {
     console.warn(
-      'Have you forgotten to define [model.reducers]? ' +
+      '[Redux-Balloon] Have you forgotten to define [model.reducers]? ' +
         'You have defined state for namespace: ' +
         namespace
     );
