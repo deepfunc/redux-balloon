@@ -1,6 +1,6 @@
 import balloon, { Model, Action } from '../src/index';
 
-describe('reducers', () => {
+describe('sagas', () => {
   test('should create sagas', () => {
     const biz = balloon();
 
@@ -54,11 +54,23 @@ describe('reducers', () => {
             console.log(`newUserName: ${action.payload}`);
 
             const updateUserAge = getAction(userModel, 'updateUserAge');
-            yield put(updateUserAge(36));
+            yield put(updateUserAge(32));
           },
+
           *[UPDATE_USER_AGE](action) {
-            console.log(action);
-          }
+            console.log('UPDATE_USER_AGE', action);
+          },
+
+          '^UPDATE_USER_[A-Z]+$': [
+            function* (action) {
+              console.log('^UPDATE_USER_[A-Z]+$', action);
+            },
+            {
+              type: 'takeEvery',
+              isRegExpPattern: true,
+              regExpPatternFlags: 'g'
+            }
+          ]
         };
       }
     };

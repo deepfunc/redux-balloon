@@ -10,10 +10,8 @@ import {
   getTypeOfCancelSaga,
   noop
 } from './utils';
-import {
-  Saga,
-  SagasDefinition
-} from './types/sagas';
+import { Saga, SagasDefinition, SagaHelperFuncOptions } from './types/sagas';
+import { Action } from './types/actions';
 import { StringIndexObject } from './types/utils';
 
 const sagaEffects = ReduxSaga.effects;
@@ -50,12 +48,14 @@ function runSagaModules(
   forEachObjIndexed((mod, namespace) => {
     const sagas = mod[0];
     const saga = createSaga(sagas, namespace, opts, _extras);
-    runSaga(saga).toPromise().catch((err: Error) => {
-      if (!(err instanceof SagaError)) {
-        err = new SagaError(err, { namespace });
-      }
-      onSagaError(err);
-    });
+    runSaga(saga)
+      .toPromise()
+      .catch((err: Error) => {
+        if (!(err instanceof SagaError)) {
+          err = new SagaError(err, { namespace });
+        }
+        onSagaError(err);
+      });
   }, modules);
 }
 
@@ -107,10 +107,10 @@ function createWatcher(
     const keys = Object.keys(sagasObj);
 
     for (const key of keys) {
-      // takeEvery is default
-      let type = 'takeEvery';
+      let pattern: string | Function = key;
+      let type = 'takeEvery'; // "takeEvery" is default.
       let saga = sagasObj[key];
-      let opts;
+      let opts: SagaHelperFuncOptions;
 
       if (isArray(saga)) {
         saga = sagasObj[key][0];
@@ -122,7 +122,15 @@ function createWatcher(
             `only support these types: [${typeWhiteList}], but got: ${type}. namespace: ${namespace}, key: ${key}`
           );
         }
+
+        // regular expression action type.
+        const { isRegExpPattern, regExpPatternFlags } = opts;
+        if (isRegExpPattern) {
+          pattern = (regExp => (action: Action<any>) =>
+            regExp.test(action.type))(new RegExp(key, regExpPatternFlags));
+        }
       }
+
       const handler = handleActionForHelper(
         saga,
         { namespace, key, needInject },
@@ -132,11 +140,11 @@ function createWatcher(
       switch (type) {
         case 'throttle':
         case 'debounce':
-          yield (sagaEffects as any)[type](opts.ms, key, handler);
+          yield (sagaEffects as any)[type](opts!.ms, pattern, handler);
           break;
         default:
-          // takeEvery, takeLatest, takeLeading
-          yield (sagaEffects as any)[type](key, handler);
+          // takeEvery, takeLatest, takeLeading.
+          yield (sagaEffects as any)[type](pattern, handler);
       }
     }
   };
@@ -167,9 +175,4 @@ function handleActionForHelper(
   };
 }
 
-export {
-  addSagaModule,
-  delSagaModule,
-  createSagaMiddleware,
-  runSagaModules
-};
+export { addSagaModule, delSagaModule, createSagaMiddleware, runSagaModules };

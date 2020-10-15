@@ -1,6 +1,6 @@
 {
   "name": "redux-balloon",
-  "version": "1.1.0-alpha14",
+  "version": "1.1.0-alpha15",
   "description": "Lightweight business framework for Redux apps",
   "license": "MIT",
   "repository": {
@@ -65,7 +65,7 @@
     "@types/gulp": "^4.0.6",
     "@types/invariant": "^2.2.31",
     "@types/jest": "^25.2.1",
-    "@types/node": "^13.11.1",
+    "@types/node": "^13.13.25",
     "@types/redux-actions": "^2.6.1",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "@typescript-eslint/parser": "^2.27.0",
@@ -94,7 +94,7 @@
     "rollup-plugin-terser": "^5.3.0",
     "sinon": "^9.0.1",
     "ts-jest": "^25.3.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.7"
   },
   "browserslist": [
     "> 1%",

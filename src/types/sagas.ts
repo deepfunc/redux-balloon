@@ -8,24 +8,34 @@ export type SagaErrorType = Error & {
   detail?: {};
 };
 
-export type Saga<Args extends any[] = any[]> = (...args: Args) => Generator<any, any, any>;
+export type Saga<Args extends any[] = any[]> = (
+  ...args: Args
+) => Generator<any, any, any>;
+
+export type SagaHelperFuncOptions = {
+  type: SagaHelperFuncName;
+  ms?: number; // Using for "throttle" and "debounce".
+  isRegExpPattern?: boolean; // Using for "regular expression action type".
+  regExpPatternFlags?: string; // Using for "flags of regular expression action type".
+};
 
 export type SagaHelperFuncName =
-  'takeEvery' | 'takeLatest' | 'takeLeading' | 'throttle' | 'debounce';
+  | 'takeEvery'
+  | 'takeLatest'
+  | 'takeLeading'
+  | 'throttle'
+  | 'debounce';
 
 export type SagaFunc = (
   action: any,
   effects: typeof SagaEffects,
-  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc }
+  extras: typeof ReduxSaga & {
+    getSelector: GetSelectorFunc;
+    getAction: GetActionFunc;
+  }
 ) => Generator<any, any, any>;
 
-export type SagaFuncTuple = [
-  SagaFunc,
-  {
-    type: SagaHelperFuncName;
-    [key: string]: any;
-  }
-];
+export type SagaFuncTuple = [SagaFunc, SagaHelperFuncOptions];
 
 export interface SagasDefinitionMapObject {
   [sagaName: string]: SagaFunc | SagaFuncTuple;
@@ -47,13 +57,21 @@ export interface SimpleSagasDefinitionMapObject {
 
 export type SimpleSagasDefinitionFunc = (
   effects: typeof SagaEffects,
-  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc }
+  extras: typeof ReduxSaga & {
+    getSelector: GetSelectorFunc;
+    getAction: GetActionFunc;
+  }
 ) => SimpleSagasDefinitionMapObject;
 
 export type ManualSagasDefinitionFunc = (
   effects: typeof SagaEffects,
-  extras: typeof ReduxSaga & { getSelector: GetSelectorFunc; getAction: GetActionFunc }
+  extras: typeof ReduxSaga & {
+    getSelector: GetSelectorFunc;
+    getAction: GetActionFunc;
+  }
 ) => () => Generator<any, any, any>;
 
 export type SagasDefinition =
-  SagasDefinitionMapObject | SimpleSagasDefinitionFunc | ManualSagasDefinitionFunc;
+  | SagasDefinitionMapObject
+  | SimpleSagasDefinitionFunc
+  | ManualSagasDefinitionFunc;
