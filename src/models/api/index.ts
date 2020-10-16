@@ -4,9 +4,9 @@ import {
   ApiModelOptions,
   ApiModelActions,
   ApiModelSelectors,
-  ApiModelState
-} from '../../types/models/apiModel';
-import { Model } from '../../types/model';
+  ApiModelState,
+  Model
+} from '../..';
 import { isPlainObject, pathArrayOfNS, path } from '../../utils';
 import {
   API_STATUS_INIT,

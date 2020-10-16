@@ -10,9 +10,13 @@ import {
   getTypeOfCancelSaga,
   noop
 } from './utils';
-import { Saga, SagasDefinition, SagaHelperFuncOptions } from './types/sagas';
-import { Action } from './types/actions';
-import { StringIndexObject } from './types/utils';
+import {
+  Saga,
+  SagasDefinition,
+  SagaHelperFuncOptions,
+  Action,
+  StringIndexObject
+} from '.';
 
 const sagaEffects = ReduxSaga.effects;
 

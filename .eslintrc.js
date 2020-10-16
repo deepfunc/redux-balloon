@@ -47,6 +47,7 @@ module.exports = {
     '@typescript-eslint/default-param-last': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/consistent-type-definitions': 'off',
-    '@typescript-eslint/indent': 'off'
+    '@typescript-eslint/indent': 'off',
+    '@typescript-eslint/return-await': 'off'
   }
 };

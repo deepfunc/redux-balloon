@@ -7,9 +7,12 @@ import {
   path,
   restoreNamespace
 } from './utils';
-import { SelectorsDefinition, GetSelectorFunc } from './types/selectors';
-import { Model } from './types/model';
-import { StringIndexObject } from './types/utils';
+import {
+  SelectorsDefinition,
+  GetSelectorFunc,
+  Model,
+  StringIndexObject
+} from '.';
 
 function addSelectorModule(
   model: Model,

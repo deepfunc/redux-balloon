@@ -1,6 +1,6 @@
 import { Action } from 'redux-actions';
 import { StringIndexObject } from '../utils';
-import { ApiStatus } from '../../models/api/constants';
+import { ApiStatus } from '../..';
 
 export interface ApiModelOptions {
   apiMap: StringIndexObject;
