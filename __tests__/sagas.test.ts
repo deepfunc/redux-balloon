@@ -1,7 +1,7 @@
 import balloon, { Model, Action } from '../src/index';
 
 describe('sagas', () => {
-  test('should create sagas', () => {
+  test('should create sagas', done => {
     const biz = balloon();
 
     type UserState = {
@@ -40,26 +40,26 @@ describe('sagas', () => {
         const { select, put } = effects;
 
         return {
-          *[UPDATE_USER_NAME](
-            action: ReturnType<UserActions['updateUsername']>
-          ) {
-            const getUsername = getSelector(userModel, 'getUsername');
-            // const oldUsername: ReturnType<
-            //   UserSelectors['getUsername']
-            // > = yield select(getUsername);
-            const oldUsername: ReturnType<typeof getUsername> = yield select(
-              getUsername
-            );
-            console.log(`oldUsername: ${oldUsername}`);
-            console.log(`newUserName: ${action.payload}`);
+          // *[UPDATE_USER_NAME](
+          //   action: ReturnType<UserActions['updateUsername']>
+          // ) {
+          //   const getUsername = getSelector(userModel, 'getUsername');
+          //   // const oldUsername: ReturnType<
+          //   //   UserSelectors['getUsername']
+          //   // > = yield select(getUsername);
+          //   const oldUsername: ReturnType<typeof getUsername> = yield select(
+          //     getUsername
+          //   );
+          //   // console.log(`oldUsername: ${oldUsername}`);
+          //   console.log(`newUserName: ${action.payload}`);
+          //
+          //   // const updateUserAge = getAction(userModel, 'updateUserAge');
+          //   // yield put(updateUserAge(32));
+          // },
 
-            const updateUserAge = getAction(userModel, 'updateUserAge');
-            yield put(updateUserAge(32));
-          },
-
-          *[UPDATE_USER_AGE](action) {
-            console.log('UPDATE_USER_AGE', action);
-          },
+          // *[UPDATE_USER_AGE](action) {
+          //   console.log('UPDATE_USER_AGE', action);
+          // },
 
           '^UPDATE_USER_[A-Z]+$': [
             function* (action) {
@@ -67,8 +67,7 @@ describe('sagas', () => {
             },
             {
               type: 'takeEvery',
-              isRegExpPattern: true,
-              regExpPatternFlags: 'g'
+              isRegExpPattern: true
             }
           ]
         };
@@ -81,6 +80,9 @@ describe('sagas', () => {
     const updateUsename = biz.getAction(userModel, 'updateUsername');
     if (biz.store) {
       biz.store.dispatch(updateUsename('Xie Kai'));
+      biz.store.dispatch(updateUsename('Xie Kai'));
+      biz.store.dispatch(updateUsename('Xie Kai'));
+      setTimeout(done, 3000);
     }
   });
 });
