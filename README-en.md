@@ -49,7 +49,7 @@ Suppose we have a UI to fetch user data and display them (use `react` and `react
 
 #### `UserList.js`
 
-```javascript
+```react
 // ...
 import biz from '../biz';
 
@@ -97,19 +97,19 @@ const users = {
   reducers: {
     [types.USERS_PUT]: (state, { payload }) => payload
   },
-  actions: {
+  actions: () => ({
     fetchUsers: types.USERS_GET
-  },
+  }),
   selectors: () => ({
     getUsers: (state) => state.users
   }),
-  sagas: {
-    * [types.USERS_FETCH](action, { call, put }) {
-      // saga effects are treated as parameter injection.
+  sagas: ({ call, put }) => ({
+    // saga effects are treated as parameter injection.
+    *[types.USERS_FETCH]() {
       const users = yield call(api.fetchUsers);
       yield put({ type: types.USERS_PUT, payload: users });
     }
-  }
+  })
 };
 
 const biz = balloon();
@@ -126,7 +126,7 @@ To run our app, we'll connect it.
 
 #### `app.js`
 
-```javascript
+```react
 // ...
 import biz from './biz';
 import UserList from './components/UserList';

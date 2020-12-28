@@ -46,7 +46,7 @@ $ npm install --save redux-balloon
 
 #### `UserList.js`
 
-```javascript
+```react
 // ...
 import biz from '../biz';
 
@@ -94,19 +94,19 @@ const users = {
   reducers: {
     [types.USERS_PUT]: (state, { payload }) => payload
   },
-  actions: {
+  actions: () => ({
     fetchUsers: types.USERS_GET
-  },
+  }),
   selectors: () => ({
     getUsers: (state) => state.users
   }),
-  sagas: {
-    * [types.USERS_FETCH](action, { call, put }) {
-      // 通过参数注入 saga effects。
+  sagas: ({ call, put }) => ({
+    // 通过参数注入 saga effects。
+    *[types.USERS_FETCH]() {
       const users = yield call(api.fetchUsers);
       yield put({ type: types.USERS_PUT, payload: users });
     }
-  }
+  })
 };
 
 const biz = balloon();
@@ -123,7 +123,7 @@ export default biz;
 
 #### `app.js`
 
-```javascript
+```react
 // ...
 import biz from './biz';
 import UserList from './components/UserList';
