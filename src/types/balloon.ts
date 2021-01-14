@@ -14,6 +14,7 @@ export interface Biz {
   model: (model: Model) => Biz;
   addModels: (models: Model[]) => Biz;
   unmodel: (namespace: string) => void;
+  getModel: (namespace: string) => Model | undefined;
   run: (opts?: BizRunOptions) => void;
   actions: StringIndexObject;
   getAction: GetActionFunc;

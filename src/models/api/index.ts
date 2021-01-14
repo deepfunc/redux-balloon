@@ -7,7 +7,7 @@ import {
   ApiModelState,
   Model
 } from '../..';
-import { isPlainObject, pathArrayOfNS, path } from '../../utils';
+import { isPlainObject } from '../../utils';
 import {
   API_STATUS_INIT,
   API_STATUS_INIT_PUT,
@@ -51,8 +51,7 @@ export default function createApiModel(
     selectors: () => {
       return {
         getApiStatus(state, apiName) {
-          const apiState = path(pathArrayOfNS(namespace), state);
-          return apiState != null ? apiState[apiName] : undefined;
+          return state[apiName];
         }
       };
     },

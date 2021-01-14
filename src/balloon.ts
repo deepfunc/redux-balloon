@@ -54,6 +54,7 @@ export default function (): Biz {
     model,
     addModels,
     unmodel,
+    getModel,
     run,
     get actions() {
       return actions;
@@ -154,6 +155,10 @@ export default function (): Biz {
       biz.store!.replaceReducer(reducers);
       biz.store!.dispatch({ type: getTypeOfCancelSaga(namespace) });
     }
+  }
+
+  function getModel(namespace: string): Model | undefined {
+    return biz.models.find(m => m.namespace === namespace);
   }
 
   function run(opts: BizRunOptions = {}): void {
