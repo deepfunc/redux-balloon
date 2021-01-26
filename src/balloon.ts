@@ -39,6 +39,7 @@ import { ActionKey, ActionFuncType } from './types/actions';
 import { SelectorKey, SelectorFuncType } from './types/selectors';
 
 export default function (): Biz {
+  let models: Model[] = [];
   let reducers: Reducer;
   let actionModules: StringIndexObject = {};
   let actions: StringIndexObject;
@@ -48,35 +49,15 @@ export default function (): Biz {
   let sagaMiddleware: any;
   let runOpts: BizRunOptions;
 
-  const biz: Biz = {
-    status: BizStatus.IDLE,
-    models: [],
-    model,
-    addModels,
-    unmodel,
-    getModel,
-    run,
-    get actions() {
-      return actions;
-    },
-    getAction,
-    get selectors() {
-      return selectors;
-    },
-    getSelector
-  };
-
-  return biz;
-
   function model(model: Model): Biz {
     if (!isProdENV()) {
-      checkModel(model, biz.models);
+      checkModel(model, models);
     }
 
     actionModules = addActionModule(model, actionModules);
     selectorModules = addSelectorModule(model, selectorModules);
     sagaModules = addSagaModule(model, sagaModules);
-    biz.models.push(model);
+    models.push(model);
 
     if (biz.status === BizStatus.RUNNING) {
       updateInjectedArgs();
@@ -98,6 +79,7 @@ export default function (): Biz {
     for (const m of models) {
       model(m);
     }
+
     return biz;
   }
 
@@ -134,21 +116,21 @@ export default function (): Biz {
   }
 
   function updateInjectedArgs(): void {
-    reducers = createReducers(biz.models, runOpts);
+    reducers = createReducers(models, runOpts);
     actions = createActions(actionModules);
     selectors = createSelectors(selectorModules, getSelector);
   }
 
   function unmodel(namespace: string): void {
     invariant(
-      any(model => model.namespace === namespace, biz.models),
+      any(model => model.namespace === namespace, models),
       `[app.models] don't has this namespace: ${namespace}`
     );
 
     actionModules = delActionModule(namespace, actionModules);
     selectorModules = delSelectorModule(namespace, selectorModules);
     sagaModules = delSagaModule(namespace, sagaModules);
-    biz.models = filter(model => model.namespace !== namespace, biz.models);
+    models = filter(model => model.namespace !== namespace, models);
 
     if (biz.status === BizStatus.RUNNING) {
       updateInjectedArgs();
@@ -158,7 +140,7 @@ export default function (): Biz {
   }
 
   function getModel(namespace: string): Model | undefined {
-    return biz.models.find(m => m.namespace === namespace);
+    return models.find(m => m.namespace === namespace);
   }
 
   function run(opts: BizRunOptions = {}): void {
@@ -212,4 +194,23 @@ export default function (): Biz {
 
     return middlewares;
   }
+
+  const biz: Biz = {
+    status: BizStatus.IDLE,
+    model,
+    addModels,
+    unmodel,
+    getModel,
+    run,
+    get actions() {
+      return actions;
+    },
+    getAction,
+    get selectors() {
+      return selectors;
+    },
+    getSelector
+  };
+
+  return biz;
 }

@@ -10,7 +10,6 @@ import SagaError from '../SagaError';
 
 export interface Biz {
   status: BizStatus;
-  models: any[];
   model: (model: Model) => Biz;
   addModels: (models: Model[]) => Biz;
   unmodel: (namespace: string) => void;
