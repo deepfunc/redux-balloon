@@ -77,7 +77,8 @@ export type {
   ApiModelState,
   InitApiStatusAction,
   ApiModelActions,
-  ApiModelSelectors
+  ApiModelSelectors,
+  ApiMap
 } from './types/models/apiModel';
 
 export default balloon;

@@ -8,21 +8,26 @@ import {
 import {
   StringIndexObject,
   ApiStatusInfo,
-  ManualSagasDefinitionFunc
+  ManualSagasDefinitionFunc,
+  ApiMap
 } from '../..';
+import { mergeApiMap, getApiMap } from './apiMap';
 
 const handlerMapForLatest: StringIndexObject = {};
 
 export default function createApiWorkflowCreator(
-  apiMap: StringIndexObject = {}
+  apiMap: ApiMap = {}
 ): ManualSagasDefinitionFunc {
   return function apiWorkflowCreator(effects, extras) {
     const { all, call, takeLatest, takeEvery, put } = effects;
     const { getAction } = extras;
 
+    // 初始化 apiMap。
+    mergeApiMap(apiMap);
+
     const handleInit: () => Generator<any> = function* () {
       const payload: StringIndexObject = {};
-      const keys = Object.keys(apiMap);
+      const keys = Object.keys(getApiMap());
       keys.forEach(k => {
         payload[k] = { status: ApiStatus.IDLE };
       });
@@ -46,7 +51,7 @@ export default function createApiWorkflowCreator(
     const apiActionHandler = function* (action: any): Generator<any> {
       const { type, payload, meta, _resolve, _reject } = action;
       const apiName = meta.apiName || type;
-      const apiFn = apiMap[apiName];
+      const apiFn = getApiMap()[apiName];
       const removedMeta = { ...meta };
       delete removedMeta.isApi;
       delete removedMeta.isLatest;

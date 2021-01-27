@@ -3,7 +3,7 @@ import { Model } from './model';
 import { StringIndexObject } from './utils';
 import { GetActionFunc } from './actions';
 import { GetSelectorFunc } from './selectors';
-import { ApiModelOptions } from './models/apiModel';
+import { ApiMap, ApiModelOptions } from './models/apiModel';
 import { EnhanceReducerFunc } from './reducers';
 import { Store } from 'redux';
 import SagaError from '../SagaError';
@@ -20,6 +20,7 @@ export interface Biz {
   selectors: StringIndexObject;
   getSelector: GetSelectorFunc;
   store?: Store;
+  mergeApiMap: (source: ApiMap) => void;
 }
 
 export interface BizRunOptions {

@@ -32,6 +32,7 @@ import {
 } from './utils';
 import { BizStatus } from './constants';
 import createApiModel from './models/api';
+import { mergeApiMap } from './models/api/apiMap';
 import { Biz, BizRunOptions } from './types/balloon';
 import { StringIndexObject } from './types/utils';
 import { Model } from './types/model';
@@ -209,7 +210,8 @@ export default function (): Biz {
     get selectors() {
       return selectors;
     },
-    getSelector
+    getSelector,
+    mergeApiMap
   };
 
   return biz;

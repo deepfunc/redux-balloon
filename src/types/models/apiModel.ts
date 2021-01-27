@@ -2,8 +2,10 @@ import { Action } from 'redux-actions';
 import { StringIndexObject } from '../utils';
 import { ApiStatus } from '../..';
 
+export type ApiMap = StringIndexObject;
+
 export interface ApiModelOptions {
-  apiMap: StringIndexObject;
+  apiMap: ApiMap;
   namespace?: string;
 }
 

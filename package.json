@@ -1,6 +1,6 @@
 {
   "name": "redux-balloon",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Lightweight business framework for Redux apps",
   "license": "MIT",
   "repository": {
