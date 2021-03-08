@@ -67,8 +67,8 @@ export default function (): Biz {
       const newSaga = sagaModules[namespace];
       if (newSaga) {
         runSagaModules({ [namespace]: newSaga }, sagaMiddleware.run, runOpts, {
-          actions: biz.actions,
-          selectors: biz.selectors
+          getAction,
+          getSelector
         });
       }
     }
