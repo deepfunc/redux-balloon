@@ -60,6 +60,7 @@ export type {
   ReselectObject,
   SelectorsMapObject,
   SelectorsDefinition,
+  SelectorsDefinitionReturnType,
   SelectorKey,
   SelectorFuncType,
   GetSelectorFunc
