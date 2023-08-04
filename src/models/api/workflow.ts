@@ -74,7 +74,7 @@ export default function createApiWorkflowCreator(
       } catch (e) {
         yield call(updateApiStatus, apiName, {
           status: ApiStatus.FAILURE,
-          error: e
+          error: e as Error
         });
         yield put({
           type: `${type}_FAILED`,
