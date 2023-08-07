@@ -174,7 +174,7 @@ function handleActionForHelper(
       if (typeof _reject === 'function') {
         _reject(err);
       }
-      throw new SagaError(err, { namespace, key });
+      throw new SagaError(err as Error, { namespace, key });
     }
   };
 }

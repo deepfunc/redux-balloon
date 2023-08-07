@@ -11,7 +11,7 @@ export type SelectorsDefinition<Selectors extends SelectorsMapObject> = (
   injected: ReselectObject & { getSelector: GetSelectorFunc }
 ) => Selectors;
 
-type SelectorsDefinitionReturnType<M> = M extends {
+export type SelectorsDefinitionReturnType<M> = M extends {
   selectors?: SelectorsDefinition<infer S>;
 }
   ? S
